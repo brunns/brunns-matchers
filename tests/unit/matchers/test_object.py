@@ -1,8 +1,8 @@
 from hamcrest import assert_that, contains_string, has_string, not_, matches_regexp, all_of
 
-from junkdrawer.bunch import ReprFromDict
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.object import has_repr, has_identical_properties_to, false, true
+from junkdrawer.bunch import ReprFromDict
 
 
 def test_has_repr():

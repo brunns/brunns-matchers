@@ -102,3 +102,15 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+
+# Editor cruft
+.idea/
+*~
+
+# Node modules
+node_modules/
+package-lock.json
+
+# Mac cruft
+.DS_Store

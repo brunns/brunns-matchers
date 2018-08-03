@@ -35,10 +35,6 @@ clean: ## Clean generated files
 	find . -name "__pycache__" -type d -print | xargs -t rm -r
 	find . -name "test-output" -type d -print | xargs -t rm -r
 
-publish: ## Publish to pypi
-	python setup.py sdist
-	twine upload `ls -t dist/ | head -n1`
-
 repl: ## Python REPL
 	tox -e py36 -- python
 

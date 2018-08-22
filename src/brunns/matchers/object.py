@@ -1,4 +1,4 @@
-from hamcrest import equal_to, not_
+from hamcrest import equal_to, not_, greater_than_or_equal_to, greater_than, less_than_or_equal_to, less_than, all_of
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.matcher import Matcher
 
@@ -65,3 +65,10 @@ def false():
     :return: Matcher(object)
     """
     return not_(true())
+
+
+def between(lower, upper, lower_inclusive=False, upper_inclusive=False):
+    return all_of(
+        greater_than_or_equal_to(lower) if lower_inclusive else greater_than(lower),
+        less_than_or_equal_to(upper) if upper_inclusive else less_than(upper),
+    )

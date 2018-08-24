@@ -4,13 +4,29 @@ from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.matcher import Matcher
 
 
+def has_title(title):
+    return HtmlWithTag("title", TagWithString(title))
+
+
+def has_tag(name, matcher):
+    return HtmlWithTag(name, matcher)
+
+
+def tag_has_string(matcher):
+    return TagWithString(matcher)
+
+
+def has_class(clazz):
+    return TagWithClass(clazz)
+
+
 class HtmlWithTag(BaseMatcher):
     def __init__(self, name, matcher):
         self.name = name
-        self.matcher = matcher if isinstance(matcher, Matcher) else equal_to(matcher)
+        self.matcher = matcher if isinstance(matcher, Matcher) else tag_has_string(matcher)
 
-    def _matches(self, html):
-        soup = BeautifulSoup(html, "html.parser")
+    def _matches(self, actual):
+        soup = BeautifulSoup(actual, "html.parser")
         found = soup.find_all(self.name)
         return has_item(self.matcher).matches(found)
 
@@ -19,23 +35,30 @@ class HtmlWithTag(BaseMatcher):
             " matching "
         ).append_description_of(self.matcher)
 
-    def describe_mismatch(self, html, mismatch_description):
-        mismatch_description.append_text("got HTML with tag ").append_value(self.name)
-        soup = BeautifulSoup(html, "html.parser")
+    def describe_mismatch(self, actual, mismatch_description):
+        mismatch_description.append_text("got HTML with tag ").append_value(self.name).append_text(" values ")
+        soup = BeautifulSoup(actual, "html.parser")
         found = soup.find_all(self.name)
-        has_item(self.matcher).describe_mismatch(found, mismatch_description)
+        mismatch_description.append_list("[", ", ", "]", [t for t in found])
 
 
 class TagWithString(BaseMatcher):
-    def _matches(self, tag):
-        return self.matcher.matches(tag.string)
-
     def __init__(self, matcher):
         self.matcher = matcher if isinstance(matcher, Matcher) else equal_to(matcher)
 
+    def _matches(self, tag):
+        return self.matcher.matches(tag.string)
+
     def describe_to(self, description):
-        description.append_text("tag matching ").append_description_of(self.matcher)
+        description.append_text("tag with string matching ").append_description_of(self.matcher)
 
 
-def has_title(title):
-    return HtmlWithTag("title", TagWithString(title))
+class TagWithClass(BaseMatcher):
+    def __init__(self, matcher):
+        self.matcher = matcher if isinstance(matcher, Matcher) else equal_to(matcher)
+
+    def _matches(self, tag):
+        return has_item(self.matcher).matches(tag["class"])
+
+    def describe_to(self, description):
+        description.append_text("tag with class matching ").append_description_of(self.matcher)

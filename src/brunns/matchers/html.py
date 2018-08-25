@@ -85,7 +85,8 @@ class HtmlHasTable(BaseMatcher):
         return contains(all_of(self.id_, self.matcher)).matches(tables)
 
     def describe_to(self, description):
-        pass
+        description.append_text("row matching ")
+        self.matcher.describe_to(description)
 
 
 class TableHasRows(BaseMatcher):
@@ -97,4 +98,5 @@ class TableHasRows(BaseMatcher):
         return has_item(self.matcher).matches(row.find_all("td") for row in rows)
 
     def describe_to(self, description):
-        pass
+        description.append_text("table with row matching ")
+        self.matcher.describe_to(description)

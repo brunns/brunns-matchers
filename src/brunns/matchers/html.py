@@ -1,7 +1,9 @@
 from bs4 import BeautifulSoup
-from hamcrest import equal_to, has_item
+from hamcrest import equal_to, has_item, anything, contains, all_of
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.matcher import Matcher
+
+ANYTHING = anything()
 
 
 def has_title(title):
@@ -18,6 +20,14 @@ def tag_has_string(matcher):
 
 def has_class(clazz):
     return TagWithClass(clazz)
+
+
+def has_table(matcher, id_=ANYTHING):
+    return HtmlHasTable(matcher, id_=id_)
+
+
+def has_rows(matcher):
+    return TableHasRows(matcher)
 
 
 class HtmlWithTag(BaseMatcher):
@@ -62,3 +72,29 @@ class TagWithClass(BaseMatcher):
 
     def describe_to(self, description):
         description.append_text("tag with class matching ").append_description_of(self.matcher)
+
+
+class HtmlHasTable(BaseMatcher):
+    def __init__(self, matcher, id_=ANYTHING):
+        self.matcher = matcher
+        self.id_ = id_
+
+    def _matches(self, html):
+        soup = BeautifulSoup(html, "html.parser")
+        tables = soup.find_all("table")
+        return contains(all_of(self.id_, self.matcher)).matches(tables)
+
+    def describe_to(self, description):
+        pass
+
+
+class TableHasRows(BaseMatcher):
+    def __init__(self, matcher):
+        self.matcher = matcher
+
+    def _matches(self, table):
+        rows = table.find_all("tr")
+        return has_item(self.matcher).matches(row.find_all("td") for row in rows)
+
+    def describe_to(self, description):
+        pass

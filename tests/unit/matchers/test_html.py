@@ -1,12 +1,22 @@
-from hamcrest import assert_that, not_, contains_string, has_string
+from bs4 import BeautifulSoup
+from hamcrest import assert_that, not_, contains_string, has_string, contains
 
-from brunns.matchers.html import has_title, has_tag, has_class, tag_has_string
+from brunns.matchers.html import has_title, has_tag, has_class, tag_has_string, has_rows, has_table
 from brunns.matchers.matcher import mismatches_with
 
 HTML = """<html>
     <head><title>sausages</title></head>
     </body>
         <h1 class="bacon egg">chips</h1>
+        <table id="squid" action="/">
+            <thead>
+                <tr><th>apples</th><th>oranges</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>foo</td><td>bar</td></tr>
+                <tr><td>baz</td><td>qux</td></tr>
+            </tbody>
+        </table>
     </body>
 </html>"""
 
@@ -43,4 +53,16 @@ def test_has_class():
     )
 
 
-# TODO Row in table
+def test_table_has_row():
+    # Given
+    soup = BeautifulSoup(HTML, "html.parser")
+    t = soup.table
+
+    # Then
+    assert_that(t, has_rows(contains(tag_has_string("foo"), tag_has_string("bar"))))
+    assert_that(t, not_(has_rows(contains(tag_has_string("egg"), tag_has_string("chips")))))
+
+
+def test_html_has_table():
+    assert_that(HTML, has_table(has_rows(contains(tag_has_string("foo"), tag_has_string("bar")))))
+    assert_that(HTML, not_(has_table(has_rows(contains(tag_has_string("egg"), tag_has_string("chips"))))))

@@ -3,20 +3,19 @@
 Various custom [PyHamcrest](https://pyhamcrest.readthedocs.io) matchers.
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
-[![Build Status](https://travis-ci.org/brunns/brunns-matchers.svg?branch=master)](https://travis-ci.org/brunns/brunns-matchers)
-[![PyPi Version](https://img.shields.io/pypi/v/brunns-matchers.svg)](https://pypi.org/project/brunns-matchers/releases/)
-[![Licence](https://img.shields.io/github/license/brunns/brunns-matchers.svg)](https://pypi.org/project/brunns-matchers/)
-[![Wheel](https://img.shields.io/pypi/wheel/brunns-matchers.svg)](https://pypi.org/project/brunns-matchers/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/brunns-matchers.svg)](https://pypi.org/project/brunns-matchers/)
-[![Github all releases](https://img.shields.io/github/downloads/brunns/brunns-matchers/total.svg)](https://GitHub.com/brunns/brunns-matchers/releases/)
-[![GitHub forks](https://img.shields.io/github/forks/brunns/brunns-matchers.svg?style=social&label=Fork&maxAge=2592000)](https://GitHub.com/brunns/brunns-matchers/network/)
-[![GitHub stars](https://img.shields.io/github/stars/brunns/brunns-matchers.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/brunns/brunns-matchers/stargazers/)
-[![GitHub watchers](https://img.shields.io/github/watchers/brunns/brunns-matchers.svg?style=social&label=Watch&maxAge=2592000)](https://GitHub.com/brunns/brunns-matchers/watchers/)
-[![GitHub contributors](https://img.shields.io/github/contributors/brunns/brunns-matchers.svg)](https://GitHub.com/brunns/brunns-matchers/graphs/contributors/)
-[![GitHub issues](https://img.shields.io/github/issues/brunns/brunns-matchers.svg)](https://GitHub.com/brunns/brunns-matchers/issues/)
-[![GitHub issues-closed](https://img.shields.io/github/issues-closed/brunns/brunns-matchers.svg)](https://GitHub.com/brunns/brunns-matchers/issues?q=is%3Aissue+is%3Aclosed)
-[![GitHub pull-requests](https://img.shields.io/github/issues-pr/brunns/brunns-matchers.svg)](https://GitHub.com/brunns/brunns-matchers/pull/)
-[![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/brunns/brunns-matchers.svg)](https://GitHub.com/brunns/brunns-matchers/pull/)
+[![Build Status](https://travis-ci.org/brunns/brunns-matchers.svg?branch=master&logo=travis)](https://travis-ci.org/brunns/brunns-matchers)
+[![PyPi Version](https://img.shields.io/pypi/v/brunns-matchers.svg?logo=pypi)](https://pypi.org/project/brunns-matchers/#history)
+[![Python Versions](https://img.shields.io/pypi/pyversions/brunns-matchers.svg?logo=python)](https://pypi.org/project/brunns-matchers/)
+[![Licence](https://img.shields.io/github/license/brunns/brunns-matchers.svg)](https://github.com/brunns/brunns-matchers/blob/master/LICENSE)
+[![GitHub all releases](https://img.shields.io/github/downloads/brunns/brunns-matchers/total.svg?logo=github)](https://github.com/brunns/brunns-matchers/releases/)
+[![GitHub forks](https://img.shields.io/github/forks/brunns/brunns-matchers.svg?label=Fork&logo=github)](https://github.com/brunns/brunns-matchers/network/members)
+[![GitHub stars](https://img.shields.io/github/stars/brunns/brunns-matchers.svg?label=Star&logo=github)](https://github.com/brunns/brunns-matchers/stargazers/)
+[![GitHub watchers](https://img.shields.io/github/watchers/brunns/brunns-matchers.svg?label=Watch&logo=github)](https://github.com/brunns/brunns-matchers/watchers/)
+[![GitHub contributors](https://img.shields.io/github/contributors/brunns/brunns-matchers.svg?logo=github)](https://github.com/brunns/brunns-matchers/graphs/contributors/)
+[![GitHub issues](https://img.shields.io/github/issues/brunns/brunns-matchers.svg?logo=github)](https://github.com/brunns/brunns-matchers/issues/)
+[![GitHub issues-closed](https://img.shields.io/github/issues-closed/brunns/brunns-matchers.svg?logo=github)](https://github.com/brunns/brunns-matchers/issues?q=is%3Aissue+is%3Aclosed)
+[![GitHub pull-requests](https://img.shields.io/github/issues-pr/brunns/brunns-matchers.svg?logo=github)](https://github.com/brunns/brunns-matchers/pulls)
+[![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/brunns/brunns-matchers.svg?logo=github)](https://github.com/brunns/brunns-matchers/pulls?utf8=%E2%9C%93&q=is%3Apr+is%3Aclosed)
 
 
 ## Setup

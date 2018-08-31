@@ -1,10 +1,9 @@
 import datetime
 
-from hamcrest import assert_that, contains_string, has_string, not_, matches_regexp, all_of
+from hamcrest import assert_that, contains_string, has_string, not_
 
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.object import has_repr, has_identical_properties_to, false, true, between
-from junkdrawer.bunch import ReprFromDict
 
 
 def test_has_repr():
@@ -22,17 +21,17 @@ def test_has_repr():
 
 def test_identical_properties():
     # Given
-    class SomeClass(ReprFromDict):
+    class SomeClass(object):
         def __init__(self, a, b):
             self.a = a
             self.b = b
 
-    class OtherClass(ReprFromDict):
+    class OtherClass(object):
         def __init__(self, a, b):
             self.a = a
             self.b = b
 
-    class YetAnotherClass(ReprFromDict):
+    class YetAnotherClass(object):
         def __init__(self, a, b):
             self.a = a
             self.b = b
@@ -46,22 +45,8 @@ def test_identical_properties():
     # Then
     assert_that(a, has_identical_properties_to(b))
     assert_that(a, not_(has_identical_properties_to(c)))
-    assert_that(
-        has_identical_properties_to(a),
-        has_string(
-            all_of(
-                matches_regexp(r"object with identical properties to object .*SomeClass\("),
-                contains_string("a=1"),
-                contains_string("b=2"),
-            )
-        ),
-    )
-    assert_that(
-        has_identical_properties_to(a),
-        mismatches_with(
-            c, all_of(matches_regexp(r"was .*YetAnotherClass\("), contains_string("a=1"), contains_string("b=3"))
-        ),
-    )
+    assert_that(has_identical_properties_to(a), has_string("object with identical properties to object {0}".format(a)))
+    assert_that(has_identical_properties_to(a), mismatches_with(c, "was {0}".format(c)))
 
 
 def test_truthy():

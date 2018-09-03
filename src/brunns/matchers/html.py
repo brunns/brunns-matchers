@@ -30,6 +30,10 @@ def has_rows(matcher):
     return TableHasRows(matcher)
 
 
+def has_header_row(matcher):
+    return TableHasRows(matcher, header_row=True)
+
+
 class HtmlWithTag(BaseMatcher):
     def __init__(self, name, matcher):
         self.name = name
@@ -90,13 +94,14 @@ class HtmlHasTable(BaseMatcher):
 
 
 class TableHasRows(BaseMatcher):
-    def __init__(self, matcher):
+    def __init__(self, matcher, header_row=False):
         self.matcher = matcher
+        self.header_row = header_row
 
     def _matches(self, table):
         rows = table.find_all("tr")
-        return has_item(self.matcher).matches(row.find_all("td") for row in rows)
+        return has_item(self.matcher).matches(row.find_all("th" if self.header_row else "td") for row in rows)
 
     def describe_to(self, description):
-        description.append_text("table with row matching ")
+        description.append_text("table with {0}row matching ".format("header " if self.header_row else ""))
         self.matcher.describe_to(description)

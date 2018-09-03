@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from hamcrest import assert_that, not_, contains_string, has_string, contains, anything
 
-from brunns.matchers.html import has_title, has_tag, has_class, tag_has_string, has_rows, has_table
+from brunns.matchers.html import has_title, has_tag, has_class, tag_has_string, has_rows, has_table, has_header_row
 from brunns.matchers.matcher import mismatches_with
 
 HTML = """<html>
@@ -74,6 +74,26 @@ def test_table_has_row():
         has_string(
             "table with row matching a sequence containing "
             "[tag with string matching 'foo', tag with string matching 'bar']"
+        ),
+    )
+    assert_that(should_not_match, mismatches_with(table, "was {0}".format(table)))
+
+
+def test_table_has_header_row():
+    # Given
+    soup = BeautifulSoup(HTML, "html.parser")
+    table = soup.table
+    should_match = has_header_row(contains(tag_has_string("apples"), tag_has_string("oranges")))
+    should_not_match = has_header_row(contains(tag_has_string("foo"), tag_has_string("bar")))
+
+    # Then
+    assert_that(table, should_match)
+    assert_that(table, not_(should_not_match))
+    assert_that(
+        should_match,
+        has_string(
+            "table with header row matching a sequence containing "
+            "[tag with string matching 'apples', tag with string matching 'oranges']"
         ),
     )
     assert_that(should_not_match, mismatches_with(table, "was {0}".format(table)))

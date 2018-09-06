@@ -1,3 +1,5 @@
+import warnings
+
 from bs4 import BeautifulSoup
 from hamcrest import equal_to, has_item, anything, contains, all_of
 from hamcrest.core.base_matcher import BaseMatcher
@@ -7,11 +9,23 @@ ANYTHING = anything()
 
 
 def has_title(title):
-    return HtmlWithTag("title", TagWithString(title))
+    return HtmlWithTag(TagWithString(title), name="title")
 
 
 def has_tag(name, matcher):
-    return HtmlWithTag(name, matcher)
+    """Ultimately replace this with a signature something like:
+    has_tag(name=None, id_=None, matcher=anything())
+    """
+    warnings.warn("deprecated - use has_named_tag()", DeprecationWarning)
+    return HtmlWithTag(matcher, name=name)
+
+
+def has_named_tag(name, matcher):
+    return HtmlWithTag(matcher, name=name)
+
+
+def has_id_tag(id_, matcher):
+    return HtmlWithTag(matcher, id_=id_)
 
 
 def tag_has_string(matcher):
@@ -35,25 +49,33 @@ def has_header_row(matcher):
 
 
 class HtmlWithTag(BaseMatcher):
-    def __init__(self, name, matcher):
+    def __init__(self, matcher, name=None, id_=None):
         self.name = name
+        self.id_ = id_
         self.matcher = matcher if isinstance(matcher, Matcher) else tag_has_string(matcher)
 
     def _matches(self, actual):
         soup = BeautifulSoup(actual, "html.parser")
-        found = soup.find_all(self.name)
+        found = soup.find_all(self.name, id=self.id_)
         return has_item(self.matcher).matches(found)
 
     def describe_to(self, description):
-        description.append_text("HTML with tag ").append_value(self.name).append_text(
-            " matching "
-        ).append_description_of(self.matcher)
+        description.append_text("HTML with tag")
+        if self.name:
+            description.append_text(" name=").append_value(self.name)
+        if self.id_:
+            description.append_text(" id=").append_value(self.id_)
+        description.append_text(" matching ").append_description_of(self.matcher)
 
     def describe_mismatch(self, actual, mismatch_description):
-        mismatch_description.append_text("got HTML with tag ").append_value(self.name).append_text(" values ")
+        mismatch_description.append_text("got HTML with tag")
+        if self.name:
+            mismatch_description.append_text(" name=").append_value(self.name)
+        if self.id_:
+            mismatch_description.append_text(" id=").append_value(self.id_)
         soup = BeautifulSoup(actual, "html.parser")
-        found = soup.find_all(self.name)
-        mismatch_description.append_list("[", ", ", "]", [t for t in found])
+        found = soup.find_all(self.name, id=self.id_)
+        mismatch_description.append_list(" values [", ", ", "]", [t for t in found])
 
 
 class TagWithString(BaseMatcher):
@@ -72,7 +94,7 @@ class TagWithClass(BaseMatcher):
         self.matcher = matcher if isinstance(matcher, Matcher) else equal_to(matcher)
 
     def _matches(self, tag):
-        return has_item(self.matcher).matches(tag["class"])
+        return has_item(self.matcher).matches(tag.get("class", None))
 
     def describe_to(self, description):
         description.append_text("tag with class matching ").append_description_of(self.matcher)

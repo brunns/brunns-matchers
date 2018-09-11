@@ -30,7 +30,7 @@ HTML = """<html>
             <tbody>
                 <tr><td>foo</td><td>bar</td></tr>
                 <tr><td>baz</td><td>qux</td></tr>
-                <tr><td>fizz</td><td>buzz</td></tr>
+                <tr class="bazz"><td>fizz</td><td>buzz</td></tr>
                 <tr class="eden"><td>Adam</td><td>Steve</td></tr>
             </tbody>
         </table>
@@ -143,18 +143,36 @@ def test_table_has_row_cells():
     assert_that(should_not_match, mismatches_with(table, "was {0}".format(table)))
 
 
-def test_table_has_nth_row():
+def test_has_row():
     # Given
     soup = BeautifulSoup(HTML, "html.parser")
     table = soup.table
-    should_match = has_row(index_matches=2, cells_match=contains(tag_has_string("fizz"), tag_has_string("buzz")))
-    should_not_match_1 = has_row(index_matches=2, cells_match=contains(tag_has_string("egg"), tag_has_string("chips")))
-    should_not_match_2 = has_row(index_matches=3, cells_match=contains(tag_has_string("fizz"), tag_has_string("buzz")))
+    should_match = has_row(
+        index_matches=2,
+        row_matches=has_class("bazz"),
+        cells_match=contains(tag_has_string("fizz"), tag_has_string("buzz")),
+    )
+    should_not_match_1 = has_row(
+        index_matches=2,
+        row_matches=has_class("bazz"),
+        cells_match=contains(tag_has_string("egg"), tag_has_string("chips")),
+    )
+    should_not_match_2 = has_row(
+        index_matches=3,
+        row_matches=has_class("bazz"),
+        cells_match=contains(tag_has_string("fizz"), tag_has_string("buzz")),
+    )
+    should_not_match_3 = has_row(
+        index_matches=2,
+        row_matches=has_class("eden"),
+        cells_match=contains(tag_has_string("fizz"), tag_has_string("buzz")),
+    )
 
     # Then
     assert_that(table, should_match)
     assert_that(table, not_(should_not_match_1))
     assert_that(table, not_(should_not_match_2))
+    assert_that(table, not_(should_not_match_3))
     assert_that(
         should_match,
         has_string(

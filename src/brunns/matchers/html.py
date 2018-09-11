@@ -135,9 +135,11 @@ class TableHasRow(BaseMatcher):
         self.index_matcher = index_matcher if isinstance(index_matcher, Matcher) else equal_to(index_matcher)
 
     def _matches(self, table):
-        indexed_rows = list(enumerate(self._row_cells(row) for row in (table.find_all("tr")) if self._row_cells(row)))
-        indexed_row_matcher = contains(self.index_matcher, self.cells_matcher)
-        return has_item(indexed_row_matcher).matches(indexed_rows)
+        rows = table.find_all("tr")
+        rows_and_cells = ((row, self._row_cells(row)) for row in rows if self._row_cells(row))
+        indexed_rows_and_cells = ((index, row, cells) for index, (row, cells) in enumerate(rows_and_cells))
+        indexed_row_matcher = contains(self.index_matcher, self.row_matcher, self.cells_matcher)
+        return has_item(indexed_row_matcher).matches(indexed_rows_and_cells)
 
     def _row_cells(self, row):
         return row.find_all("th" if self.header_row else "td")

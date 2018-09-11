@@ -13,6 +13,7 @@ from brunns.matchers.html import (
     has_header_row,
     has_tag,
     has_id_tag,
+    has_row,
     has_nth_row,
 )
 from brunns.matchers.matcher import mismatches_with
@@ -30,7 +31,7 @@ HTML = """<html>
                 <tr><td>foo</td><td>bar</td></tr>
                 <tr><td>baz</td><td>qux</td></tr>
                 <tr><td>fizz</td><td>buzz</td></tr>
-                <tr><td>Adam</td><td>Steve</td></tr>
+                <tr class="eden"><td>Adam</td><td>Steve</td></tr>
             </tbody>
         </table>
     </body>
@@ -75,6 +76,19 @@ def test_has_tag_deprecated():
         assert "deprecated - use has_named_tag()" in str(w[-1].message)
 
 
+def test_has_nth_row_deprecated():
+    soup = BeautifulSoup(HTML, "html.parser")
+    table = soup.table
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+
+        assert_that(table, has_nth_row(0, anything()))
+
+        assert len(w) == 1
+        assert issubclass(w[-1].category, DeprecationWarning)
+        assert "deprecated - use has_row(index_matches=index)" in str(w[-1].message)
+
+
 def test_has_class():
     should_match = has_class("bacon")
     should_not_match = has_class("bananas")
@@ -109,12 +123,12 @@ def test_has_id_tag():
     assert_that(should_not_match_2, mismatches_with(HTML, "got HTML with tag id='grrgug' values []"))
 
 
-def test_table_has_row():
+def test_table_has_row_cells():
     # Given
     soup = BeautifulSoup(HTML, "html.parser")
     table = soup.table
-    should_match = has_rows(contains(tag_has_string("foo"), tag_has_string("bar")))
-    should_not_match = has_rows(contains(tag_has_string("egg"), tag_has_string("chips")))
+    should_match = has_row(cells_match=contains(tag_has_string("foo"), tag_has_string("bar")))
+    should_not_match = has_row(cells_match=contains(tag_has_string("egg"), tag_has_string("chips")))
 
     # Then
     assert_that(table, should_match)
@@ -133,9 +147,9 @@ def test_table_has_nth_row():
     # Given
     soup = BeautifulSoup(HTML, "html.parser")
     table = soup.table
-    should_match = has_nth_row(2, contains(tag_has_string("fizz"), tag_has_string("buzz")))
-    should_not_match_1 = has_nth_row(2, contains(tag_has_string("egg"), tag_has_string("chips")))
-    should_not_match_2 = has_nth_row(3, contains(tag_has_string("fizz"), tag_has_string("buzz")))
+    should_match = has_row(index_matches=2, cells_match=contains(tag_has_string("fizz"), tag_has_string("buzz")))
+    should_not_match_1 = has_row(index_matches=2, cells_match=contains(tag_has_string("egg"), tag_has_string("chips")))
+    should_not_match_2 = has_row(index_matches=3, cells_match=contains(tag_has_string("fizz"), tag_has_string("buzz")))
 
     # Then
     assert_that(table, should_match)

@@ -40,16 +40,24 @@ def has_table(matcher, id_=ANYTHING):
     return HtmlHasTable(matcher, id_=id_)
 
 
-def has_rows(matcher):
-    return TableHasRows(matcher)
+def has_rows(cells_matcher):
+    warnings.warn("deprecated - use has_row()", DeprecationWarning)
+    return has_row(cells_match=cells_matcher)
 
 
-def has_nth_row(index, matcher):
-    return TableHasRows(matcher, index_matcher=index)
+def has_row(row_matches=ANYTHING, cells_match=ANYTHING, index_matches=ANYTHING, header_row=False):
+    return TableHasRow(
+        row_matcher=row_matches, cells_matcher=cells_match, index_matcher=index_matches, header_row=header_row
+    )
 
 
-def has_header_row(matcher):
-    return TableHasRows(matcher, header_row=True)
+def has_nth_row(index, cells_matcher=ANYTHING, row_matcher=ANYTHING):
+    warnings.warn("deprecated - use has_row(index_matches=index)", DeprecationWarning)
+    return has_row(row_matches=row_matcher, cells_match=cells_matcher, index_matches=index)
+
+
+def has_header_row(cells_matcher=ANYTHING, row_matcher=ANYTHING):
+    return has_row(cells_match=cells_matcher, row_matches=row_matcher, header_row=True)
 
 
 class HtmlWithTag(BaseMatcher):
@@ -119,15 +127,16 @@ class HtmlHasTable(BaseMatcher):
         self.matcher.describe_to(description)
 
 
-class TableHasRows(BaseMatcher):
-    def __init__(self, matcher, header_row=False, index_matcher=ANYTHING):
-        self.matcher = matcher
+class TableHasRow(BaseMatcher):
+    def __init__(self, row_matcher=ANYTHING, cells_matcher=ANYTHING, header_row=False, index_matcher=ANYTHING):
+        self.row_matcher = row_matcher
+        self.cells_matcher = cells_matcher
         self.header_row = header_row
         self.index_matcher = index_matcher if isinstance(index_matcher, Matcher) else equal_to(index_matcher)
 
     def _matches(self, table):
         indexed_rows = list(enumerate(self._row_cells(row) for row in (table.find_all("tr")) if self._row_cells(row)))
-        indexed_row_matcher = contains(self.index_matcher, self.matcher)
+        indexed_row_matcher = contains(self.index_matcher, self.cells_matcher)
         return has_item(indexed_row_matcher).matches(indexed_rows)
 
     def _row_cells(self, row):
@@ -135,7 +144,7 @@ class TableHasRows(BaseMatcher):
 
     def describe_to(self, description):
         description.append_text("table with {0}row matching ".format("header " if self.header_row else ""))
-        self.matcher.describe_to(description)
+        self.cells_matcher.describe_to(description)
         if self.index_matcher != ANYTHING:
             description.append_text(" and index matching ")
             self.index_matcher.describe_to(description)

@@ -44,6 +44,10 @@ def has_rows(matcher):
     return TableHasRows(matcher)
 
 
+def has_nth_row(index, matcher):
+    return TableHasRows(matcher, index_matcher=index)
+
+
 def has_header_row(matcher):
     return TableHasRows(matcher, header_row=True)
 
@@ -116,14 +120,22 @@ class HtmlHasTable(BaseMatcher):
 
 
 class TableHasRows(BaseMatcher):
-    def __init__(self, matcher, header_row=False):
+    def __init__(self, matcher, header_row=False, index_matcher=ANYTHING):
         self.matcher = matcher
         self.header_row = header_row
+        self.index_matcher = index_matcher if isinstance(index_matcher, Matcher) else equal_to(index_matcher)
 
     def _matches(self, table):
-        rows = table.find_all("tr")
-        return has_item(self.matcher).matches(row.find_all("th" if self.header_row else "td") for row in rows)
+        indexed_rows = list(enumerate(self._row_cells(row) for row in (table.find_all("tr")) if self._row_cells(row)))
+        indexed_row_matcher = contains(self.index_matcher, self.matcher)
+        return has_item(indexed_row_matcher).matches(indexed_rows)
+
+    def _row_cells(self, row):
+        return row.find_all("th" if self.header_row else "td")
 
     def describe_to(self, description):
         description.append_text("table with {0}row matching ".format("header " if self.header_row else ""))
         self.matcher.describe_to(description)
+        if self.index_matcher != ANYTHING:
+            description.append_text(" and index matching ")
+            self.index_matcher.describe_to(description)

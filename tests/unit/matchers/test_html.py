@@ -13,6 +13,7 @@ from brunns.matchers.html import (
     has_header_row,
     has_tag,
     has_id_tag,
+    has_nth_row,
 )
 from brunns.matchers.matcher import mismatches_with
 
@@ -28,6 +29,8 @@ HTML = """<html>
             <tbody>
                 <tr><td>foo</td><td>bar</td></tr>
                 <tr><td>baz</td><td>qux</td></tr>
+                <tr><td>fizz</td><td>buzz</td></tr>
+                <tr><td>Adam</td><td>Steve</td></tr>
             </tbody>
         </table>
     </body>
@@ -124,6 +127,29 @@ def test_table_has_row():
         ),
     )
     assert_that(should_not_match, mismatches_with(table, "was {0}".format(table)))
+
+
+def test_table_has_nth_row():
+    # Given
+    soup = BeautifulSoup(HTML, "html.parser")
+    table = soup.table
+    should_match = has_nth_row(2, contains(tag_has_string("fizz"), tag_has_string("buzz")))
+    should_not_match_1 = has_nth_row(2, contains(tag_has_string("egg"), tag_has_string("chips")))
+    should_not_match_2 = has_nth_row(3, contains(tag_has_string("fizz"), tag_has_string("buzz")))
+
+    # Then
+    assert_that(table, should_match)
+    assert_that(table, not_(should_not_match_1))
+    assert_that(table, not_(should_not_match_2))
+    assert_that(
+        should_match,
+        has_string(
+            "table with row matching a sequence containing "
+            "[tag with string matching 'fizz', tag with string matching 'buzz'] "
+            "and index matching <2>"
+        ),
+    )
+    assert_that(should_not_match_1, mismatches_with(table, "was {0}".format(table)))
 
 
 def test_table_has_header_row():

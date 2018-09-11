@@ -136,8 +136,8 @@ def test_table_has_row_cells():
     assert_that(
         should_match,
         has_string(
-            "table with row matching a sequence containing "
-            "[tag with string matching 'foo', tag with string matching 'bar']"
+            "table with row "
+            "cells matching a sequence containing [tag with string matching 'foo', tag with string matching 'bar']"
         ),
     )
     assert_that(should_not_match, mismatches_with(table, "was {0}".format(table)))
@@ -176,10 +176,15 @@ def test_has_row():
     assert_that(
         should_match,
         has_string(
-            "table with row matching a sequence containing "
-            "[tag with string matching 'fizz', tag with string matching 'buzz'] "
-            "and index matching <2>"
+            "table with row "
+            "cells matching a sequence containing [tag with string matching 'fizz', tag with string matching 'buzz'] "
+            "row matching tag with class matching 'bazz' "
+            "index matching <2>"
         ),
+    )
+    assert_that(
+        has_row(row_matches=has_class("banana")),
+        has_string("table with row row matching tag with class matching 'banana'"),
     )
     assert_that(should_not_match_1, mismatches_with(table, "was {0}".format(table)))
 
@@ -197,7 +202,7 @@ def test_table_has_header_row():
     assert_that(
         should_match,
         has_string(
-            "table with header row matching a sequence containing "
+            "table with header row cells matching a sequence containing "
             "[tag with string matching 'apples', tag with string matching 'oranges']"
         ),
     )

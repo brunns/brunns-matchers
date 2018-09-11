@@ -145,8 +145,13 @@ class TableHasRow(BaseMatcher):
         return row.find_all("th" if self.header_row else "td")
 
     def describe_to(self, description):
-        description.append_text("table with {0}row matching ".format("header " if self.header_row else ""))
-        self.cells_matcher.describe_to(description)
+        description.append_text("table with {0}row".format("header " if self.header_row else ""))
+        if self.cells_matcher != ANYTHING:
+            description.append_text(" cells matching ")
+            self.cells_matcher.describe_to(description)
+        if self.row_matcher != ANYTHING:
+            description.append_text(" row matching ")
+            self.row_matcher.describe_to(description)
         if self.index_matcher != ANYTHING:
-            description.append_text(" and index matching ")
+            description.append_text(" index matching ")
             self.index_matcher.describe_to(description)

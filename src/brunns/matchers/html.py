@@ -1,3 +1,6 @@
+# encoding=utf-8
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 import warnings
 
 from bs4 import BeautifulSoup
@@ -87,7 +90,7 @@ class HtmlWithTag(BaseMatcher):
             mismatch_description.append_text(" id=").append_value(self.id_)
         soup = BeautifulSoup(actual, "html.parser")
         found = soup.find_all(self.name, id=self.id_)
-        mismatch_description.append_list(" values [", ", ", "]", [t for t in found])
+        mismatch_description.append_list(" values [", ", ", "]", [repr(t) for t in found])
 
 
 class TagWithString(BaseMatcher):

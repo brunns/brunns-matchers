@@ -1,3 +1,6 @@
+# encoding=utf-8
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from hamcrest import equal_to, anything, not_
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.matcher import Matcher
@@ -32,7 +35,7 @@ class MismatchesWith(BaseMatcher):
     def describe_to(self, description):
         description.append_text("a matcher which mismatches the value ").append_description_of(
             self.value_not_to_match
-        ).append_text(" giving message ").append_description_of(self.expected_message)
+        ).append_text("\ngiving message ").append_description_of(self.expected_message)
 
     def describe_mismatch(self, matcher_under_test, description):
         desc = StringDescription()

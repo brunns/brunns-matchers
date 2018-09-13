@@ -1,3 +1,6 @@
+# encoding=utf-8
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from hamcrest import assert_that, contains_string, has_string, not_, matches_regexp
 
 try:
@@ -75,7 +78,7 @@ def test_call_has_args():
     )
     assert_that(
         call_has_args("first", "second", "third", key="banana"),
-        mismatches_with(call, "got arguments ('first', 'second', 'third', key='forth')"),
+        mismatches_with(call, matches_regexp(r"got arguments \(u?'first', u?'second', u?'third', key=u?'forth'\)")),
     )
 
 
@@ -98,5 +101,5 @@ def test_has_call():
     assert_that(has_call(call_has_args("first")), has_string("has call matching mock.call with arguments ('first')"))
     assert_that(
         has_call(call_has_args("chips")),
-        mismatches_with(method, matches_regexp(r"""got calls \[['"]call\(['"]first['"]""")),
+        mismatches_with(method, matches_regexp(r"""got calls \[['"]call\(u?['"]first['"]""")),
     )

@@ -1,3 +1,6 @@
+# encoding=utf-8
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from hamcrest import equal_to, not_, greater_than_or_equal_to, greater_than, less_than_or_equal_to, less_than, all_of
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.matcher import Matcher

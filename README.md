@@ -40,3 +40,8 @@ Requires [hub](https://hub.github.com/), [setuptools](https://setuptools.readthe
     hub release create $version -m"Release $version"
     python setup.py sdist
     twine upload dist/`ls -t dist/ | head -n1`
+    
+Quick version:
+
+    version="n.n.n"
+    git commit -am"Release $version" && git push && hub release create $version -m"Release $version" && python setup.py sdist && twine upload dist/`ls -t dist/ | head -n1`

@@ -51,6 +51,8 @@ class ResponseMatcher(BaseMatcher):
             description.append_text(" {0}: ".format(text)).append_description_of(matcher)
 
     def describe_mismatch(self, response, mismatch_description):
-        mismatch_description.append_text("was response with status code: ").append_value(
+        mismatch_description.append_text("was response with status code: ").append_description_of(
             response.status_code
-        ).append_text(" body: ").append_value(response.text).append_text(" headers: ").append_value(response.headers)
+        ).append_text(" body: ").append_description_of(response.text).append_text(" headers: ").append_description_of(
+            response.headers
+        )

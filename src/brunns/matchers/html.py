@@ -77,17 +77,17 @@ class HtmlWithTag(BaseMatcher):
     def describe_to(self, description):
         description.append_text("HTML with tag")
         if self.name:
-            description.append_text(" name=").append_value(self.name)
+            description.append_text(" name=").append_description_of(self.name)
         if self.id_:
-            description.append_text(" id=").append_value(self.id_)
+            description.append_text(" id=").append_description_of(self.id_)
         description.append_text(" matching ").append_description_of(self.matcher)
 
     def describe_mismatch(self, actual, mismatch_description):
         mismatch_description.append_text("got HTML with tag")
         if self.name:
-            mismatch_description.append_text(" name=").append_value(self.name)
+            mismatch_description.append_text(" name=").append_description_of(self.name)
         if self.id_:
-            mismatch_description.append_text(" id=").append_value(self.id_)
+            mismatch_description.append_text(" id=").append_description_of(self.id_)
         soup = BeautifulSoup(actual, "html.parser")
         found = soup.find_all(self.name, id=self.id_)
         mismatch_description.append_list(" values [", ", ", "]", [repr(t) for t in found])

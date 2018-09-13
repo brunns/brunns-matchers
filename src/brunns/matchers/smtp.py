@@ -53,6 +53,6 @@ class EmailWith(BaseMatcher):
 
     def describe_mismatch(self, actual_email, mismatch_description):
         actual_to_name, actual_subject, actual_body_text = self._parse_email(actual_email)
-        mismatch_description.append_text("was to_name ").append_value(actual_to_name).append_text(
+        mismatch_description.append_text("was to_name ").append_description_of(actual_to_name).append_text(
             " subject "
-        ).append_value(actual_subject).append_text(" body_text ").append_value(actual_body_text)
+        ).append_description_of(actual_subject).append_text(" body_text ").append_description_of(actual_body_text)

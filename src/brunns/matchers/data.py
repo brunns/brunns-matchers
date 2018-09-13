@@ -35,6 +35,6 @@ class JsonMatching(BaseMatcher):
         try:
             loads = json.loads(json_string)
         except ValueError:
-            description.append_text("Got invalid JSON ").append_value(json_string)
+            description.append_text("Got invalid JSON ").append_description_of(json_string)
         else:
             self.matcher.describe_mismatch(loads, description)

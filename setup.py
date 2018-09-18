@@ -55,7 +55,7 @@ setup(
     ],
     python_requires=">=2.7",
     install_requires=[
-        # "furl~=1.0",
+        "furl~=1.0",
         # "attrs~=18.0",
         # "more_itertools~=4.0",
         "pyhamcrest~=1.9",

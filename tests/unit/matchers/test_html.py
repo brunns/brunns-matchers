@@ -14,6 +14,7 @@ from hamcrest import (
     matches_regexp,
     has_properties,
     has_item,
+    has_entries,
 )
 
 from brunns.matchers.html import (
@@ -28,8 +29,12 @@ from brunns.matchers.html import (
     has_id_tag,
     has_row,
     has_nth_row,
+    has_link,
+    has_id,
+    has_attributes,
 )
 from brunns.matchers.matcher import mismatches_with
+from brunns.matchers.url import to_host
 from tests.utils.string_utils import repr_no_unicode_prefix
 
 HTML = """<html>
@@ -40,6 +45,7 @@ HTML = """<html>
     </body>
         <h1 class="bacon egg">chips</h1>
         <h2>what is &mdash; this</h2>
+        <a id="a-link" class="link-me-baby" href="https://brunni.ng">A link</a>
         <div id="fish" class="banana grapes"><p>Some text.</p></div>
         <table id="squid" action="/">
             <thead>
@@ -277,3 +283,51 @@ def test_html_without_table():
 
     assert_that(html, not_(matcher))
     assert_that(matcher, mismatches_with(html, "was '<html/>'"))
+
+
+def test_has_id():
+    should_match = has_named_tag("div", has_id("fish"))
+    should_not_match = has_named_tag("div", has_id("wanda"))
+
+    assert_that(HTML, should_match)
+    assert_that(HTML, not_(should_not_match))
+    assert_that(
+        should_match,
+        has_string(
+            "HTML with tag name='div' matching tag with attributes matching " "a dictionary containing ['id': 'fish']"
+        ),
+    )
+    assert_that(
+        should_not_match,
+        mismatches_with(
+            HTML,
+            """got HTML with tag name='div' """
+            """values ['<div class="banana grapes" id="fish"><p>Some text.</p></div>']""",
+        ),
+    )
+
+
+def test_has_attributes():
+    should_match = has_named_tag("div", has_attributes(has_entries(id="fish")))
+    should_not_match = has_named_tag("div", has_attributes(has_entries(id="wanda")))
+
+    assert_that(HTML, should_match)
+    assert_that(HTML, not_(should_not_match))
+    assert_that(should_match, has_string(contains_string("attributes matching a dictionary containing {'id': 'fish'}")))
+    assert_that(
+        should_not_match,
+        mismatches_with(
+            HTML,
+            """got HTML with tag name='div' """
+            """values ['<div class="banana grapes" id="fish"><p>Some text.</p></div>']""",
+        ),
+    )
+
+
+def test_has_link():
+    # Given
+    should_match = has_link(href=to_host("brunni.ng"))
+    should_not_match_1 = has_link(href=to_host("example.com"))
+
+    assert_that(HTML, should_match)
+    assert_that(HTML, not_(should_not_match_1))

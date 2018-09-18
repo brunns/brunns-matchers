@@ -16,6 +16,10 @@ def to_host(matcher):
     return UrlWith(host=matcher)
 
 
+def with_path(matcher):
+    return UrlWith(path=matcher)
+
+
 class UrlWith(BaseMatcher):
     def __init__(self, host=ANYTHING, path=ANYTHING, query=ANYTHING):
         super(UrlWith, self).__init__()
@@ -31,9 +35,14 @@ class UrlWith(BaseMatcher):
         description.append_text("URL with")
         if self.host != ANYTHING:
             description.append_text(" host ").append_description_of(self.host)
+        if self.path != ANYTHING:
+            description.append_text(" path ").append_description_of(self.path)
 
     def describe_mismatch(self, url, mismatch_description):
         url = url if isinstance(url, furl.furl) else furl.furl(url)
         if self.host != ANYTHING and not self.host.matches(url.host):
             mismatch_description.append_text("host ")
             self.host.describe_mismatch(url.host, mismatch_description)
+        if self.path != ANYTHING and not self.path.matches(url.path):
+            mismatch_description.append_text("path ")
+            self.host.describe_mismatch(url.path, mismatch_description)

@@ -1,8 +1,12 @@
 # encoding=utf-8
 from __future__ import unicode_literals, absolute_import, division, print_function
 
+import difflib
+
+import six
 from hamcrest import equal_to, anything, not_
 from hamcrest.core.base_matcher import BaseMatcher
+from hamcrest.core.core.isequal import IsEqual
 from hamcrest.core.matcher import Matcher
 from hamcrest.core.string_description import StringDescription
 
@@ -28,9 +32,9 @@ class MismatchesWith(BaseMatcher):
         )
 
     def _matches(self, matcher_under_test):
-        desc = StringDescription()
-        matches = matcher_under_test.matches(self.value_not_to_match, desc)
-        return not matches and self.expected_message.matches(desc.out)
+        actual = StringDescription()
+        matches = matcher_under_test.matches(self.value_not_to_match, actual)
+        return not matches and self.expected_message.matches(actual.out)
 
     def describe_to(self, description):
         description.append_text("a matcher which mismatches the value ").append_description_of(
@@ -38,8 +42,12 @@ class MismatchesWith(BaseMatcher):
         ).append_text("\ngiving message ").append_description_of(self.expected_message)
 
     def describe_mismatch(self, matcher_under_test, description):
-        desc = StringDescription()
-        if matcher_under_test.matches(self.value_not_to_match, desc):
+        actual_message = StringDescription()
+        if matcher_under_test.matches(self.value_not_to_match, actual_message):
             description.append_text("matched")
             return
-        description.append_text("got message ").append_description_of(desc)
+        description.append_text("got message ").append_description_of(actual_message)
+        if isinstance(self.expected_message, IsEqual) and isinstance(self.expected_message.object, six.string_types):
+            differ = difflib.Differ()
+            diff = differ.compare([self.expected_message.object], [actual_message.out])
+            description.append_text("\ndiff:\n").append_text("\n".join(diff))

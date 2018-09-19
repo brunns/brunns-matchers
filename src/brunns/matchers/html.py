@@ -3,7 +3,7 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 
 import warnings
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from hamcrest import equal_to, has_item, anything, contains, all_of, has_entry
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.matcher import Matcher
@@ -72,7 +72,18 @@ def has_attributes(matcher):
 
 
 def has_link(id_=ANYTHING, clazz=ANYTHING, href=ANYTHING):
-    return has_named_tag("a", all_of(has_id(id_), has_class(clazz), has_attributes(has_entry("href", href))))
+    return HtmlWithTag(
+        TagWith(
+            name="a",
+            clazz=clazz,
+            attributes=(
+                all_of(
+                    has_entry("href", href) if href != ANYTHING else ANYTHING,
+                    has_entry("id", id_) if id_ != ANYTHING else ANYTHING,
+                )
+            ),
+        )
+    )
 
 
 class HtmlWithTag(BaseMatcher):
@@ -86,7 +97,7 @@ class HtmlWithTag(BaseMatcher):
         return has_item(self.matcher).matches(found)
 
     def findall(self, actual):
-        soup = BeautifulSoup(actual, "html.parser")
+        soup = actual if isinstance(actual, Tag) else BeautifulSoup(actual, "html.parser")
         found = soup.find_all(self.name, id=self.id_) if self.id_ else soup.find_all(self.name)
         return found
 
@@ -109,20 +120,24 @@ class HtmlWithTag(BaseMatcher):
 
 
 class TagWith(BaseMatcher):
-    def __init__(self, string=ANYTHING, clazz=ANYTHING, attributes=ANYTHING):
+    def __init__(self, name=ANYTHING, string=ANYTHING, clazz=ANYTHING, attributes=ANYTHING):
+        self.name = name if isinstance(name, Matcher) else equal_to(name)
         self.string = string if isinstance(string, Matcher) else equal_to(string)
         self.clazz = clazz if isinstance(clazz, Matcher) else equal_to(clazz)
         self.attributes = attributes if isinstance(attributes, Matcher) else equal_to(attributes)
 
     def _matches(self, tag):
         return (
-            self.string.matches(tag.string)
+            self.name.matches(tag.name)
+            and self.string.matches(tag.string)
             and (self.clazz == ANYTHING or has_item(self.clazz).matches(tag.get("class", None)))
             and self.attributes.matches(tag.attrs)
         )
 
     def describe_to(self, description):
         description.append_text("tag with")
+        if self.name != ANYTHING:
+            description.append_text(" name matching ").append_description_of(self.name)
         if self.string != ANYTHING:
             description.append_text(" string matching ").append_description_of(self.string)
         if self.clazz != ANYTHING:
@@ -156,7 +171,7 @@ class TableHasRow(BaseMatcher):
     def _matches(self, table):
         rows = table.find_all("tr")
         rows_and_cells = ((row, self._row_cells(row)) for row in rows if self._row_cells(row))
-        indexed_rows_and_cells = ((index, row, cells) for index, (row, cells) in enumerate(rows_and_cells))
+        indexed_rows_and_cells = [(index, row, cells) for index, (row, cells) in enumerate(rows_and_cells)]
         indexed_row_matcher = contains(self.index_matcher, self.row_matcher, self.cells_matcher)
         return has_item(indexed_row_matcher).matches(indexed_rows_and_cells)
 

@@ -34,7 +34,7 @@ from brunns.matchers.html import (
     has_attributes,
 )
 from brunns.matchers.matcher import mismatches_with
-from brunns.matchers.url import to_host
+from brunns.matchers.url import to_host, with_path
 from tests.utils.string_utils import repr_no_unicode_prefix
 
 HTML = """<html>
@@ -55,7 +55,7 @@ HTML = """<html>
                 <tr><td>foo</td><td>bar</td></tr>
                 <tr><td>baz</td><td>qux</td></tr>
                 <tr class="bazz"><td>fizz</td><td>buzz</td></tr>
-                <tr class="eden"><td>Adam</td><td>Steve</td></tr>
+                <tr class="eden"><td>Adam</td><td><a href="http://thepub.com/thebar">Steve</a></td></tr>
             </tbody>
         </table>
     </body>
@@ -331,3 +331,25 @@ def test_has_link():
 
     assert_that(HTML, should_match)
     assert_that(HTML, not_(should_not_match_1))
+
+
+def test_has_row_with_link():
+    # Given
+    soup = BeautifulSoup(HTML, "html.parser")
+    table = soup.table
+    should_match = has_row(index_matches=3, cells_match=has_item(has_link(href=with_path("/thebar"))))
+    should_not_match_1 = has_row(index_matches=3, cells_match=has_item(has_link(href=with_path("/cup-of-tea"))))
+
+    # Then
+    assert_that(table, should_match)
+    assert_that(table, not_(should_not_match_1))
+
+    assert_that(
+        should_match,
+        has_string(
+            "table with row cells matching a sequence containing HTML with tag matching "
+            "tag with name matching 'a' "
+            "attributes matching (a dictionary containing ['href': URL with path '/thebar'] and ANYTHING) "
+            "index matching <3>"
+        ),
+    )

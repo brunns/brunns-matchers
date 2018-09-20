@@ -2,11 +2,7 @@
 from __future__ import unicode_literals, absolute_import, division, print_function
 
 from hamcrest import assert_that, has_string, not_, matches_regexp
-
-try:
-    from unittest.mock import MagicMock
-except ImportError:
-    from mock import MagicMock
+from six.moves import mock
 
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.response import response_with
@@ -14,7 +10,7 @@ from brunns.matchers.response import response_with
 
 def test_response_matcher():
     # Given
-    response = MagicMock(status_code=200, text="sausages", headers={})
+    response = mock.MagicMock(status_code=200, text="sausages", headers={})
 
     # When
 

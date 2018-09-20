@@ -2,11 +2,7 @@
 from __future__ import unicode_literals, absolute_import, division, print_function
 
 from hamcrest import assert_that, contains_string, has_string, not_, matches_regexp
-
-try:
-    from unittest.mock import MagicMock
-except ImportError:
-    from mock import MagicMock
+from six.moves import mock
 
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.mock import call_has_arg, call_has_args, has_call
@@ -14,7 +10,7 @@ from brunns.matchers.mock import call_has_arg, call_has_args, has_call
 
 def test_call_has_positional_arg():
     # Given
-    m = MagicMock()
+    m = mock.MagicMock()
 
     # When
     m("first", "second", "third")
@@ -37,7 +33,7 @@ def test_call_has_positional_arg():
 
 def test_call_has_keyword_arg():
     # Given
-    m = MagicMock()
+    m = mock.MagicMock()
 
     # When
     m(f="first", s="second", t="third")
@@ -60,7 +56,7 @@ def test_call_has_keyword_arg():
 
 def test_call_has_args():
     # Given
-    m = MagicMock()
+    m = mock.MagicMock()
 
     # When
     m("first", "second", "third", key="forth")
@@ -89,7 +85,7 @@ def test_call_has_exactly_args():
 
 def test_has_call():
     # Given
-    m = MagicMock()
+    m = mock.MagicMock()
     method = m.m
 
     # When

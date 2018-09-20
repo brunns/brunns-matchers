@@ -15,6 +15,8 @@ from hamcrest import (
     has_properties,
     has_item,
     has_entries,
+    starts_with,
+    all_of,
 )
 
 from brunns.matchers.html import (
@@ -198,7 +200,7 @@ def test_table_has_row_cells():
             "cells matching a sequence containing [tag with string matching 'foo', tag with string matching 'bar']"
         ),
     )
-    assert_that(should_not_match, mismatches_with(table, "was {0}".format(table)))
+    assert_that(should_not_match, mismatches_with(table, starts_with("was {0}".format(table))))
 
 
 def test_has_row():
@@ -244,7 +246,17 @@ def test_has_row():
         has_row(row_matches=has_class("banana")),
         has_string("table with row row matching tag with class matching 'banana'"),
     )
-    assert_that(should_not_match_1, mismatches_with(table, "was {0}".format(table)))
+    assert_that(
+        should_not_match_1,
+        mismatches_with(
+            table,
+            all_of(
+                starts_with("was {0}".format(table)),
+                contains_string("found rows:"),
+                contains_string("<tr><td>baz</td><td>qux</td></tr>"),
+            ),
+        ),
+    )
 
 
 def test_table_has_header_row():
@@ -264,7 +276,7 @@ def test_table_has_header_row():
             "[tag with string matching 'apples', tag with string matching 'oranges']"
         ),
     )
-    assert_that(should_not_match, mismatches_with(table, "was {0}".format(table)))
+    assert_that(should_not_match, mismatches_with(table, starts_with("was {0}".format(table))))
 
 
 def test_html_has_table():

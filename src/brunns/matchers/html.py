@@ -76,11 +76,9 @@ def has_link(id_=ANYTHING, clazz=ANYTHING, href=ANYTHING):
         TagWith(
             name="a",
             clazz=clazz,
-            attributes=(
-                all_of(
-                    has_entry("href", href) if href != ANYTHING else ANYTHING,
-                    has_entry("id", id_) if id_ != ANYTHING else ANYTHING,
-                )
+            attributes=all_of(
+                has_entry("href", href) if href != ANYTHING else ANYTHING,
+                has_entry("id", id_) if id_ != ANYTHING else ANYTHING,
             ),
         )
     )
@@ -189,3 +187,7 @@ class TableHasRow(BaseMatcher):
         if self.index_matcher != ANYTHING:
             description.append_text(" index matching ")
             self.index_matcher.describe_to(description)
+
+    def describe_mismatch(self, table, mismatch_description):
+        super(TableHasRow, self).describe_mismatch(table, mismatch_description)
+        mismatch_description.append_text("\n\nfound rows:\n").append_list("", "\n", "", table.find_all("tr"))

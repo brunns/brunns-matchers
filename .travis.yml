@@ -13,6 +13,7 @@ env:
  - TOX_ENV=pypy2.7
  - TOX_ENV=pypy3.6
  - TOX_ENV=jython
+ - TOX_ENV=check-format
  - TOX_ENV=flake8
  - TOX_ENV=bandit
  - TOX_ENV=safety

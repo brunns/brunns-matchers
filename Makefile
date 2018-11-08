@@ -1,7 +1,7 @@
 SHELL = /bin/bash
 
 default: help
-.PHONY: help
+.PHONY: help test coverage flake8 bandit safety check-format format piprot precommit clean repl outdated
 
 test: ## Run tests
 	tox
@@ -9,7 +9,7 @@ test: ## Run tests
 coverage: ## Test coverage report
 	tox -e coverage
 
-lint: flake8 bandit safety ## Lint code
+lint: check-format flake8 bandit safety ## Lint code
 
 flake8:
 	tox -e flake8
@@ -20,13 +20,16 @@ bandit:
 safety:
 	tox -e safety
 
+check-format:
+	tox -e check-format
+
 format: ## Format code
 	tox -e format
 
 piprot: ## Check for outdated dependencies
 	tox -e piprot
 
-precommit: format test lint coverage ## Pre-commit targets
+precommit: test lint coverage ## Pre-commit targets
 	@ python -m this
 
 clean: ## Clean generated files

@@ -1,5 +1,5 @@
 language: python
-python: 3.6
+python: 3.7
 env:
  - TOX_ENV=py27
  - TOX_ENV=py30
@@ -10,8 +10,8 @@ env:
  - TOX_ENV=py35
  - TOX_ENV=py36
  - TOX_ENV=py37
- - TOX_ENV=pypy2.7
- - TOX_ENV=pypy3.6
+ - TOX_ENV=pypy27
+ - TOX_ENV=pypy35
  - TOX_ENV=jython
  - TOX_ENV=check-format
  - TOX_ENV=flake8

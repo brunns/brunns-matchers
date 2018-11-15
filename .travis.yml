@@ -10,8 +10,8 @@ env:
  - TOX_ENV=py35
  - TOX_ENV=py36
  - TOX_ENV=py37
- - TOX_ENV=pypy27
- - TOX_ENV=pypy35
+ - TOX_ENV=pypy
+ - TOX_ENV=pypy3
  - TOX_ENV=jython
  - TOX_ENV=check-format
  - TOX_ENV=flake8

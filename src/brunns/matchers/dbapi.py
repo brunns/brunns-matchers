@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import logging
 
+from hamcrest import anything, described_as
 from hamcrest.core.base_matcher import BaseMatcher
 
 from brunns.utils import dtuple
@@ -11,53 +12,34 @@ logger = logging.getLogger(__name__)
 
 
 def has_table(table):
-    return HasTable(table)
+    select = "SELECT * FROM {0};".format(table)  # nosec
+    return described_as(
+        "DB connection has table named %0", given_select_returns_rows_matching(select, anything()), table
+    )
 
 
 def has_table_with_rows(table, row_matcher):
-    return HasTableWithRows(table, row_matcher)
+    select = "SELECT * FROM {0};".format(table)  # nosec
+    return described_as(
+        "DB connection with table %0 with rows matching %1",
+        given_select_returns_rows_matching(select, row_matcher),
+        table,
+        row_matcher,
+    )
 
 
-class HasTable(BaseMatcher):
-    def __init__(self, table):
-        self.table = table
-
-    def _matches(self, conn):
-        select = "SELECT * FROM {0};".format(self.table)  # nosec
-        try:
-            cursor = conn.cursor()
-            return cursor.execute(select)
-        except Exception:
-            return False
-
-    def describe_to(self, description):
-        description.append_text("DB connection has table named ").append_description_of(self.table)
-
-    def describe_mismatch(self, conn, mismatch_description):
-        select = "SELECT * FROM {0};".format(self.table)  # nosec
-        try:
-            cursor = conn.cursor()
-            cursor.execute(select)
-        except Exception as e:
-            return (
-                mismatch_description.append_text("SQL statement ")
-                .append_description_of(select)
-                .append_text(" gives ")
-                .append_description_of(type(e).__name__)
-                .append_text(" ")
-                .append_description_of(e)
-            )
+def given_select_returns_rows_matching(select, row_matcher):
+    return SelectReturnsRowsMatching(select, row_matcher)
 
 
-class HasTableWithRows(BaseMatcher):
-    def __init__(self, table, row_matcher):
-        self.table = table
+class SelectReturnsRowsMatching(BaseMatcher):
+    def __init__(self, select, row_matcher):
+        self.select = select
         self.row_matcher = row_matcher
 
     def _matches(self, conn):
-        select = "SELECT * FROM {0};".format(self.table)  # nosec
         try:
-            rows = self._get_rows(conn, select)
+            rows = self._get_rows(conn, self.select)
             return self.row_matcher.matches(rows)
         except Exception:
             return False
@@ -70,19 +52,18 @@ class HasTableWithRows(BaseMatcher):
         return rows
 
     def describe_to(self, description):
-        description.append_text("DB connection with table ").append_description_of(self.table).append_text(
-            " with rows matching "
+        description.append_text("DB connection for which statement ").append_description_of(self.select).append_text(
+            " returns rows matching "
         ).append_description_of(self.row_matcher)
 
     def describe_mismatch(self, conn, mismatch_description):
-        select = "SELECT * FROM {0};".format(self.table)  # nosec
         try:
-            rows = self._get_rows(conn, select)
+            rows = self._get_rows(conn, self.select)
             self.row_matcher.describe_mismatch(rows, mismatch_description)
         except Exception as e:
             return (
                 mismatch_description.append_text("SQL statement ")
-                .append_description_of(select)
+                .append_description_of(self.select)
                 .append_text(" gives ")
                 .append_description_of(type(e).__name__)
                 .append_text(" ")

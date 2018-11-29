@@ -6,7 +6,7 @@ import logging
 from hamcrest import anything, described_as
 from hamcrest.core.base_matcher import BaseMatcher
 
-from brunns.utils import dtuple
+from brunns.utils.db.rowwrapper import row_wrapper
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +47,8 @@ class SelectReturnsRowsMatching(BaseMatcher):
     def _get_rows(self, conn, select):
         cursor = conn.cursor()
         cursor.execute(select)
-        descriptor = dtuple.TupleDescriptor(cursor.description)
-        rows = [dtuple.DatabaseTuple(descriptor, row) for row in cursor.fetchall()]
+        wrapper = row_wrapper(cursor.description)
+        rows = [wrapper.wrap(row) for row in cursor.fetchall()]
         return rows
 
     def describe_to(self, description):

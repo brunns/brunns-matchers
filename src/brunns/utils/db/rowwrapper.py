@@ -1,9 +1,10 @@
 # encoding=utf-8
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import functools
 import logging
 
-from box import SBox
+from box import Box
 
 logger = logging.getLogger(__name__)
 
@@ -26,4 +27,31 @@ class RowWrapper(object):
         self.names = tuple(col[0] for col in cursor_description)
 
     def wrap(self, row):
-        return SBox(zip(self.names, row), frozen_box=True, ordered_box=True)
+        return Row(zip(self.names, row))
+
+
+@functools.total_ordering
+class Row(Box):
+    def __init__(self, *args, **kwargs):
+        super(Row, self).__init__(*args, ordered_box=True, frozen_box=True, **kwargs)
+
+    def __eq__(self, other):
+        if not (isinstance(other, Row) and self.keys() == other.keys()):
+            return NotImplemented
+        return [self[k] for k in self.keys()] == [other[k] for k in self.keys()]
+
+    def __ne__(self, other):
+        if not (isinstance(other, Row) and self.keys() == other.keys()):
+            return NotImplemented
+        return not self.__eq__(other)
+
+    def __lt__(self, other):
+        if not (isinstance(other, Row) and self.keys() == other.keys()):
+            return NotImplemented
+        return [self[k] for k in self.keys()] < [other[k] for k in self.keys()]
+
+    def __repr__(self):
+        return "{0}({1})".format(
+            self.__class__.__name__,
+            ", ".join("{0}={1!r}".format(attribute, value) for (attribute, value) in self.items()),
+        )

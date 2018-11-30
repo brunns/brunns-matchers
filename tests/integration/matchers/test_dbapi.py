@@ -2,31 +2,25 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import logging
-import sqlite3
 
-from hamcrest import assert_that, has_string, not_, contains, has_properties, has_length, contains_string
+from hamcrest import (
+    assert_that,
+    has_string,
+    not_,
+    contains,
+    has_properties,
+    has_length,
+    contains_string,
+    contains_inanyorder,
+    has_item,
+    all_of,
+    matches_regexp,
+)
 
 from brunns.matchers.dbapi import has_table, has_table_with_rows, given_select_returns_rows_matching
 from brunns.matchers.matcher import mismatches_with
 
-import pytest
-
 logger = logging.getLogger(__name__)
-
-
-@pytest.fixture(scope="module")
-def db():
-    conn = sqlite3.connect(":memory:")
-
-    cursor = conn.cursor()
-    cursor.execute("CREATE TABLE sausages (kind VARCHAR NOT NULL PRIMARY KEY, rating INT NOT NULL);")
-    cursor.execute("INSERT INTO sausages VALUES (?, ?);", ("cumberland", 10))
-    cursor.execute("INSERT INTO sausages VALUES (?, ?);", ("lincolnshire", 9))
-    cursor.execute("INSERT INTO sausages VALUES (?, ?);", ("vegetarian", 0))
-    conn.commit()
-
-    yield conn
-    conn.close()
 
 
 def test_has_table(db):
@@ -44,14 +38,14 @@ def test_has_rows(db):
         db,
         has_table_with_rows(
             "sausages",
-            contains(
+            contains_inanyorder(
                 has_properties(kind="cumberland"),
                 has_properties(kind="lincolnshire"),
                 has_properties(kind="vegetarian"),
             ),
         ),
     )
-    assert_that(db, not_(has_table_with_rows("sausages", contains(has_properties(kind="vegan")))))
+    assert_that(db, not_(has_table_with_rows("sausages", has_item(has_properties(kind="vegan")))))
     assert_that(
         db, not_(has_table_with_rows("bacon", contains(has_properties(kind="smoked"), has_properties(kind="unsmoked"))))
     )
@@ -67,9 +61,9 @@ def test_has_rows(db):
         ),
     )
     assert_that(
-        has_table_with_rows("sausages", contains(has_properties(kind="vegetarian"))),
+        has_table_with_rows("sausages", has_item(has_properties(kind="vegan"))),
         mismatches_with(
-            db, "item 0: an object with a property 'kind' matching 'vegetarian' property 'kind' was 'cumberland'"
+            db, all_of(matches_regexp(r"was <\["), matches_regexp(r"Row\(kind=u?'vegetarian', rating=0\)"))
         ),
     )
     assert_that(
@@ -78,7 +72,7 @@ def test_has_rows(db):
     )
 
 
-def test_senect_returns_rows(db):
+def test_select_returns_rows(db):
     assert_that(db, given_select_returns_rows_matching("SELECT * FROM sausages WHERE rating > 5;", has_length(2)))
     assert_that(
         db, not_(given_select_returns_rows_matching("SELECT * FROM sausages WHERE rating > 5;", has_length(99)))

@@ -24,7 +24,7 @@ class RowWrapper(object):
     """
 
     def __init__(self, cursor_description):
-        self.names = tuple(col[0] for col in cursor_description)
+        self.names = [col[0] for col in cursor_description]
 
     def wrap(self, row):
         return Row(zip(self.names, row))
@@ -36,12 +36,12 @@ class Row(Box):
         super(Row, self).__init__(*args, ordered_box=True, frozen_box=True, **kwargs)
 
     def __eq__(self, other):
-        if not (isinstance(other, Row) and self.keys() == other.keys()):
+        if not isinstance(other, Row):
             return NotImplemented
-        return [self[k] for k in self.keys()] == [other[k] for k in self.keys()]
+        return self.keys() == other.keys() and [self[k] for k in self.keys()] == [other[k] for k in self.keys()]
 
     def __ne__(self, other):
-        if not (isinstance(other, Row) and self.keys() == other.keys()):
+        if not isinstance(other, Row):
             return NotImplemented
         return not self.__eq__(other)
 

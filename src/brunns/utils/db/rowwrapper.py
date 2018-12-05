@@ -1,9 +1,11 @@
 # encoding=utf-8
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import collections
 import functools
 import logging
 
+import six
 from box import Box
 
 logger = logging.getLogger(__name__)
@@ -15,7 +17,7 @@ def row_wrapper(cursor_description):
 
 class RowWrapper(object):
     """
-    Build lightweight wrappers for DB API rows, using https://pypi.org/project/python-box.
+    Build lightweight wrappers for DB API and csv.DictReader rows, using https://pypi.org/project/python-box.
 
     Inspired by Greg Stein's lovely dtuple module,
     https://code.activestate.com/recipes/81252-using-dtuple-for-flexible-query-result-access,
@@ -23,10 +25,18 @@ class RowWrapper(object):
     """
 
     def __init__(self, cursor_description):
-        self.names = [col[0] for col in cursor_description]
+        self.names = (
+            [col for col in cursor_description]
+            if isinstance(cursor_description[0], six.string_types)
+            else [col[0] for col in cursor_description]
+        )
 
     def wrap(self, row):
-        return Row(zip(self.names, row))
+        return (
+            Row([(k, row[k]) for k in self.names])
+            if isinstance(row, collections.Mapping)
+            else Row(zip(self.names, row))
+        )
 
 
 @functools.total_ordering

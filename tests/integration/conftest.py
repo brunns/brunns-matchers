@@ -5,6 +5,7 @@ import logging
 import sqlite3
 
 import pytest
+from six import StringIO
 
 logger = logging.getLogger(__name__)
 
@@ -22,3 +23,9 @@ def db():
 
     yield conn
     conn.close()
+
+
+@pytest.fixture(scope="function")
+def csv_file():
+    data = "kind,rating\n" "vegetarian,0\n" "lincolnshire,9\n" "cumberland,10\n"
+    return StringIO(data)

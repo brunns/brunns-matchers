@@ -4,7 +4,7 @@ default: help
 .PHONY: help test coverage flake8 bandit safety check-format format piprot precommit clean repl outdated
 
 test: ## Run tests
-	tox -e py27,py37
+	tox -e py27,py34,py37
 
 test-all-versions: ## Test against all available python versions
 	tox

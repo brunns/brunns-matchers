@@ -15,12 +15,11 @@ def row_wrapper(cursor_description):
 
 class RowWrapper(object):
     """
-    Build lightweight wrappers for DB API rows, using https://pypi.org/project/python-box/.
+    Build lightweight wrappers for DB API rows, using https://pypi.org/project/python-box.
 
-    Inspired by Greg Stein's dtuple module,
-    https://code.activestate.com/recipes/81252-using-dtuple-for-flexible-query-result-access/,
-    which I can't find online any longer, certainly isn't on pypi, and doesn't support Python 3 without fixes in any
-    case.
+    Inspired by Greg Stein's lovely dtuple module,
+    https://code.activestate.com/recipes/81252-using-dtuple-for-flexible-query-result-access,
+    which I can't find online any longer, isn't on pypi, and doesn't support Python 3 without some fixes.
     """
 
     def __init__(self, cursor_description):
@@ -38,7 +37,7 @@ class Row(Box):
     def __eq__(self, other):
         if not isinstance(other, Row):
             return NotImplemented
-        return self.keys() == other.keys() and [self[k] for k in self.keys()] == [other[k] for k in self.keys()]
+        return self.keys() == other.keys() and self.values() == other.values()
 
     def __ne__(self, other):
         if not isinstance(other, Row):
@@ -48,7 +47,7 @@ class Row(Box):
     def __lt__(self, other):
         if not (isinstance(other, Row) and self.keys() == other.keys()):
             return NotImplemented
-        return [self[k] for k in self.keys()] < [other[k] for k in self.keys()]
+        return self.values() < other.values()
 
     def __repr__(self):
         return "{0}({1})".format(

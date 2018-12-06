@@ -16,9 +16,9 @@ def db():
 
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE sausages (kind VARCHAR NOT NULL PRIMARY KEY, rating INT NOT NULL);")
+    cursor.execute("INSERT INTO sausages VALUES (?, ?);", ("cumberland", 10))
     cursor.execute("INSERT INTO sausages VALUES (?, ?);", ("vegetarian", 0))
     cursor.execute("INSERT INTO sausages VALUES (?, ?);", ("lincolnshire", 9))
-    cursor.execute("INSERT INTO sausages VALUES (?, ?);", ("cumberland", 10))
     conn.commit()
 
     yield conn
@@ -27,5 +27,5 @@ def db():
 
 @pytest.fixture(scope="function")
 def csv_file():
-    data = "kind,rating\n" "vegetarian,0\n" "lincolnshire,9\n" "cumberland,10\n"
+    data = "kind,rating\n" "cumberland,10\n" "lincolnshire,9\n" "vegetarian,0\n"
     return StringIO(data)

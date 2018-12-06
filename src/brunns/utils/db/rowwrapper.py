@@ -2,65 +2,50 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import collections
-import functools
 import logging
 
 import six
-from box import Box
 
 logger = logging.getLogger(__name__)
 
 
-def row_wrapper(cursor_description):
-    return RowWrapper(cursor_description)
+def row_wrapper(description):
+    return RowWrapper(description)
 
 
 class RowWrapper(object):
     """
-    Build lightweight wrappers for DB API and csv.DictReader rows, using https://pypi.org/project/python-box.
+    Build lightweight wrappers for DB API and csv.DictReader rows.
 
     Inspired by Greg Stein's lovely dtuple module,
     https://code.activestate.com/recipes/81252-using-dtuple-for-flexible-query-result-access,
     which I can't find online any longer, isn't on pypi, and doesn't support Python 3 without some fixes.
+
+    Initializer takes a sequence of column descriptions, either names, or tuples of names and other metadata which will
+    be ignored. Happy to take a DB API cursor description, or a csv.DictReader's fieldnames property. Provides a wrap
+    method for wrapping rows.
+
+    >>> cursor = db.cursor()
+    >>> cursor.execute("SELECT kind, rating FROM sausages ORDER BY rating DESC;")
+    >>> wrapper = RowWrapper(cursor.description)
+    >>> rows = [wrapper.wrap(row) for row in cursor.fetchall()]
+
+    >>> reader = csv.DictReader(csv_file)
+    >>> wrapper = RowWrapper(reader.fieldnames)
+    >>> rows = [wrapper.wrap(row) for row in reader]
     """
 
-    def __init__(self, cursor_description):
+    def __init__(self, description):
         self.names = (
-            [col for col in cursor_description]
-            if isinstance(cursor_description[0], six.string_types)
-            else [col[0] for col in cursor_description]
+            [col for col in description]
+            if isinstance(description[0], six.string_types)
+            else [col[0] for col in description]
         )
+        self.namedtuple = collections.namedtuple("Row", self.names)
 
     def wrap(self, row):
         return (
-            Row([(k, row[k]) for k in self.names])
+            self.namedtuple(**{k: row[k] for k in self.names})
             if isinstance(row, collections.Mapping)
-            else Row(zip(self.names, row))
-        )
-
-
-@functools.total_ordering
-class Row(Box):
-    def __init__(self, *args, **kwargs):
-        super(Row, self).__init__(*args, ordered_box=True, frozen_box=True, **kwargs)
-
-    def __eq__(self, other):
-        if not isinstance(other, Row):
-            return NotImplemented
-        return self.keys() == other.keys() and self.values() == other.values()
-
-    def __ne__(self, other):
-        if not isinstance(other, Row):
-            return NotImplemented
-        return not self.__eq__(other)
-
-    def __lt__(self, other):
-        if not (isinstance(other, Row) and self.keys() == other.keys()):
-            return NotImplemented
-        return self.values() < other.values()
-
-    def __repr__(self):
-        return "{0}({1})".format(
-            self.__class__.__name__,
-            ", ".join("{0}={1!r}".format(attribute, value) for (attribute, value) in self.items()),
+            else self.namedtuple(**dict(zip(self.names, row)))
         )

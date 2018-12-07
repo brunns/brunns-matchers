@@ -7,13 +7,13 @@ import string
 from email.mime.text import MIMEText
 
 
-def message(to_name=None, to_email=None, from_name=None, from_email=None, subject=None, body_text=None):
-    to_name = to_name or random_string()
-    to_email = to_email or random_email()
-    from_name = from_name or random_string()
-    from_email = from_email or random_email()
-    subject = subject or random_string()
-    body_text = body_text or random_string()
+def a_message(to_name=None, to_email=None, from_name=None, from_email=None, subject=None, body_text=None):
+    to_name = to_name or a_string()
+    to_email = to_email or an_email_address()
+    from_name = from_name or a_string()
+    from_email = from_email or an_email_address()
+    subject = subject or a_string()
+    body_text = body_text or a_string()
 
     msg = MIMEText(body_text)
     msg["To"] = email.utils.formataddr((to_name, to_email))
@@ -22,9 +22,9 @@ def message(to_name=None, to_email=None, from_name=None, from_email=None, subjec
     return msg
 
 
-def random_email():
-    return "{0}@example.com".format(random_string())
+def an_email_address():
+    return "{0}@example.com".format(a_string())
 
 
-def random_string(length=10, characters=string.ascii_letters + string.digits):
+def a_string(length=10, characters=string.ascii_letters + string.digits):
     return "".join(random.choice(characters) for _ in range(length))

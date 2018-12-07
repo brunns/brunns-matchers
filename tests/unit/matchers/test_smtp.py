@@ -5,12 +5,12 @@ from hamcrest import assert_that, not_, has_string
 
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.smtp import email_with
-from tests.utils.builders import message
+from tests.utils.builders import a_message
 
 
 def test_email_matcher():
     # Given
-    m = message(to_name="fred", subject="chips", body_text="bananas").as_string()
+    m = a_message(to_name="fred", subject="chips", body_text="bananas").as_string()
 
     # When
 

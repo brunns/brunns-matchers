@@ -9,6 +9,10 @@ import six
 logger = logging.getLogger(__name__)
 
 
+def row_wrapper(description):
+    return RowWrapper(description)
+
+
 class RowWrapper(object):
     """
     Build lightweight wrappers for DB API and csv.DictReader rows.
@@ -18,16 +22,17 @@ class RowWrapper(object):
     which I can't find online any longer, isn't on pypi, and doesn't support Python 3 without some fixes.
 
     Initializer takes a sequence of column descriptions, either names, or tuples of names and other metadata which will
-    be ignored. Happy to take a DB API cursor description, or a csv.DictReader's fieldnames property.
+    be ignored. Happy to take a DB API cursor description, or a csv.DictReader's fieldnames property. Provides a wrap
+    method for wrapping rows.
 
     >>> cursor = db.cursor()
     >>> cursor.execute("SELECT kind, rating FROM sausages ORDER BY rating DESC;")
     >>> wrapper = RowWrapper(cursor.description)
-    >>> rows = [wrapper(row) for row in cursor.fetchall()]
+    >>> rows = [wrapper.wrap(row) for row in cursor.fetchall()]
 
     >>> reader = csv.DictReader(csv_file)
     >>> wrapper = RowWrapper(reader.fieldnames)
-    >>> rows = [wrapper(row) for row in reader]
+    >>> rows = [wrapper.wrap(row) for row in reader]
     """
 
     def __init__(self, description):
@@ -38,7 +43,7 @@ class RowWrapper(object):
         )
         self.namedtuple = collections.namedtuple("Row", self.names)
 
-    def __call__(self, row):
+    def wrap(self, row):
         return (
             self.namedtuple(**{k: row[k] for k in self.names})
             if isinstance(row, collections.Mapping)

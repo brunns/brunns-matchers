@@ -53,13 +53,13 @@ def test_wrap_all(db):
 
 def test_identifiers_fixed_for_mapping_row():
     # Given
-    wrapper = RowWrapper(["column-name"])
+    wrapper = RowWrapper(["column-name", "Another One"])
 
     # When
-    row = wrapper({"column-name": "value"})
+    row = wrapper({"column-name": "value", "Another One": "another-value"})
 
     # Then
-    assert_that(row, has_properties(column_name="value"))
+    assert_that(row, has_properties(column_name="value", Another_One="another-value"))
 
 
 def test_identifiers_fixed_for_positional_row():

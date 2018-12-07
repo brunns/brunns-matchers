@@ -17,9 +17,12 @@ class RowWrapper(object):
     https://code.activestate.com/recipes/81252-using-dtuple-for-flexible-query-result-access,
     which I can't find online any longer, isn't on pypi, and doesn't support Python 3 without some fixes.
 
-    Initializer takes a sequence of column descriptions, either names, or tuples of names and other metadata (which will
-    be ignored). For instance, it's happy to take a DB API cursor description, or a csv.DictReader's fieldnames
+    Initializer takes a sequence of column descriptions, either names, or tuples of names and other metadata (which
+    will be ignored). For instance, it's happy to take a DB API cursor description, or a csv.DictReader's fieldnames
     property. Provides a wrap(row) method for wrapping rows.
+
+    Some characters which are illegal in identifiers will be replaced when building the row tuples - currently "-" and
+    " " characters will be replaced with "_"s.
 
     >>> cursor = conn.cursor()
     >>> cursor.execute("SELECT kind, rating FROM sausages ORDER BY rating DESC;")
@@ -41,8 +44,8 @@ class RowWrapper(object):
 
     @staticmethod
     def _id_fix(name):
-        for f, t in [("-", "_")]:
-            name = name.replace(f, t)
+        for old, new in [("-", "_"), (" ", "_")]:
+            name = name.replace(old, new)
         return name
 
     def wrap(self, row):

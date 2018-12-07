@@ -63,7 +63,7 @@ def test_has_rows(db):
     assert_that(
         has_table_with_rows("sausages", has_item(has_properties(kind="vegan"))),
         mismatches_with(
-            db, all_of(matches_regexp(r"was <\["), matches_regexp(r"Row\(kind=u?'vegetarian', rating=0\)"))
+            db, all_of(matches_regexp(r"was <\["), matches_regexp(r"RowTuple\(kind=u?'vegetarian', rating=0\)"))
         ),
     )
     assert_that(

@@ -6,7 +6,7 @@ import logging
 from hamcrest import anything, described_as
 from hamcrest.core.base_matcher import BaseMatcher
 
-from brunns.utils.db.rowwrapper import row_wrapper
+from brunns.utils.db.rowwrapper import RowWrapper
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class SelectReturnsRowsMatching(BaseMatcher):
     def _get_rows(self, conn, select):
         cursor = conn.cursor()
         cursor.execute(select)
-        wrapper = row_wrapper(cursor.description)
+        wrapper = RowWrapper(cursor.description)
         rows = [wrapper.wrap(row) for row in cursor.fetchall()]
         return rows
 

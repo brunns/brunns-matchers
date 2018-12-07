@@ -6,7 +6,7 @@ import logging
 
 from hamcrest import assert_that, contains, has_properties
 
-from brunns.utils.db.rowwrapper import row_wrapper
+from brunns.utils.db.rowwrapper import RowWrapper
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ def test_dbapi_row_wrapping(db):
     cursor.execute("SELECT kind, rating FROM sausages ORDER BY rating DESC;")
 
     # When
-    wrapper = row_wrapper(cursor.description)
+    wrapper = RowWrapper(cursor.description)
     rows = [wrapper.wrap(row) for row in cursor.fetchall()]
 
     # Then
@@ -31,12 +31,34 @@ def test_dbapi_row_wrapping(db):
     )
 
 
+def test_identifiers_fixed_for_mapping_row():
+    # Given
+    wrapper = RowWrapper(["column-name"])
+
+    # When
+    row = wrapper({"column-name": "value"})
+
+    # Then
+    assert_that(row, has_properties(column_name="value"))
+
+
+def test_identifiers_fixed_for_positional_row():
+    # Given
+    wrapper = RowWrapper(["column-name"])
+
+    # When
+    row = wrapper(["value"])
+
+    # Then
+    assert_that(row, has_properties(column_name="value"))
+
+
 def test_csv_wrapping(csv_file):
     # Given
     reader = csv.DictReader(csv_file)
 
     # When
-    wrapper = row_wrapper(reader.fieldnames)
+    wrapper = RowWrapper(reader.fieldnames)
     rows = [wrapper.wrap(row) for row in reader]
 
     # Then

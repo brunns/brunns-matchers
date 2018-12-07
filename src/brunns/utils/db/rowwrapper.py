@@ -9,10 +9,6 @@ import six
 logger = logging.getLogger(__name__)
 
 
-def row_wrapper(description):
-    return RowWrapper(description)
-
-
 class RowWrapper(object):
     """
     Build lightweight wrappers for DB API and csv.DictReader rows.
@@ -25,7 +21,7 @@ class RowWrapper(object):
     be ignored. Happy to take a DB API cursor description, or a csv.DictReader's fieldnames property. Provides a wrap
     method for wrapping rows.
 
-    >>> cursor = db.cursor()
+    >>> cursor = conn.cursor()
     >>> cursor.execute("SELECT kind, rating FROM sausages ORDER BY rating DESC;")
     >>> wrapper = RowWrapper(cursor.description)
     >>> rows = [wrapper.wrap(row) for row in cursor.fetchall()]
@@ -41,11 +37,20 @@ class RowWrapper(object):
             if isinstance(description[0], six.string_types)
             else [col[0] for col in description]
         )
-        self.namedtuple = collections.namedtuple("Row", self.names)
+        self.namedtuple = collections.namedtuple("Row", [self._id_fix(n) for n in self.names], rename=True)
+
+    @staticmethod
+    def _id_fix(name):
+        for f, t in [("-", "_")]:
+            name = name.replace(f, t)
+        return name
 
     def wrap(self, row):
         return (
-            self.namedtuple(**{k: row[k] for k in self.names})
+            self.namedtuple(**{self._id_fix(k): row[k] for k in self.names})
             if isinstance(row, collections.Mapping)
-            else self.namedtuple(**dict(zip(self.names, row)))
+            else self.namedtuple(**{self._id_fix(n): r for n, r in zip(self.names, row)})
         )
+
+    def __call__(self, row):
+        return self.wrap(row)

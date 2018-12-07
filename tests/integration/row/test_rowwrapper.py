@@ -6,7 +6,7 @@ import logging
 
 from hamcrest import assert_that, contains, has_properties
 
-from brunns.utils.db.rowwrapper import RowWrapper
+from brunns.row.rowwrapper import RowWrapper
 
 logger = logging.getLogger(__name__)
 

@@ -6,7 +6,7 @@ import logging
 from hamcrest import anything, described_as
 from hamcrest.core.base_matcher import BaseMatcher
 
-from brunns.utils.db.rowwrapper import RowWrapper
+from brunns.row.rowwrapper import RowWrapper
 
 logger = logging.getLogger(__name__)
 

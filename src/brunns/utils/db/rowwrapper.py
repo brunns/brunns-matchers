@@ -53,5 +53,9 @@ class RowWrapper(object):
             else self.namedtuple(**{self._id_fix(n): r for n, r in zip(self.names, row)})
         )
 
+    def wrap_all(self, rows):
+        """Return row tuple for each row in rows."""
+        return (self.wrap(r) for r in rows)
+
     def __call__(self, row):
         return self.wrap(row)

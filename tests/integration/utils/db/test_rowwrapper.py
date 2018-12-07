@@ -31,6 +31,26 @@ def test_dbapi_row_wrapping(db):
     )
 
 
+def test_wrap_all(db):
+    # Given
+    cursor = db.cursor()
+    cursor.execute("SELECT kind, rating FROM sausages ORDER BY rating DESC;")
+
+    # When
+    wrapper = RowWrapper(cursor.description)
+    rows = wrapper.wrap_all(cursor.fetchall())
+
+    # Then
+    assert_that(
+        rows,
+        contains(
+            has_properties(kind="cumberland", rating=10),
+            has_properties(kind="lincolnshire", rating=9),
+            has_properties(kind="vegetarian", rating=0),
+        ),
+    )
+
+
 def test_identifiers_fixed_for_mapping_row():
     # Given
     wrapper = RowWrapper(["column-name"])

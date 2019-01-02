@@ -53,7 +53,7 @@ setup(
         # "attrs~=18.0",
         # "more_itertools~=4.0",
         "pyhamcrest~=1.9",
-        "pytest~=3.0",
+        "pytest~=4.0",
         # 'enum34~=1.0;python_version<"3.4"',
         "six~=1.0",
         # "pendulum~=2.0",

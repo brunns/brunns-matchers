@@ -3,7 +3,7 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 
 import json
 
-from hamcrest import assert_that, contains, has_string, matches_regexp
+from hamcrest import assert_that, contains, has_string, matches_regexp, not_
 
 from brunns.matchers.data import json_matching
 from brunns.matchers.matcher import mismatches_with
@@ -18,6 +18,9 @@ def test_json_matching():
     # Then
     assert_that(j, json_matching([1, 2, 3]))
     assert_that(j, json_matching(contains(1, 2, 3)))
-    assert_that(json_matching([1]), has_string("JSON structure matching <[1]>"))
-    assert_that(json_matching([]), mismatches_with("WTF", matches_regexp(r"Got invalid JSON ['<]WTF['>]")))
+    assert_that(j, not_(json_matching([1, 2, 5])))
+    assert_that(json_matching([1, 2, 3]), has_string("JSON structure matching <[1, 2, 3]>"))
+    assert_that(
+        json_matching([]), mismatches_with("WTF is this?", matches_regexp(r"Got invalid JSON ['<]WTF is this\?['>]"))
+    )
     assert_that(json_matching([]), mismatches_with("[1]", "was <[1]>"))

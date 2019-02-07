@@ -1,7 +1,7 @@
 # encoding=utf-8
 from unittest import mock
 
-from hamcrest import assert_that, contains_string, has_string, not_, matches_regexp
+from hamcrest import assert_that, contains_string, has_string, not_
 
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.mock import call_has_arg, call_has_args, has_call
@@ -73,7 +73,7 @@ def test_call_has_args():
     )
     assert_that(
         call_has_args("first", "second", "third", key="banana"),
-        mismatches_with(call, matches_regexp(r"got arguments \(u?'first', u?'second', u?'third', key=u?'forth'\)")),
+        mismatches_with(call, contains_string("got arguments ('first', 'second', 'third', key='forth')")),
     )
 
 
@@ -96,5 +96,5 @@ def test_has_call():
     assert_that(has_call(call_has_args("first")), has_string("has call matching mock.call with arguments ('first')"))
     assert_that(
         has_call(call_has_args("chips")),
-        mismatches_with(method, matches_regexp(r"""got calls \[['"]call\(u?['"]first['"]""")),
+        mismatches_with(method, contains_string("""got calls ["call('first'""")),
     )

@@ -1,7 +1,7 @@
 # encoding=utf-8
 import datetime
 
-from hamcrest import assert_that, contains_string, has_string, not_, matches_regexp
+from hamcrest import assert_that, contains_string, has_string, not_
 
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.object import has_repr, has_identical_properties_to, false, true, between
@@ -14,7 +14,7 @@ def test_has_repr():
     # When
 
     # Then
-    assert_that(r, has_repr(matches_regexp(r"\[1, u?'2'\]")))
+    assert_that(r, has_repr(contains_string("[1, '2']")))
     assert_that(r, has_repr(contains_string("[1")))
     assert_that(has_repr("a"), has_string("an object with repr() matching 'a'"))
     assert_that(has_repr("a"), mismatches_with("b", "was 'b'"))

@@ -14,7 +14,6 @@ from hamcrest import (
     contains_inanyorder,
     has_item,
     all_of,
-    matches_regexp,
 )
 
 from brunns.matchers.dbapi import has_table, has_table_with_rows, given_select_returns_rows_matching
@@ -63,7 +62,7 @@ def test_has_rows(db):
     assert_that(
         has_table_with_rows("sausages", has_item(has_properties(kind="vegan"))),
         mismatches_with(
-            db, all_of(matches_regexp(r"was <\["), matches_regexp(r"RowTuple\(kind=u?'vegetarian', rating=0\)"))
+            db, all_of(contains_string("was <["), contains_string("RowTuple(kind='vegetarian', rating=0)"))
         ),
     )
     assert_that(

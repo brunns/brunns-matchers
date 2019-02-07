@@ -9,31 +9,35 @@ from hamcrest.core.matcher import Matcher
 ANYTHING = anything()
 
 
-def response_with(status_code=ANYTHING, body=ANYTHING, headers=ANYTHING):
+def response_with(status_code=ANYTHING, body=ANYTHING, content=ANYTHING, headers=ANYTHING):
     """Matches :requests.models.Response:.
     :param status_code: Expected status code
     :type status_code: int or Matcher
     :param body: Expected body
     :type body: str or Matcher
+    :param content: Expected content
+    :type content: bytes or Matcher
     :param headers: Expected headers
     :type headers: dict or Matcher
     :return: Matcher
     :rtype: Matcher(requests.models.Response)
     """
-    return ResponseMatcher(status_code=status_code, body=body, headers=headers)
+    return ResponseMatcher(status_code=status_code, body=body, content=content, headers=headers)
 
 
 class ResponseMatcher(BaseMatcher):
-    def __init__(self, status_code=ANYTHING, body=ANYTHING, headers=ANYTHING):
+    def __init__(self, status_code=ANYTHING, body=ANYTHING, content=ANYTHING, headers=ANYTHING):
         super(ResponseMatcher, self).__init__()
         self.status_code = status_code if isinstance(status_code, Matcher) else equal_to(status_code)
         self.body = body if isinstance(body, Matcher) else equal_to(body)
+        self.content = content if isinstance(content, Matcher) else equal_to(content)
         self.headers = headers if isinstance(headers, Matcher) else equal_to(headers)
 
     def _matches(self, response):
         return (
             self.status_code.matches(response.status_code)
             and self.body.matches(response.text)
+            and self.content.matches(response.content)
             and self.headers.matches(response.headers)
         )
 
@@ -44,6 +48,7 @@ class ResponseMatcher(BaseMatcher):
     def _optional_description(self, description):
         self._append_matcher_descrption(description, self.status_code, "status_code")
         self._append_matcher_descrption(description, self.body, "body")
+        self._append_matcher_descrption(description, self.content, "content")
         self._append_matcher_descrption(description, self.headers, "headers")
 
     def _append_matcher_descrption(self, description, matcher, text):
@@ -53,6 +58,10 @@ class ResponseMatcher(BaseMatcher):
     def describe_mismatch(self, response, mismatch_description):
         mismatch_description.append_text("was response with status code: ").append_description_of(
             response.status_code
-        ).append_text(" body: ").append_description_of(response.text).append_text(" headers: ").append_description_of(
+        ).append_text(" body: ").append_description_of(response.text).append_text(" content: ").append_description_of(
+            response.content
+        ).append_text(
+            " headers: "
+        ).append_description_of(
             response.headers
         )

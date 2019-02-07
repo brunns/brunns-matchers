@@ -11,7 +11,7 @@ from brunns.matchers.response import response_with
 def test_response_matcher_status_code():
     # Given
     response = mock.MagicMock(
-        status_code=200, text="body", content=b"content", json="[1, 2, 3]", headers={"key": "value"}
+        status_code=200, text="body", content=b"content", json=[1, 2, 3], headers={"key": "value"}
     )
 
     # When
@@ -25,7 +25,8 @@ def test_response_matcher_status_code():
         mismatches_with(
             response,
             matches_regexp(
-                r"was response with status code: <200> body: ['<]body['>] content: <?b?'content'?>? headers: <{u?'key': u?'value'}>"
+                r"was response with status code: <200> body: ['<]body['>] content: <?b?'content'?>? "
+                r"json: <\[1, 2, 3\]> headers: <{u?'key': u?'value'}>"
             ),
         ),
     )
@@ -34,7 +35,7 @@ def test_response_matcher_status_code():
 def test_response_matcher_body():
     # Given
     response = mock.MagicMock(
-        status_code=200, text="sausages", content=b"content", json="[1, 2, 3]", headers={"key": "value"}
+        status_code=200, text="sausages", content=b"content", json=[1, 2, 3], headers={"key": "value"}
     )
 
     # When
@@ -48,7 +49,8 @@ def test_response_matcher_body():
         mismatches_with(
             response,
             matches_regexp(
-                r"was response with status code: <200> body: ['<]sausages['>] content: <?b?'content'?>? headers: <{u?'key': u?'value'}>"
+                r"was response with status code: <200> body: ['<]sausages['>] content: <?b?'content'?>? "
+                r"json: <\[1, 2, 3\]> headers: <{u?'key': u?'value'}>"
             ),
         ),
     )
@@ -57,7 +59,7 @@ def test_response_matcher_body():
 def test_response_matcher_content():
     # Given
     response = mock.MagicMock(
-        status_code=200, text="body", content=b"content", json="[1, 2, 3]", headers={"key": "value"}
+        status_code=200, text="body", content=b"content", json=[1, 2, 3], headers={"key": "value"}
     )
 
     # When
@@ -71,7 +73,53 @@ def test_response_matcher_content():
         mismatches_with(
             response,
             matches_regexp(
-                r"was response with status code: <200> body: ['<]body['>] content: <?b?'content'?>? headers: <{u?'key': u?'value'}>"
+                r"was response with status code: <200> body: ['<]body['>] content: <?b?'content'?>? "
+                r"json: <\[1, 2, 3\]> headers: <{u?'key': u?'value'}>"
+            ),
+        ),
+    )
+
+
+def test_response_matcher_json():
+    # Given
+    response = mock.MagicMock(
+        status_code=200, text="body", content=b"content", json=[1, 2, 3], headers={"key": "value"}
+    )
+
+    # When
+
+    # Then
+    assert_that(response, response_with(json=[1, 2, 3]))
+    assert_that(response, not_(response_with(json=[1, 2, 4])))
+    assert_that(str(response_with(json=[1, 2, 3])), matches_regexp(r"response with json: <\[1, 2, 3\]>"))
+    assert_that(
+        response_with(json=[1, 2, 4]),
+        mismatches_with(
+            response,
+            matches_regexp(
+                r"was response with status code: <200> body: ['<]body['>] content: <?b?'content'?>? "
+                r"json: <\[1, 2, 3\]> headers: <{u?'key': u?'value'}>"
+            ),
+        ),
+    )
+
+
+def test_response_matcher_invalid_json():
+    # Given
+    response = mock.MagicMock(status_code=200, text="body", content=b"content", headers={"key": "value"})
+    type(response).json = mock.PropertyMock(side_effect=ValueError)
+
+    # When
+
+    # Then
+    assert_that(response, not_(response_with(json=[1, 2, 4])))
+    assert_that(
+        response_with(json=[1, 2, 4]),
+        mismatches_with(
+            response,
+            matches_regexp(
+                r"was response with status code: <200> body: ['<]body['>] content: <?b?'content'?>? "
+                r"json: <None> headers: <{u?'key': u?'value'}>"
             ),
         ),
     )

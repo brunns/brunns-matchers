@@ -9,7 +9,7 @@ from hamcrest.core.matcher import Matcher
 ANYTHING = anything()
 
 
-def response_with(status_code=ANYTHING, body=ANYTHING, content=ANYTHING, headers=ANYTHING):
+def response_with(status_code=ANYTHING, body=ANYTHING, content=ANYTHING, json=ANYTHING, headers=ANYTHING):
     """Matches :requests.models.Response:.
     :param status_code: Expected status code
     :type status_code: int or Matcher
@@ -17,20 +17,23 @@ def response_with(status_code=ANYTHING, body=ANYTHING, content=ANYTHING, headers
     :type body: str or Matcher
     :param content: Expected content
     :type content: bytes or Matcher
+    :param json: Expected json
+    :type json: Matcher or dict or list
     :param headers: Expected headers
     :type headers: dict or Matcher
     :return: Matcher
     :rtype: Matcher(requests.models.Response)
     """
-    return ResponseMatcher(status_code=status_code, body=body, content=content, headers=headers)
+    return ResponseMatcher(status_code=status_code, body=body, content=content, json=json, headers=headers)
 
 
 class ResponseMatcher(BaseMatcher):
-    def __init__(self, status_code=ANYTHING, body=ANYTHING, content=ANYTHING, headers=ANYTHING):
+    def __init__(self, status_code=ANYTHING, body=ANYTHING, content=ANYTHING, json=ANYTHING, headers=ANYTHING):
         super(ResponseMatcher, self).__init__()
         self.status_code = status_code if isinstance(status_code, Matcher) else equal_to(status_code)
         self.body = body if isinstance(body, Matcher) else equal_to(body)
         self.content = content if isinstance(content, Matcher) else equal_to(content)
+        self.json = json if isinstance(json, Matcher) else equal_to(json)
         self.headers = headers if isinstance(headers, Matcher) else equal_to(headers)
 
     def _matches(self, response):
@@ -38,8 +41,16 @@ class ResponseMatcher(BaseMatcher):
             self.status_code.matches(response.status_code)
             and self.body.matches(response.text)
             and self.content.matches(response.content)
+            and self.json.matches(self._get_response_json(response))
             and self.headers.matches(response.headers)
         )
+
+    @staticmethod
+    def _get_response_json(response):
+        try:
+            return response.json
+        except ValueError:
+            return None
 
     def describe_to(self, description):
         description.append_text("response with")
@@ -49,6 +60,7 @@ class ResponseMatcher(BaseMatcher):
         self._append_matcher_descrption(description, self.status_code, "status_code")
         self._append_matcher_descrption(description, self.body, "body")
         self._append_matcher_descrption(description, self.content, "content")
+        self._append_matcher_descrption(description, self.json, "json")
         self._append_matcher_descrption(description, self.headers, "headers")
 
     def _append_matcher_descrption(self, description, matcher, text):
@@ -60,6 +72,10 @@ class ResponseMatcher(BaseMatcher):
             response.status_code
         ).append_text(" body: ").append_description_of(response.text).append_text(" content: ").append_description_of(
             response.content
+        ).append_text(
+            " json: "
+        ).append_description_of(
+            self._get_response_json(response)
         ).append_text(
             " headers: "
         ).append_description_of(

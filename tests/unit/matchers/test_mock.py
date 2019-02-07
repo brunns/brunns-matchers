@@ -95,6 +95,5 @@ def test_has_call():
     assert_that(method, not_(has_call(call_has_args("chips"))))
     assert_that(has_call(call_has_args("first")), has_string("has call matching mock.call with arguments ('first')"))
     assert_that(
-        has_call(call_has_args("chips")),
-        mismatches_with(method, contains_string("""got calls ["call('first'""")),
+        has_call(call_has_args("chips")), mismatches_with(method, contains_string("""got calls ["call('first'"""))
     )

@@ -1,12 +1,9 @@
 # encoding=utf-8
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import logging
 
+from brunns.row.rowwrapper import RowWrapper
 from hamcrest import anything, described_as
 from hamcrest.core.base_matcher import BaseMatcher
-
-from brunns.row.rowwrapper import RowWrapper
 
 logger = logging.getLogger(__name__)
 

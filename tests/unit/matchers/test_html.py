@@ -1,6 +1,4 @@
 # encoding=utf-8
-import warnings
-
 from bs4 import BeautifulSoup
 from hamcrest import (
     assert_that,
@@ -10,7 +8,6 @@ from hamcrest import (
     contains,
     anything,
     matches_regexp,
-    has_properties,
     has_item,
     has_entries,
     starts_with,
@@ -22,13 +19,10 @@ from brunns.matchers.html import (
     has_named_tag,
     has_class,
     tag_has_string,
-    has_rows,
     has_table,
     has_header_row,
-    has_tag,
     has_id_tag,
     has_row,
-    has_nth_row,
     has_link,
     has_id,
     has_attributes,
@@ -108,33 +102,6 @@ def test_mdash():
             HTML, matches_regexp(r"got HTML with tag name=['<]h2['>] values \['<h2>what is (\\u2014|—) this</h2>'\]")
         ),
     )
-
-
-def test_has_tag_deprecated():
-    with warnings.catch_warnings(record=True) as w:
-        warnings.simplefilter("always")
-
-        assert_that(HTML, has_tag("h1", "chips"))
-
-        assert_that(
-            w,
-            has_item(
-                has_properties(category=DeprecationWarning, message=has_string("deprecated - use has_named_tag()"))
-            ),
-        )
-
-
-def test_has_nth_row_deprecated():
-    soup = BeautifulSoup(HTML, "html.parser")
-    table = soup.table
-    with warnings.catch_warnings(record=True) as w:
-        warnings.simplefilter("always")
-
-        assert_that(table, has_nth_row(0, anything()))
-
-        assert len(w) == 1
-        assert issubclass(w[-1].category, DeprecationWarning)
-        assert "deprecated - use has_row(index_matches=index)" in str(w[-1].message)
 
 
 def test_has_class():
@@ -278,8 +245,8 @@ def test_table_has_header_row():
 
 
 def test_html_has_table():
-    should_match = has_table(has_rows(contains(tag_has_string("foo"), tag_has_string("bar"))))
-    should_not_match = has_table(has_rows(contains(tag_has_string("egg"), tag_has_string("chips"))))
+    should_match = has_table(has_row(contains(tag_has_string("foo"), tag_has_string("bar"))))
+    should_not_match = has_table(has_row(contains(tag_has_string("egg"), tag_has_string("chips"))))
 
     assert_that(HTML, should_match)
     assert_that(HTML, not_(should_not_match))

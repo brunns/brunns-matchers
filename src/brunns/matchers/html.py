@@ -1,6 +1,4 @@
 # encoding=utf-8
-import warnings
-
 from bs4 import BeautifulSoup, Tag
 from hamcrest import equal_to, has_item, anything, contains, all_of, has_entry
 from hamcrest.core.base_matcher import BaseMatcher
@@ -11,14 +9,6 @@ ANYTHING = anything()
 
 def has_title(title):
     return HtmlWithTag(TagWith(string=title), name="title")
-
-
-def has_tag(name, matcher):
-    """Ultimately replace this with a signature something like:
-    has_tag(name=None, id_=None, matcher=anything())
-    """
-    warnings.warn("deprecated - use has_named_tag()", DeprecationWarning)
-    return HtmlWithTag(matcher, name=name)
 
 
 def has_named_tag(name, matcher):
@@ -41,20 +31,10 @@ def has_table(matcher, id_=ANYTHING):
     return HtmlHasTable(matcher, id_=id_)
 
 
-def has_rows(cells_matcher):
-    warnings.warn("deprecated - use has_row()", DeprecationWarning)
-    return has_row(cells_match=cells_matcher)
-
-
 def has_row(row_matches=ANYTHING, cells_match=ANYTHING, index_matches=ANYTHING, header_row=False):
     return TableHasRow(
         row_matcher=row_matches, cells_matcher=cells_match, index_matcher=index_matches, header_row=header_row
     )
-
-
-def has_nth_row(index, cells_matcher=ANYTHING, row_matcher=ANYTHING):
-    warnings.warn("deprecated - use has_row(index_matches=index)", DeprecationWarning)
-    return has_row(row_matches=row_matcher, cells_match=cells_matcher, index_matches=index)
 
 
 def has_header_row(cells_matcher=ANYTHING, row_matcher=ANYTHING):

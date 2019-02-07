@@ -1,13 +1,10 @@
 SHELL = /bin/bash
 
 default: help
-.PHONY: help test coverage flake8 bandit safety check-format format piprot precommit clean repl outdated
+.PHONY: help
 
 test: ## Run tests
-	tox -r -e py27,py34,py37
-
-test-all-versions: ## Test against all available python versions
-	tox
+	tox -e py27,py34,py37
 
 coverage: ## Test coverage report
 	tox -e coverage
@@ -15,7 +12,7 @@ coverage: ## Test coverage report
 lint: check-format flake8 bandit safety ## Lint code
 
 flake8:
-	tox -e flake8 --recreate
+	tox -e flake8
 
 bandit:
 	tox -e bandit
@@ -34,6 +31,9 @@ piprot: ## Check for outdated dependencies
 
 precommit: test lint coverage ## Pre-commit targets
 	@ python -m this
+
+recreate: ## Recreate tox environments
+	tox --recreate --notest -e py27,py34,py37,format,flake8,bandit,safety,piprot
 
 clean: ## Clean generated files
 	find . -name '*.pyc' -delete

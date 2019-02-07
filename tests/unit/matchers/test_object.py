@@ -1,6 +1,4 @@
 # encoding=utf-8
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 import datetime
 
 from hamcrest import assert_that, contains_string, has_string, not_, matches_regexp

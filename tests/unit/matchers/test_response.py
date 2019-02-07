@@ -1,8 +1,6 @@
 # encoding=utf-8
-from __future__ import unicode_literals, absolute_import, division, print_function
-
+from unittest import mock
 from hamcrest import assert_that, has_string, not_, matches_regexp
-from six.moves import mock
 
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.response import response_with

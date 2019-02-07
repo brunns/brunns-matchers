@@ -1,9 +1,6 @@
 # encoding=utf-8
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 import difflib
 
-import six
 from hamcrest import equal_to, anything, not_
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.core.isequal import IsEqual
@@ -47,7 +44,7 @@ class MismatchesWith(BaseMatcher):
             description.append_text("matched")
             return
         description.append_text("got message ").append_description_of(actual_message)
-        if isinstance(self.expected_message, IsEqual) and isinstance(self.expected_message.object, six.string_types):
+        if isinstance(self.expected_message, IsEqual) and isinstance(self.expected_message.object, str):
             differ = difflib.Differ()
             diff = differ.compare([self.expected_message.object], [actual_message.out])
             description.append_text("\ndiff:\n").append_text("\n".join(diff))

@@ -1,13 +1,10 @@
 # encoding=utf-8
-from __future__ import unicode_literals, absolute_import, division, print_function
-
-from itertools import chain
+from itertools import chain, zip_longest
 from numbers import Number
 
 from hamcrest import equal_to
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.matcher import Matcher
-from six.moves import zip_longest
 
 
 def call_has_arg(arg, expected):

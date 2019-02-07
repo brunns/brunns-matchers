@@ -1,6 +1,4 @@
 # encoding=utf-8
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 import warnings
 
 from bs4 import BeautifulSoup

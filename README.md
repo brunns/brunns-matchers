@@ -39,7 +39,7 @@ Requires [hub](https://hub.github.com/), [setuptools](https://setuptools.readthe
     version="n.n.n"
     make precommit && git commit -am"Release $version" && git push # If not already all pushed, which it should be.
     hub release create $version -m"Release $version"
-    python3 setup.py sdist bdist_wheel
+    python setup.py sdist bdist_wheel
     twine upload dist/*$version*
     
 Quick version:

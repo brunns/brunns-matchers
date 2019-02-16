@@ -29,7 +29,6 @@ from brunns.matchers.html import (
 )
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.url import to_host, with_path
-from tests.utils.string_utils import repr_no_unicode_prefix
 
 HTML = """<html>
     <head>
@@ -251,7 +250,7 @@ def test_html_has_table():
     assert_that(HTML, should_match)
     assert_that(HTML, not_(should_not_match))
     assert_that(should_match, has_string("row matching {0}".format(should_match.matcher)))
-    assert_that(should_not_match, mismatches_with(HTML, "was {0}".format(repr_no_unicode_prefix(HTML))))
+    assert_that(should_not_match, mismatches_with(HTML, "was {0}".format(repr(HTML))))
 
 
 def test_html_without_table():

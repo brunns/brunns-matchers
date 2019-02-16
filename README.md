@@ -16,7 +16,9 @@ Various custom [PyHamcrest](https://pyhamcrest.readthedocs.io) matchers.
 [![GitHub issues-closed](https://img.shields.io/github/issues-closed/brunns/brunns-matchers.svg?logo=github)](https://github.com/brunns/brunns-matchers/issues?q=is%3Aissue+is%3Aclosed)
 [![GitHub pull-requests](https://img.shields.io/github/issues-pr/brunns/brunns-matchers.svg?logo=github)](https://github.com/brunns/brunns-matchers/pulls)
 [![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/brunns/brunns-matchers.svg?logo=github)](https://github.com/brunns/brunns-matchers/pulls?utf8=%E2%9C%93&q=is%3Apr+is%3Aclosed)
-[![](https://tokei.rs/b1/github/brunns/brunns-matchers)](https://github.com/brunns/brunns-matchers)
+[![Coverage](https://img.shields.io/coveralls/github/brunns/brunns-matchers.svg)](https://coveralls.io/github/brunns/brunns-matchers)
+[![Lines of Code](https://tokei.rs/b1/github/brunns/brunns-matchers)](https://github.com/brunns/brunns-matchers)
+
 
 ## Setup
 

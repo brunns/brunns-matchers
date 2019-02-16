@@ -2,9 +2,9 @@
 import email
 import re
 
-from hamcrest import equal_to, anything
+from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.matcher import Matcher
+from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 ANYTHING = anything()
 
@@ -25,9 +25,9 @@ def email_with(to_name=ANYTHING, subject=ANYTHING, body_text=ANYTHING):
 
 class EmailWith(BaseMatcher):
     def __init__(self, to_name=ANYTHING, subject=ANYTHING, body_text=ANYTHING):
-        self.to_name = to_name if isinstance(to_name, Matcher) else equal_to(to_name)
-        self.subject = subject if isinstance(subject, Matcher) else equal_to(subject)
-        self.body_text = body_text if isinstance(body_text, Matcher) else equal_to(body_text)
+        self.to_name = wrap_matcher(to_name)
+        self.subject = wrap_matcher(subject)
+        self.body_text = wrap_matcher(body_text)
 
     def _matches(self, actual_email):
         actual_to_name, actual_subject, actual_body_text = self._parse_email(actual_email)
@@ -46,11 +46,17 @@ class EmailWith(BaseMatcher):
 
     def describe_to(self, description):
         description.append_text(
-            "email with to_name {0} subject {1} body_text {2}".format(self.to_name, self.subject, self.body_text)
+            "email with to_name {0} subject {1} body_text {2}".format(
+                self.to_name, self.subject, self.body_text
+            )
         )
 
     def describe_mismatch(self, actual_email, mismatch_description):
         actual_to_name, actual_subject, actual_body_text = self._parse_email(actual_email)
-        mismatch_description.append_text("was to_name ").append_description_of(actual_to_name).append_text(
-            " subject "
-        ).append_description_of(actual_subject).append_text(" body_text ").append_description_of(actual_body_text)
+        mismatch_description.append_text("was to_name ").append_description_of(
+            actual_to_name
+        ).append_text(" subject ").append_description_of(actual_subject).append_text(
+            " body_text "
+        ).append_description_of(
+            actual_body_text
+        )

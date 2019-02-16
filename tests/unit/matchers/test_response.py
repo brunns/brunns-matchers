@@ -34,7 +34,11 @@ def test_response_matcher_status_code():
 def test_response_matcher_body():
     # Given
     response = mock.MagicMock(
-        status_code=200, text="sausages", content=b"content", json=[1, 2, 3], headers={"key": "value"}
+        status_code=200,
+        text="sausages",
+        content=b"content",
+        json=[1, 2, 3],
+        headers={"key": "value"},
     )
 
     # When
@@ -66,7 +70,10 @@ def test_response_matcher_content():
     # Then
     assert_that(response, response_with(content=b"content"))
     assert_that(response, not_(response_with(content=b"chips")))
-    assert_that(str(response_with(content=b"content")), contains_string("response with content: <b'content'>"))
+    assert_that(
+        str(response_with(content=b"content")),
+        contains_string("response with content: <b'content'>"),
+    )
     assert_that(
         response_with(content=b"chips"),
         mismatches_with(
@@ -90,7 +97,9 @@ def test_response_matcher_json():
     # Then
     assert_that(response, response_with(json=[1, 2, 3]))
     assert_that(response, not_(response_with(json=[1, 2, 4])))
-    assert_that(str(response_with(json=[1, 2, 3])), contains_string("response with json: <[1, 2, 3]>"))
+    assert_that(
+        str(response_with(json=[1, 2, 3])), contains_string("response with json: <[1, 2, 3]>")
+    )
     assert_that(
         response_with(json=[1, 2, 4]),
         mismatches_with(
@@ -105,7 +114,9 @@ def test_response_matcher_json():
 
 def test_response_matcher_invalid_json():
     # Given
-    response = mock.MagicMock(status_code=200, text="body", content=b"content", headers={"key": "value"})
+    response = mock.MagicMock(
+        status_code=200, text="body", content=b"content", headers={"key": "value"}
+    )
     type(response).json = mock.PropertyMock(side_effect=ValueError)
 
     # When

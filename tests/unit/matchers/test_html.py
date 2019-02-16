@@ -64,12 +64,19 @@ def test_has_title():
     assert_that(HTML, has_title(contains_string("usage")))
     assert_that(
         should_match,
-        has_string(matches_regexp(r"HTML with tag name=['<]title['>] matching tag with string matching 'sausages'")),
+        has_string(
+            matches_regexp(
+                r"HTML with tag name=['<]title['>] matching tag with string matching 'sausages'"
+            )
+        ),
     )
     assert_that(
         should_not_match,
         mismatches_with(
-            HTML, matches_regexp(r"got HTML with tag name=['<]title['>] values \['<title>sausages</title>'\]")
+            HTML,
+            matches_regexp(
+                r"got HTML with tag name=['<]title['>] values \['<title>sausages</title>'\]"
+            ),
         ),
     )
 
@@ -83,12 +90,19 @@ def test_has_named_tag():
     assert_that(HTML, has_named_tag("h1", tag_has_string(contains_string("hip"))))
     assert_that(
         should_match,
-        has_string(matches_regexp(r"HTML with tag name=['<]h1['>] matching tag with string matching 'chips'")),
+        has_string(
+            matches_regexp(
+                r"HTML with tag name=['<]h1['>] matching tag with string matching 'chips'"
+            )
+        ),
     )
     assert_that(
         should_not_match,
         mismatches_with(
-            HTML, matches_regexp(r"got HTML with tag name=['<]h1['>] values \['<h1 class=\"bacon egg\">chips</h1>'\]")
+            HTML,
+            matches_regexp(
+                r"got HTML with tag name=['<]h1['>] values \['<h1 class=\"bacon egg\">chips</h1>'\]"
+            ),
         ),
     )
 
@@ -98,7 +112,10 @@ def test_mdash():
     assert_that(
         has_named_tag("h2", "what is this"),
         mismatches_with(
-            HTML, matches_regexp(r"got HTML with tag name=['<]h2['>] values \['<h2>what is (\\u2014|—) this</h2>'\]")
+            HTML,
+            matches_regexp(
+                r"got HTML with tag name=['<]h2['>] values \['<h2>what is (\\u2014|—) this</h2>'\]"
+            ),
         ),
     )
 
@@ -114,7 +131,10 @@ def test_has_class():
     assert_that(
         has_named_tag("h1", should_not_match),
         mismatches_with(
-            HTML, matches_regexp(r"got HTML with tag name=['<]h1['>] values \['<h1 class=\"bacon egg\">chips</h1>'\]")
+            HTML,
+            matches_regexp(
+                r"got HTML with tag name=['<]h1['>] values \['<h1 class=\"bacon egg\">chips</h1>'\]"
+            ),
         ),
     )
 
@@ -130,7 +150,11 @@ def test_has_id_tag():
     assert_that(HTML, not_(should_not_match_2))
     assert_that(
         should_match,
-        has_string(matches_regexp(r"HTML with tag id=['<]fish['>] matching tag with class matching 'banana'")),
+        has_string(
+            matches_regexp(
+                r"HTML with tag id=['<]fish['>] matching tag with class matching 'banana'"
+            )
+        ),
     )
     assert_that(
         should_not_match_1,
@@ -143,7 +167,8 @@ def test_has_id_tag():
         ),
     )
     assert_that(
-        should_not_match_2, mismatches_with(HTML, matches_regexp(r"got HTML with tag id=['<]grrgug['>] values \[\]"))
+        should_not_match_2,
+        mismatches_with(HTML, matches_regexp(r"got HTML with tag id=['<]grrgug['>] values \[\]")),
     )
 
 
@@ -270,7 +295,8 @@ def test_has_id():
     assert_that(
         should_match,
         has_string(
-            "HTML with tag name='div' matching tag with attributes matching " "a dictionary containing ['id': 'fish']"
+            "HTML with tag name='div' matching tag with attributes matching "
+            "a dictionary containing ['id': 'fish']"
         ),
     )
     assert_that(
@@ -289,7 +315,10 @@ def test_has_attributes():
 
     assert_that(HTML, should_match)
     assert_that(HTML, not_(should_not_match))
-    assert_that(should_match, has_string(contains_string("attributes matching a dictionary containing {'id': 'fish'}")))
+    assert_that(
+        should_match,
+        has_string(contains_string("attributes matching a dictionary containing {'id': 'fish'}")),
+    )
     assert_that(
         should_not_match,
         mismatches_with(
@@ -313,8 +342,12 @@ def test_has_row_with_link():
     # Given
     soup = BeautifulSoup(HTML, "html.parser")
     table = soup.table
-    should_match = has_row(index_matches=3, cells_match=has_item(has_link(href=with_path("/thebar"))))
-    should_not_match_1 = has_row(index_matches=3, cells_match=has_item(has_link(href=with_path("/cup-of-tea"))))
+    should_match = has_row(
+        index_matches=3, cells_match=has_item(has_link(href=with_path("/thebar")))
+    )
+    should_not_match_1 = has_row(
+        index_matches=3, cells_match=has_item(has_link(href=with_path("/cup-of-tea")))
+    )
 
     # Then
     assert_that(table, should_match)

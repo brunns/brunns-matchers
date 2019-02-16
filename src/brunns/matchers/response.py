@@ -1,13 +1,15 @@
 # encoding=utf-8
-from hamcrest import equal_to, anything
+from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.core.isanything import IsAnything
-from hamcrest.core.matcher import Matcher
+from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 ANYTHING = anything()
 
 
-def response_with(status_code=ANYTHING, body=ANYTHING, content=ANYTHING, json=ANYTHING, headers=ANYTHING):
+def response_with(
+    status_code=ANYTHING, body=ANYTHING, content=ANYTHING, json=ANYTHING, headers=ANYTHING
+):
     """Matches :requests.models.Response:.
     :param status_code: Expected status code
     :type status_code: int or Matcher
@@ -22,17 +24,21 @@ def response_with(status_code=ANYTHING, body=ANYTHING, content=ANYTHING, json=AN
     :return: Matcher
     :rtype: Matcher(requests.models.Response)
     """
-    return ResponseMatcher(status_code=status_code, body=body, content=content, json=json, headers=headers)
+    return ResponseMatcher(
+        status_code=status_code, body=body, content=content, json=json, headers=headers
+    )
 
 
 class ResponseMatcher(BaseMatcher):
-    def __init__(self, status_code=ANYTHING, body=ANYTHING, content=ANYTHING, json=ANYTHING, headers=ANYTHING):
+    def __init__(
+        self, status_code=ANYTHING, body=ANYTHING, content=ANYTHING, json=ANYTHING, headers=ANYTHING
+    ):
         super(ResponseMatcher, self).__init__()
-        self.status_code = status_code if isinstance(status_code, Matcher) else equal_to(status_code)
-        self.body = body if isinstance(body, Matcher) else equal_to(body)
-        self.content = content if isinstance(content, Matcher) else equal_to(content)
-        self.json = json if isinstance(json, Matcher) else equal_to(json)
-        self.headers = headers if isinstance(headers, Matcher) else equal_to(headers)
+        self.status_code = wrap_matcher(status_code)
+        self.body = wrap_matcher(body)
+        self.content = wrap_matcher(content)
+        self.json = wrap_matcher(json)
+        self.headers = wrap_matcher(headers)
 
     def _matches(self, response):
         return (
@@ -68,7 +74,9 @@ class ResponseMatcher(BaseMatcher):
     def describe_mismatch(self, response, mismatch_description):
         mismatch_description.append_text("was response with status code: ").append_description_of(
             response.status_code
-        ).append_text(" body: ").append_description_of(response.text).append_text(" content: ").append_description_of(
+        ).append_text(" body: ").append_description_of(response.text).append_text(
+            " content: "
+        ).append_description_of(
             response.content
         ).append_text(
             " json: "

@@ -11,7 +11,9 @@ logger = logging.getLogger(__name__)
 def has_table(table):
     select = "SELECT * FROM {0};".format(table)  # nosec
     return described_as(
-        "DB connection has table named %0", given_select_returns_rows_matching(select, anything()), table
+        "DB connection has table named %0",
+        given_select_returns_rows_matching(select, anything()),
+        table,
     )
 
 
@@ -49,9 +51,9 @@ class SelectReturnsRowsMatching(BaseMatcher):
         return rows
 
     def describe_to(self, description):
-        description.append_text("DB connection for which statement ").append_description_of(self.select).append_text(
-            " returns rows matching "
-        ).append_description_of(self.row_matcher)
+        description.append_text("DB connection for which statement ").append_description_of(
+            self.select
+        ).append_text(" returns rows matching ").append_description_of(self.row_matcher)
 
     def describe_mismatch(self, conn, mismatch_description):
         try:

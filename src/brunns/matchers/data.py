@@ -1,9 +1,8 @@
 # encoding=utf-8
 import json
 
-from hamcrest import equal_to
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.matcher import Matcher
+from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 
 def json_matching(matcher):
@@ -17,7 +16,7 @@ def json_matching(matcher):
 
 class JsonMatching(BaseMatcher):
     def __init__(self, matcher):
-        self.matcher = matcher if isinstance(matcher, Matcher) else equal_to(matcher)
+        self.matcher = wrap_matcher(matcher)
 
     def describe_to(self, description):
         description.append_text("JSON structure matching ").append_description_of(self.matcher)

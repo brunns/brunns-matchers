@@ -1,10 +1,10 @@
 # encoding=utf-8
 import difflib
 
-from hamcrest import equal_to, anything, not_
+from hamcrest import anything, not_
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.core.isequal import IsEqual
-from hamcrest.core.matcher import Matcher
+from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.string_description import StringDescription
 
 
@@ -24,9 +24,7 @@ class MismatchesWith(BaseMatcher):
     def __init__(self, value_not_to_match, expected_message):
         super(MismatchesWith, self).__init__()
         self.value_not_to_match = value_not_to_match
-        self.expected_message = (
-            expected_message if isinstance(expected_message, Matcher) else equal_to(expected_message)
-        )
+        self.expected_message = wrap_matcher(expected_message)
 
     def _matches(self, matcher_under_test):
         actual = StringDescription()
@@ -44,7 +42,9 @@ class MismatchesWith(BaseMatcher):
             description.append_text("matched")
             return
         description.append_text("got message ").append_description_of(actual_message)
-        if isinstance(self.expected_message, IsEqual) and isinstance(self.expected_message.object, str):
+        if isinstance(self.expected_message, IsEqual) and isinstance(
+            self.expected_message.object, str
+        ):
             differ = difflib.Differ()
             diff = differ.compare([self.expected_message.object], [actual_message.out])
             description.append_text("\ndiff:\n").append_text("\n".join(diff))

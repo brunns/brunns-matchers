@@ -47,5 +47,11 @@ setup(
         "Topic :: Software Development :: Testing",
     ],
     python_requires=">=3.4",
-    install_requires=["furl~=2.0", "pyhamcrest~=1.9", "pytest~=4.0", "beautifulsoup4~=4.0", "brunns-row~=2.0"],
+    install_requires=[
+        "furl~=2.0",
+        "pyhamcrest~=1.9",
+        "pytest~=4.0",
+        "beautifulsoup4~=4.0",
+        "brunns-row~=2.0",
+    ],
 )

@@ -46,7 +46,10 @@ def test_identical_properties():
     # Then
     assert_that(a, has_identical_properties_to(b))
     assert_that(a, not_(has_identical_properties_to(c)))
-    assert_that(has_identical_properties_to(a), has_string("object with identical properties to object {0}".format(a)))
+    assert_that(
+        has_identical_properties_to(a),
+        has_string("object with identical properties to object {0}".format(a)),
+    )
     assert_that(has_identical_properties_to(a), mismatches_with(c, "was {0}".format(c)))
 
 

@@ -1,7 +1,8 @@
 # encoding=utf-8
 from bs4 import BeautifulSoup, Tag
-from hamcrest import equal_to, has_item, anything, contains, all_of, has_entry
+from hamcrest import has_item, anything, contains, all_of, has_entry
 from hamcrest.core.base_matcher import BaseMatcher
+from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 
 ANYTHING = anything()
@@ -33,7 +34,10 @@ def has_table(matcher, id_=ANYTHING):
 
 def has_row(row_matches=ANYTHING, cells_match=ANYTHING, index_matches=ANYTHING, header_row=False):
     return TableHasRow(
-        row_matcher=row_matches, cells_matcher=cells_match, index_matcher=index_matches, header_row=header_row
+        row_matcher=row_matches,
+        cells_matcher=cells_match,
+        index_matcher=index_matches,
+        header_row=header_row,
     )
 
 
@@ -97,10 +101,10 @@ class HtmlWithTag(BaseMatcher):
 
 class TagWith(BaseMatcher):
     def __init__(self, name=ANYTHING, string=ANYTHING, clazz=ANYTHING, attributes=ANYTHING):
-        self.name = name if isinstance(name, Matcher) else equal_to(name)
-        self.string = string if isinstance(string, Matcher) else equal_to(string)
-        self.clazz = clazz if isinstance(clazz, Matcher) else equal_to(clazz)
-        self.attributes = attributes if isinstance(attributes, Matcher) else equal_to(attributes)
+        self.name = wrap_matcher(name)
+        self.string = wrap_matcher(string)
+        self.clazz = wrap_matcher(clazz)
+        self.attributes = wrap_matcher(attributes)
 
     def _matches(self, tag):
         return (
@@ -138,16 +142,20 @@ class HtmlHasTable(BaseMatcher):
 
 
 class TableHasRow(BaseMatcher):
-    def __init__(self, row_matcher=ANYTHING, cells_matcher=ANYTHING, header_row=False, index_matcher=ANYTHING):
+    def __init__(
+        self, row_matcher=ANYTHING, cells_matcher=ANYTHING, header_row=False, index_matcher=ANYTHING
+    ):
         self.row_matcher = row_matcher
         self.cells_matcher = cells_matcher
         self.header_row = header_row
-        self.index_matcher = index_matcher if isinstance(index_matcher, Matcher) else equal_to(index_matcher)
+        self.index_matcher = wrap_matcher(index_matcher)
 
     def _matches(self, table):
         rows = table.find_all("tr")
         rows_and_cells = ((row, self._row_cells(row)) for row in rows if self._row_cells(row))
-        indexed_rows_and_cells = [(index, row, cells) for index, (row, cells) in enumerate(rows_and_cells)]
+        indexed_rows_and_cells = [
+            (index, row, cells) for index, (row, cells) in enumerate(rows_and_cells)
+        ]
         indexed_row_matcher = contains(self.index_matcher, self.row_matcher, self.cells_matcher)
         return has_item(indexed_row_matcher).matches(indexed_rows_and_cells)
 
@@ -168,4 +176,6 @@ class TableHasRow(BaseMatcher):
 
     def describe_mismatch(self, table, mismatch_description):
         super(TableHasRow, self).describe_mismatch(table, mismatch_description)
-        mismatch_description.append_text("\n\nfound rows:\n").append_list("", "\n", "", table.find_all("tr"))
+        mismatch_description.append_text("\n\nfound rows:\n").append_list(
+            "", "\n", "", table.find_all("tr")
+        )

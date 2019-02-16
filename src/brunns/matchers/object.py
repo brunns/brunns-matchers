@@ -1,7 +1,15 @@
 # encoding=utf-8
-from hamcrest import equal_to, not_, greater_than_or_equal_to, greater_than, less_than_or_equal_to, less_than, all_of
+from hamcrest import (
+    not_,
+    greater_than_or_equal_to,
+    greater_than,
+    less_than_or_equal_to,
+    less_than,
+    all_of,
+)
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.matcher import Matcher
+
+from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 
 def has_repr(expected):
@@ -17,7 +25,7 @@ class HasRepr(BaseMatcher):
     """object with repr() matching"""
 
     def __init__(self, expected):
-        self.expected = expected if isinstance(expected, Matcher) else equal_to(expected)
+        self.expected = wrap_matcher(expected)
 
     def _matches(self, actual):
         return self.expected.matches(repr(actual))
@@ -43,7 +51,9 @@ class HasIdenticalPropertiesTo(BaseMatcher):
         return actual.__dict__ == self.expected.__dict__
 
     def describe_to(self, description):
-        description.append_text("object with identical properties to object ").append_description_of(self.expected)
+        description.append_text(
+            "object with identical properties to object "
+        ).append_description_of(self.expected)
 
 
 class Truthy(BaseMatcher):

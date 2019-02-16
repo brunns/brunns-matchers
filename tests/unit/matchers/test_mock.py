@@ -25,9 +25,13 @@ def test_call_has_positional_arg():
         has_string("mock.call with argument index <1> matching a string containing 'eco'"),
     )
     assert_that(
-        call_has_arg(1, "fifth"), mismatches_with(call, "got mock.call with argument index <1> with value 'second'")
+        call_has_arg(1, "fifth"),
+        mismatches_with(call, "got mock.call with argument index <1> with value 'second'"),
     )
-    assert_that(call_has_arg(4, "nope"), mismatches_with(call, "got mock.call with without argument index <4>"))
+    assert_that(
+        call_has_arg(4, "nope"),
+        mismatches_with(call, "got mock.call with without argument index <4>"),
+    )
 
 
 def test_call_has_keyword_arg():
@@ -48,9 +52,13 @@ def test_call_has_keyword_arg():
         has_string("mock.call with keyword argument 's' matching a string containing 'eco'"),
     )
     assert_that(
-        call_has_arg("s", "fifth"), mismatches_with(call, "got mock.call with keyword argument 's' with value 'second'")
+        call_has_arg("s", "fifth"),
+        mismatches_with(call, "got mock.call with keyword argument 's' with value 'second'"),
     )
-    assert_that(call_has_arg("n", "nope"), mismatches_with(call, "got mock.call with without keyword argument 'n'"))
+    assert_that(
+        call_has_arg("n", "nope"),
+        mismatches_with(call, "got mock.call with without keyword argument 'n'"),
+    )
 
 
 def test_call_has_args():
@@ -66,14 +74,18 @@ def test_call_has_args():
     assert_that(call, not_(call_has_args("first", "second", "third", key="banana")))
     assert_that(call, not_(call_has_args("first", "second", "third", "sam", key="banana")))
     assert_that(call, not_(call_has_args("first", "second", "third", key="forth", another="fred")))
-    assert_that(call, call_has_args("first", contains_string("eco"), "third", key=contains_string("ort")))
+    assert_that(
+        call, call_has_args("first", contains_string("eco"), "third", key=contains_string("ort"))
+    )
     assert_that(
         call_has_args("first", "second", key="banana"),
         has_string("mock.call with arguments ('first', 'second', key='banana')"),
     )
     assert_that(
         call_has_args("first", "second", "third", key="banana"),
-        mismatches_with(call, contains_string("got arguments ('first', 'second', 'third', key='forth')")),
+        mismatches_with(
+            call, contains_string("got arguments ('first', 'second', 'third', key='forth')")
+        ),
     )
 
 
@@ -93,7 +105,11 @@ def test_has_call():
     # Then
     assert_that(method, has_call(call_has_args("first")))
     assert_that(method, not_(has_call(call_has_args("chips"))))
-    assert_that(has_call(call_has_args("first")), has_string("has call matching mock.call with arguments ('first')"))
     assert_that(
-        has_call(call_has_args("chips")), mismatches_with(method, contains_string("""got calls ["call('first'"""))
+        has_call(call_has_args("first")),
+        has_string("has call matching mock.call with arguments ('first')"),
+    )
+    assert_that(
+        has_call(call_has_args("chips")),
+        mismatches_with(method, contains_string("""got calls ["call('first'""")),
     )

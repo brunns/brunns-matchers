@@ -2,9 +2,9 @@
 import logging
 
 import furl
-from hamcrest import anything, equal_to
+from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.matcher import Matcher
+from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 logger = logging.getLogger(__name__)
 ANYTHING = anything()
@@ -21,13 +21,17 @@ def with_path(matcher):
 class UrlWith(BaseMatcher):
     def __init__(self, host=ANYTHING, path=ANYTHING, query=ANYTHING):
         super(UrlWith, self).__init__()
-        self.host = host if isinstance(host, Matcher) else equal_to(host)
-        self.path = path if isinstance(path, Matcher) else equal_to(path)
-        self.query = query if isinstance(query, Matcher) else equal_to(query)
+        self.host = wrap_matcher(host)
+        self.path = wrap_matcher(path)
+        self.query = wrap_matcher(query)
 
     def _matches(self, url):
         url = url if isinstance(url, furl.furl) else furl.furl(url)
-        return self.host.matches(url.host) and self.path.matches(url.path) and self.query.matches(url.query)
+        return (
+            self.host.matches(url.host)
+            and self.path.matches(url.path)
+            and self.query.matches(url.query)
+        )
 
     def describe_to(self, description):
         description.append_text("URL with")

@@ -5,7 +5,9 @@ import string
 from email.mime.text import MIMEText
 
 
-def a_message(to_name=None, to_email=None, from_name=None, from_email=None, subject=None, body_text=None):
+def a_message(
+    to_name=None, to_email=None, from_name=None, from_email=None, subject=None, body_text=None
+):
     to_name = to_name or a_string()
     to_email = to_email or an_email_address()
     from_name = from_name or a_string()

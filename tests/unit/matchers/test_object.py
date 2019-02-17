@@ -70,15 +70,22 @@ def test_between():
     # Then
     assert_that(r, between(1, 3))
     assert_that(r, not_(between(4, 6)))
-    assert_that(between(1, 3), has_string("(a value greater than <1> and a value less than <3>)"))
+    assert_that(
+        between(1, 3),
+        has_string("(a value greater than or equal to <1> and a value less than or equal to <3>)"),
+    )
+    assert_that(
+        between(1, 3, lower_inclusive=False, upper_inclusive=False),
+        has_string("(a value greater than <1> and a value less than <3>)"),
+    )
     assert_that(between(4, 6), mismatches_with(3, contains_string("was <3>")))
 
 
-def test_between_inclusive():
-    assert_that(3, not_(between(1, 3)))
-    assert_that(3, between(1, 3, upper_inclusive=True))
-    assert_that(1, not_(between(1, 3)))
-    assert_that(1, between(1, 3, lower_inclusive=True))
+def test_between_exclusive():
+    assert_that(3, not_(between(1, 3, upper_inclusive=False)))
+    assert_that(3, between(1, 3))
+    assert_that(1, not_(between(1, 3, lower_inclusive=False)))
+    assert_that(1, between(1, 3))
 
 
 def test_between_dates():
@@ -92,7 +99,9 @@ def test_between_dates():
     assert_that(date, not_(between(datetime.date(1968, 7, 22), datetime.date(1968, 7, 24))))
     assert_that(
         between(datetime.date(1968, 7, 20), datetime.date(1968, 7, 22)),
-        has_string("(a value greater than <1968-07-20> and a value less than <1968-07-22>)"),
+        has_string(
+            "(a value greater than or equal to <1968-07-20> and a value less than or equal to <1968-07-22>)"
+        ),
     )
     assert_that(
         between(datetime.date(1968, 7, 22), datetime.date(1968, 7, 24)),

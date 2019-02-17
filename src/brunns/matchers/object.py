@@ -78,7 +78,7 @@ def false():
     return not_(true())
 
 
-def between(lower, upper, lower_inclusive=False, upper_inclusive=False):
+def between(lower, upper, lower_inclusive=True, upper_inclusive=True):
     return all_of(
         greater_than_or_equal_to(lower) if lower_inclusive else greater_than(lower),
         less_than_or_equal_to(upper) if upper_inclusive else less_than(upper),

@@ -43,7 +43,8 @@ class SelectReturnsRowsMatching(BaseMatcher):
         except Exception:
             return False
 
-    def _get_rows(self, conn, select):
+    @staticmethod
+    def _get_rows(conn, select):
         cursor = conn.cursor()
         cursor.execute(select)
         wrapper = RowWrapper(cursor.description)

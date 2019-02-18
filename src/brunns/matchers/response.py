@@ -67,7 +67,8 @@ class ResponseMatcher(BaseMatcher):
         self._append_matcher_descrption(description, self.json, "json")
         self._append_matcher_descrption(description, self.headers, "headers")
 
-    def _append_matcher_descrption(self, description, matcher, text):
+    @staticmethod
+    def _append_matcher_descrption(description, matcher, text):
         if not isinstance(matcher, IsAnything):
             description.append_text(" {0}: ".format(text)).append_description_of(matcher)
 

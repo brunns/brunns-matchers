@@ -17,9 +17,7 @@ Various custom [PyHamcrest](https://pyhamcrest.readthedocs.io) matchers.
 [![GitHub pull-requests](https://img.shields.io/github/issues-pr/brunns/brunns-matchers.svg?logo=github)](https://github.com/brunns/brunns-matchers/pulls)
 [![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/brunns/brunns-matchers.svg?logo=github)](https://github.com/brunns/brunns-matchers/pulls?utf8=%E2%9C%93&q=is%3Apr+is%3Aclosed)
 [![Coverage](https://img.shields.io/coveralls/github/brunns/brunns-matchers.svg)](https://coveralls.io/github/brunns/brunns-matchers)
-[![Scrtinizer Status](https://img.shields.io/scrutinizer/g/brunns/brunns-matchers/master.png?label=code+quality)](https://scrutinizer-ci.com/g/brunns/brunns-matchers/)
-[![Lines of Code](https://tokei.rs/b1/github/brunns/brunns-matchers)](https://github.com/brunns/brunns-matchers)
-
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0b22e28c2ebe4722899a07c4cfa5bc69)](https://www.codacy.com/app/brunns/brunns-matchers?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=brunns/brunns-matchers&amp;utm_campaign=Badge_Grade)[![Lines of Code](https://tokei.rs/b1/github/brunns/brunns-matchers)](https://github.com/brunns/brunns-matchers)
 
 ## Setup
 

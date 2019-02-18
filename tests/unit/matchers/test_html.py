@@ -30,7 +30,8 @@ from brunns.matchers.html import (
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.url import to_host, with_path
 
-HTML = """<html>
+HTML = """\
+<html>
     <head>
         <title>sausages</title>
         <meta charset="utf-8"/>
@@ -52,7 +53,8 @@ HTML = """<html>
             </tbody>
         </table>
     </body>
-</html>"""
+</html>
+"""
 
 
 def test_has_title():

@@ -9,10 +9,12 @@ from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 ANYTHING = anything()
 
 
-def email_with(to_name=ANYTHING, subject=ANYTHING, body_text=ANYTHING):
+def email_with(to_name=ANYTHING, to_address=ANYTHING, subject=ANYTHING, body_text=ANYTHING):
     """Match email with
     :param to_name:
     :type to_name: Matcher(str) or str
+    :param to_address:
+    :type to_address: Matcher(str) or str
     :param subject:
     :type subject: Matcher(str) or str
     :param body_text:
@@ -20,12 +22,13 @@ def email_with(to_name=ANYTHING, subject=ANYTHING, body_text=ANYTHING):
     :return: Matcher
     :rtype: Matcher(str)
     """
-    return EmailWith(to_name, subject, body_text)
+    return EmailWith(to_name=to_name, to_address=to_address, subject=subject, body_text=body_text)
 
 
 class EmailWith(BaseMatcher):
-    def __init__(self, to_name=ANYTHING, subject=ANYTHING, body_text=ANYTHING):
+    def __init__(self, to_name=ANYTHING, to_address=ANYTHING, subject=ANYTHING, body_text=ANYTHING):
         self.to_name = wrap_matcher(to_name)
+        self.to_address = wrap_matcher(to_address)
         self.subject = wrap_matcher(subject)
         self.body_text = wrap_matcher(body_text)
 
@@ -35,6 +38,7 @@ class EmailWith(BaseMatcher):
         )
         return (
             self.to_name.matches(actual_to_name)
+            and self.to_address.matches(actual_to_address)
             and self.subject.matches(actual_subject)
             and self.body_text.matches(actual_body_text)
         )
@@ -49,8 +53,8 @@ class EmailWith(BaseMatcher):
 
     def describe_to(self, description):
         description.append_text(
-            "email with to_name {0} subject {1} body_text {2}".format(
-                self.to_name, self.subject, self.body_text
+            "email with to_name {0} to_address {1} subject {2} body_text {3}".format(
+                self.to_name, self.to_address, self.subject, self.body_text
             )
         )
 
@@ -60,7 +64,11 @@ class EmailWith(BaseMatcher):
         )
         mismatch_description.append_text("was to_name ").append_description_of(
             actual_to_name
-        ).append_text(" subject ").append_description_of(actual_subject).append_text(
+        ).append_text(" to_address ").append_description_of(actual_to_address).append_text(
+            " subject "
+        ).append_description_of(
+            actual_subject
+        ).append_text(
             " body_text "
         ).append_description_of(
             actual_body_text

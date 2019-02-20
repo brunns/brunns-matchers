@@ -53,5 +53,6 @@ setup(
         "pytest~=4.0",
         "beautifulsoup4~=4.0",
         "brunns-row~=2.0",
+        "pendulum~=2.0",
     ],
 )

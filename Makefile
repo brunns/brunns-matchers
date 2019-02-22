@@ -17,6 +17,9 @@ flake8:
 bandit:
 	tox -e bandit
 
+pylint:
+	tox -e pylint
+
 safety:
 	tox -e safety
 

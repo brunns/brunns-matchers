@@ -28,8 +28,8 @@ class MismatchesWith(BaseMatcher):
 
     def _matches(self, matcher_under_test):
         actual = StringDescription()
-        matches = matcher_under_test.matches(self.value_not_to_match, actual)
-        return not matches and self.expected_message.matches(actual.out)
+        matched = matcher_under_test.matches(self.value_not_to_match, actual)
+        return not matched and self.expected_message.matches(actual.out)
 
     def describe_to(self, description):
         description.append_text("a matcher which mismatches the value ").append_description_of(

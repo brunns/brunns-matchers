@@ -9,8 +9,7 @@ from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 def call_has_arg(arg, expected):
     if isinstance(arg, Number):
         return CallHasPositionalArg(arg, expected)
-    else:
-        return CallHasKeywordArg(arg, expected)
+    return CallHasKeywordArg(arg, expected)
 
 
 class CallHasPositionalArg(BaseMatcher):

@@ -61,11 +61,10 @@ class SelectReturnsRowsMatching(BaseMatcher):
             rows = self._get_rows(conn, self.select)
             self.row_matcher.describe_mismatch(rows, mismatch_description)
         except Exception as e:
-            return (
-                mismatch_description.append_text("SQL statement ")
-                .append_description_of(self.select)
-                .append_text(" gives ")
-                .append_description_of(type(e).__name__)
-                .append_text(" ")
-                .append_description_of(e)
+            mismatch_description.append_text("SQL statement ").append_description_of(
+                self.select
+            ).append_text(" gives ").append_description_of(type(e).__name__).append_text(
+                " "
+            ).append_description_of(
+                e
             )

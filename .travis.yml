@@ -1,7 +1,5 @@
 language: python
 matrix:
- allow_failures:
-  - os: windows
  include:
   - python: 3.4
     env:
@@ -49,6 +47,7 @@ matrix:
   - python: 3.6
     env:
      - TOX_ENV=publish-coverage
+     - secure: "BM1wnrYZkElNVvWT2q8MafzMDGpxvqnVFzAUEHg1pHD2R+aiqxM9m1W+/SttFKgICocZvOKFpAg5XeZ9tVI1wCTp6Zs9IWykgz/X/eLccH4iArtxrI/L1mfGUMZRJNqdEmk3UKwhbH3RGkWmQjntqezkkUAJDj9E/TAb5fK6NqS61WLRCs9zVFa7WOfY88rZqzsz0LeI/Fn4XOH3q0YI+bOfSUmwyJ5JlVo5OaahBCTopovCyGf3xNKcygQcBaRPFCdyjF1pzCGHwepupg3wO9XIyp1UYmYTnCJiwe8OnN0SVBG0qIG+SofrnFgOARLglWRTNLtGQkpcRCN10q6ZqGiBlGbxrR9K7SCveq1zQVeWqn7p0vP7g15jAmq4Tte9X+NErIuV17OB7kNRA8wg54qjj02cMZBDt+J3X0W1uxp4+yIENpbg4u9KFlWG/UmeAmeYNiM29zKt4IT+R1Gffjdt8opW5e0P4cFc4Nbi9FB6K8rH+tRusKC1qtRn1Amfzzhc+vXnTGEuYCMMgUIGJ1z2o4FaZ6ZXjaNUsozrDjRnj41Qs0jtREvGyeKWdejsg0GoTI3qna6XgAAIyOrFZea1e3CKAe860DAJ6r4mDdClz6Hubw2B32RHqpSggU2wHkEXrRmJ/FkxWGZK2b251dsdqEWcyMWBVc53JVeQNzc="
 install:
  - pip install --upgrade tox
 script:

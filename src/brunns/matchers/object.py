@@ -48,12 +48,21 @@ class HasIdenticalPropertiesTo(BaseMatcher):
         self.expected = expected
 
     def _matches(self, actual):
-        return actual.__dict__ == self.expected.__dict__
+        return equal_vars(actual, self.expected)
 
     def describe_to(self, description):
         description.append_text(
             "object with identical properties to object "
         ).append_description_of(self.expected)
+
+
+def equal_vars(left, right):
+    lvars = vars(left)
+    rvars = vars(right)
+    return lvars.keys() == rvars.keys() and all(
+        equal_vars(rvars[k], v) if hasattr(v, "__dict__") else rvars[k] == v
+        for k, v in lvars.items()
+    )
 
 
 class Truthy(BaseMatcher):

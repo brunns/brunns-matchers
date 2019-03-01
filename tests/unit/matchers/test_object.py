@@ -41,7 +41,34 @@ def test_identical_properties():
     b = OtherClass(1, 2)
     c = YetAnotherClass(1, 3)
 
-    # When
+    # Then
+    assert_that(a, has_identical_properties_to(b))
+    assert_that(a, not_(has_identical_properties_to(c)))
+    assert_that(
+        has_identical_properties_to(a),
+        has_string("object with identical properties to object {0}".format(a)),
+    )
+    assert_that(has_identical_properties_to(a), mismatches_with(c, "was {0}".format(c)))
+
+
+def test_nested_identical_properties():
+    # Given
+    class SomeClass(object):
+        def __init__(self, a, b, c):
+            self.a = a
+            self.b = b
+            self._c = c
+
+        @property
+        def c(self):
+            return self._c
+
+        def some_method(self):
+            pass
+
+    a = SomeClass(1, SomeClass(2, 3, 4), 4)
+    b = SomeClass(1, SomeClass(2, 3, 4), 4)
+    c = SomeClass(1, SomeClass(2, 4, 5), 6)
 
     # Then
     assert_that(a, has_identical_properties_to(b))

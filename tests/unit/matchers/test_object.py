@@ -4,7 +4,14 @@ import datetime
 from hamcrest import assert_that, contains_string, has_string, not_
 
 from brunns.matchers.matcher import mismatches_with
-from brunns.matchers.object import has_repr, has_identical_properties_to, false, true, between
+from brunns.matchers.object import (
+    has_repr,
+    has_identical_properties_to,
+    false,
+    true,
+    between,
+    equal_vars,
+)
 
 
 def test_has_repr():
@@ -78,6 +85,37 @@ def test_nested_identical_properties():
         has_string("object with identical properties to object {0}".format(a)),
     )
     assert_that(has_identical_properties_to(a), mismatches_with(c, "was {0}".format(c)))
+
+
+def test_equal_vars():
+    # Given
+    class SomeClass(object):
+        def __init__(self, a, b, c):
+            self.a = a
+            self.b = b
+            self._c = c
+
+        @property
+        def c(self):
+            return self._c
+
+    a = SomeClass(1, SomeClass(2, 3, 4), 4)
+    b = SomeClass(1, SomeClass(2, 3, 4), 4)
+    c = SomeClass(1, SomeClass(2, 4, 5), 6)
+    d = SomeClass(1, SomeClass(2, 4, 5), SomeClass(2, 4, 5))
+
+    # Then
+    assert equal_vars(a, b)
+    assert equal_vars(b, a)
+    assert not equal_vars(a, c)
+    assert not equal_vars(c, a)
+    assert not equal_vars(a, d)
+    assert not equal_vars(d, a)
+    assert not equal_vars(a, "string")
+    assert not equal_vars("string", a)
+
+    b.d = "foo"
+    assert not equal_vars(a, b)
 
 
 def test_truthy():

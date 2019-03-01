@@ -57,12 +57,12 @@ class HasIdenticalPropertiesTo(BaseMatcher):
 
 
 def equal_vars(left, right):
-    lvars = vars(left)
-    rvars = vars(right)
-    return lvars.keys() == rvars.keys() and all(
-        equal_vars(rvars[k], v) if hasattr(v, "__dict__") else rvars[k] == v
-        for k, v in lvars.items()
-    )
+    try:
+        lvars = vars(left)
+        rvars = vars(right)
+    except TypeError:
+        return left == right
+    return lvars.keys() == rvars.keys() and all(equal_vars(rvars[k], v) for k, v in lvars.items())
 
 
 class Truthy(BaseMatcher):

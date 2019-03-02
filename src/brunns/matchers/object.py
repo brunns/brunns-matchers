@@ -1,4 +1,6 @@
 # encoding=utf-8
+import inspect
+
 from hamcrest import (
     not_,
     greater_than_or_equal_to,
@@ -57,12 +59,28 @@ class HasIdenticalPropertiesTo(BaseMatcher):
 
 
 def equal_vars(left, right):
+    """Test if two objects are equal using public vars() and properties if available, with == otherwise."""
     try:
-        lvars = vars(left)
-        rvars = vars(right)
+        left_vars = vars_and_properties(left)
+        right_vars = vars_and_properties(right)
+        if left_vars:
+            return left_vars.keys() == right_vars.keys() and all(
+                equal_vars(right_vars[key], value) for key, value in left_vars.items()
+            )
     except TypeError:
-        return left == right
-    return lvars.keys() == rvars.keys() and all(equal_vars(rvars[k], v) for k, v in lvars.items())
+        pass
+    return left == right
+
+
+def vars_and_properties(obj):
+    """Get an object's public vars() and properties. Raises TypeError if not an obcect with vars()/"""
+    vars_and_props = {key: value for key, value in vars(obj).items() if not key.startswith("_")}
+    classes = inspect.getmembers(obj, inspect.isclass)
+    for cls in classes:
+        props = inspect.getmembers(cls[1], lambda o: isinstance(o, property))
+        for prop in props:
+            vars_and_props[prop[0]] = getattr(obj, prop[0])
+    return vars_and_props
 
 
 class Truthy(BaseMatcher):

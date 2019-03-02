@@ -1,6 +1,9 @@
 # encoding=utf-8
 import datetime
+from pathlib import Path
 
+import pendulum
+from furl import furl
 from hamcrest import assert_that, contains_string, has_string, not_
 
 from brunns.matchers.matcher import mismatches_with
@@ -37,7 +40,11 @@ def test_identical_properties():
     class OtherClass(object):
         def __init__(self, a, b):
             self.a = a
-            self.b = b
+            self._b = b
+
+        @property
+        def b(self):
+            return self._b
 
     class YetAnotherClass(object):
         def __init__(self, a, b):
@@ -104,6 +111,18 @@ def test_equal_vars():
     c = SomeClass(1, SomeClass(2, 4, 5), 6)
     d = SomeClass(1, SomeClass(2, 4, 5), SomeClass(2, 4, 5))
 
+    date1 = pendulum.date(1968, 7, 21)
+    date2 = pendulum.date(1968, 7, 21)
+    date3 = pendulum.today()
+
+    path1 = Path("some/path")
+    path2 = Path("some/path")
+    path3 = Path("some/other/path")
+
+    url1 = furl("http://brunni.ng/path")
+    url2 = furl("http://brunni.ng/path")
+    url3 = furl("http://brunning.dev/path")
+
     # Then
     assert equal_vars(a, b)
     assert equal_vars(b, a)
@@ -111,11 +130,24 @@ def test_equal_vars():
     assert not equal_vars(c, a)
     assert not equal_vars(a, d)
     assert not equal_vars(d, a)
-    assert not equal_vars(a, "string")
-    assert not equal_vars("string", a)
 
     b.d = "foo"
     assert not equal_vars(a, b)
+
+    assert not equal_vars(a, "string")
+    assert not equal_vars("string", a)
+
+    assert not equal_vars(a, date1)
+    assert not equal_vars(date1, a)
+
+    assert equal_vars(date1, date2)
+    assert not equal_vars(date1, date3)
+
+    assert equal_vars(path1, path2)
+    assert not equal_vars(path1, path3)
+
+    assert equal_vars(url1, url2)
+    assert not equal_vars(url1, url3)
 
 
 def test_truthy():

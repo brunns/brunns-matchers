@@ -3,14 +3,19 @@ from hamcrest import assert_that, not_, has_string
 
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.smtp import email_with
-from tests.utils.builders import a_message
+from tests.utils.builders import email_message_builder
 
 
 def test_email_matcher():
     # Given
-    m = a_message(
-        to_name="fred", to_address="simon@brunni.ng", subject="chips", body_text="bananas"
-    ).as_string()
+    m = (
+        email_message_builder()
+        .with_to_name("fred")
+        .with_to_email_address("simon@brunni.ng")
+        .with_subject("chips")
+        .with_body_text("bananas")
+        .value.as_string()
+    )
 
     # When
 

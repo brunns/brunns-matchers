@@ -36,6 +36,11 @@ class TestObjectBuilder(metaclass=abc.ABCMeta):
                 return self
 
             return with_
+        else:
+            return getattr(self.value, item)
+
+    def __getitem__(self, item):
+        return self.value[item]
 
 
 def an_email_message():

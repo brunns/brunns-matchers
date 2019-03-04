@@ -122,7 +122,7 @@ def test_equal_vars():
     furl_builder = url_builder()
     url1 = furl_builder.value
     url2 = furl_builder.value
-    url3 = furl_builder.with_host("example.com").value
+    url3 = furl_builder.with_host("example.com")
 
     # Then
     assert equal_vars(a, b)

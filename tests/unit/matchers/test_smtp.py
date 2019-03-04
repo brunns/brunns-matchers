@@ -14,7 +14,7 @@ def test_email_matcher():
         .with_to_email_address("simon@brunni.ng")
         .with_subject("chips")
         .with_body_text("bananas")
-        .value.as_string()
+        .as_string()
     )
 
     # When

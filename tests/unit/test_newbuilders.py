@@ -1,6 +1,9 @@
 # encoding=utf-8
+import email
 import logging
 import random
+import string
+from email.mime.text import MIMEText
 
 from furl import furl
 from hamcrest import has_properties, assert_that, instance_of, not_
@@ -103,3 +106,43 @@ def test_furl_builder():
 
     # Then
     assert_that(actual, instance_of(furl))
+
+
+def test_nested_builders():
+    # Given
+    class DomainBuilder(Builder):
+        subdomain = lambda: a_string(characters=string.ascii_lowercase)
+        tld = lambda: random.choice(["com", "net", "dev", "co.uk"])
+
+        def build(self):
+            return "{0}.{1}".format(self.subdomain, self.tld)
+
+    class EmailBuilder(Builder):
+        username = a_string
+        domain = DomainBuilder
+
+        def build(self):
+            return "{0}@{1}".format(self.username, self.domain)
+
+    class EmailMessageBuilder(Builder):
+        to_name = a_string
+        to_email_address = EmailBuilder
+        from_name = a_string
+        from_email_address = EmailBuilder
+        subject = a_string
+        body_text = a_string
+
+        def build(self):
+            message = MIMEText(self.body_text)
+            message["To"] = email.utils.formataddr((self.to_name, self.to_email_address))
+            message["From"] = email.utils.formataddr((self.from_name, self.from_email_address))
+            message["Subject"] = self.subject
+            return message
+
+    builder = EmailMessageBuilder()
+
+    # When
+    actual = builder.build()
+
+    # Then
+    assert_that(actual, instance_of(MIMEText))

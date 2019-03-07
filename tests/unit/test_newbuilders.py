@@ -13,7 +13,7 @@ from hamcrest import has_properties, assert_that, instance_of, not_
 
 from brunns.matchers.object import has_identical_properties_to, equal_vars
 from brunns.matchers.smtp import email_with
-from tests.utils.newbuilders import Builder, a_string, an_integer, one_of
+from tests.utils.newbuilders import Builder, a_string, an_integer, one_of, method
 
 logger = logging.getLogger(__name__)
 
@@ -21,14 +21,14 @@ logger = logging.getLogger(__name__)
 def test_all_defaults():
     # Given
     class SomeClass:
-        def __init__(self, a, b, c=None):
+        def __init__(self, a, b=None, c=None):
             self.a = a
             self.b = b
             self.c = c
 
     class SomeClassBuilder(Builder):
         target = SomeClass
-        a = lambda: 4
+        a = 4
         b = a_string
 
     builder = SomeClassBuilder()
@@ -41,6 +41,29 @@ def test_all_defaults():
     assert_that(actual, has_properties(a=4))
 
 
+def test_positional_args():
+    # Given
+    class SomeClass:
+        def __init__(self, a, b, c=None):
+            self.a = a
+            self.b = b
+            self.c = c
+
+    class SomeClassBuilder(Builder):
+        target = SomeClass
+        args = [1, 2]
+        c = "sausages"
+
+    builder = SomeClassBuilder()
+
+    # When
+    actual = builder.build()
+
+    # Then
+    assert_that(actual, instance_of(SomeClass))
+    assert_that(actual, has_properties(a=1, b=2, c="sausages"))
+
+
 def test_with_method():
     # Given
     class SomeClass:
@@ -51,7 +74,7 @@ def test_with_method():
 
     class SomeClassBuilder(Builder):
         target = SomeClass
-        a = lambda: 4
+        a = 4
         b = a_string
 
     builder = SomeClassBuilder()
@@ -74,7 +97,7 @@ def test_kwargs():
 
     class SomeClassBuilder(Builder):
         target = SomeClass
-        a = lambda: 4
+        a = 4
         b = a_string
 
     # When
@@ -83,6 +106,28 @@ def test_kwargs():
     # Then
     assert_that(actual, instance_of(SomeClass))
     assert_that(actual, has_properties(a=99))
+
+
+def test_values_and_factories():
+    # Given
+    class SomeClass:
+        def __init__(self, a, b):
+            self.a = a
+            self.b = b
+
+    class SomeClassBuilder(Builder):
+        target = SomeClass
+        a = 4
+        b = lambda: "sausages"
+
+    builder = SomeClassBuilder()
+
+    # When
+    actual = builder.build()
+
+    # Then
+    assert_that(actual, instance_of(SomeClass))
+    assert_that(actual, has_properties(a=4, b="sausages"))
 
 
 def test_multiple_builders():
@@ -204,11 +249,31 @@ def test_nested_builders():
             message["Subject"] = self.subject
             return message
 
-    builder = EmailMessageBuilder()
+    builder = EmailMessageBuilder(subject="Chips are nice")
 
     # When
     actual = builder.with_to_name("simon").build()
 
     # Then
     assert_that(actual, instance_of(MIMEText))
-    assert_that(actual.as_string(), email_with(to_name="simon"))
+    assert_that(actual.as_string(), email_with(to_name="simon", subject="Chips are nice"))
+
+
+def test_additional_methods():
+    # Given
+    class MethodUsingBuilder(Builder):
+        a = lambda: 4
+        b = lambda: 7
+
+        def build(self):
+            return self.some_maths()
+
+        @method
+        def some_maths(self):
+            return self.a + self.b
+
+    # When
+    actual = MethodUsingBuilder().build()
+
+    # Then
+    assert actual == 11

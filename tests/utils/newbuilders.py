@@ -33,19 +33,24 @@ class _BuilderMeta(type):
         def __init__(self, **kwargs):
             # Defaults from factories (plus method overrides.
             for name, value in namespace.items():
-                if name in {"build"}:  # It's an overridable base method.
+                if name in {"build"} or getattr(
+                    value, "is_method", False
+                ):  # It's an overridable base method.
                     m = MethodType(value, self)
                     setattr(self, name, m)
                 elif isclass(value) and issubclass(value, Builder):  # It's a nested builder.
                     setattr(self, name, value().build())
-                elif not name.startswith("__"):  # It's a field factory.
-                    setattr(self, name, value())
+                elif not name.startswith("__"):  # It's a field value or factory.
+                    if callable(value):
+                        setattr(self, name, value())
+                    else:
+                        setattr(self, name, value)
 
             # Values from keyword arguments.
             for name, value in kwargs.items():
                 setattr(self, name, value)
 
-            self.args = args()
+            self.args = args() if callable(args) else args
 
         def __getattr__(self, item):
             """Dynamic 'with_x' methods."""
@@ -77,3 +82,8 @@ class _BuilderMeta(type):
 
 class Builder(metaclass=_BuilderMeta):
     target = None
+
+
+def method(func):
+    func.is_method = True
+    return func

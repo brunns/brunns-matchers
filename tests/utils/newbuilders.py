@@ -28,6 +28,7 @@ def one_of(*args):
 class _BuilderMeta(type):
     def __new__(metacls, name, bases, namespace, **kwds):  # noqa: C901
         target = namespace.pop("target", None)
+        args = namespace.pop("args", lambda: [])
 
         def __init__(self, **kwargs):
             # Defaults from factories (plus method overrides.
@@ -44,6 +45,8 @@ class _BuilderMeta(type):
             for name, value in kwargs.items():
                 setattr(self, name, value)
 
+            self.args = args()
+
         def __getattr__(self, item):
             """Dynamic 'with_x' methods."""
             name = item.partition("with_")[2]
@@ -56,8 +59,10 @@ class _BuilderMeta(type):
                 return with_
 
         def build(self):
+            state = vars(self)
+            args = state.pop("args", [])
             if callable(target):
-                return target(**vars(self))
+                return target(*args, **state)
             else:
                 raise ValueError("Needs a callable factory.")
 

@@ -3,8 +3,11 @@ import email
 import logging
 import random
 import string
+from datetime import date
 from email.mime.text import MIMEText
+from pathlib import Path
 
+import pendulum
 from furl import furl
 from hamcrest import has_properties, assert_that, instance_of, not_
 
@@ -140,6 +143,34 @@ def test_furl_builder():
     assert equal_vars(url1, url2)
     assert not equal_vars(url1, url3)
     assert not equal_vars(url1, url4)
+
+
+def test_date_builder():
+    # Given
+    class DateBuilder(Builder):
+        target = pendulum.date
+        year = lambda: an_integer(1, 9999)
+        month = lambda: an_integer(1, 12)
+        day = lambda: an_integer(1, 28)
+
+    # When
+    actual = DateBuilder().build()
+
+    # Then
+    assert_that(actual, instance_of(date))
+
+
+def test_path_builder_and_positional_args():
+    # Given
+    class PathBuilder(Builder):
+        target = Path
+        args = lambda: [a_string(), a_string()]
+
+    # When
+    actual = PathBuilder().build()
+
+    # Then
+    assert_that(actual, instance_of(Path))
 
 
 def test_nested_builders():

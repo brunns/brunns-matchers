@@ -2,6 +2,7 @@
 import logging
 import random
 import string
+import sys
 from inspect import isclass
 from types import MethodType
 
@@ -13,26 +14,35 @@ def a_string(length=10, characters=string.ascii_letters + string.digits):
 
 
 def an_integer(a=None, b=None):
-    return random.randint(a, b)
+    return random.randint(a if a else 0, b if b else sys.maxsize)
 
 
 def a_boolean():
-    return random.choice([True, False])
+    return one_of(True, False)
+
+
+def one_of(*args):
+    return random.choice(args)
 
 
 class _BuilderMeta(type):
     def __new__(metacls, name, bases, namespace, **kwds):  # noqa: C901
         target = namespace.pop("target", None)
 
-        def __init__(self):
+        def __init__(self, **kwargs):
+            # Defaults from factories (plus method overrides.
             for name, value in namespace.items():
                 if name in {"build"}:  # It's an overridable base method.
                     m = MethodType(value, self)
                     setattr(self, name, m)
-                elif isclass(value) and issubclass(value, Builder):  # It's a nested builder
+                elif isclass(value) and issubclass(value, Builder):  # It's a nested builder.
                     setattr(self, name, value().build())
                 elif not name.startswith("__"):  # It's a field factory.
                     setattr(self, name, value())
+
+            # Values from keyword arguments.
+            for name, value in kwargs.items():
+                setattr(self, name, value)
 
         def __getattr__(self, item):
             """Dynamic 'with_x' methods."""
@@ -45,9 +55,6 @@ class _BuilderMeta(type):
 
                 return with_
 
-        def __getitem__(self, item):
-            return self.value[item]
-
         def build(self):
             if callable(target):
                 return target(**vars(self))
@@ -58,7 +65,6 @@ class _BuilderMeta(type):
 
         setattr(result, __init__.__name__, __init__)
         setattr(result, __getattr__.__name__, __getattr__)
-        setattr(result, __getitem__.__name__, __getitem__)
         setattr(result, build.__name__, build)
 
         return result

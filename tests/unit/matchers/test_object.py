@@ -3,6 +3,7 @@ import datetime
 from pathlib import Path
 
 import pendulum
+from brunns.builder.internet import UrlBuilder
 from hamcrest import assert_that, contains_string, has_string, not_
 
 from brunns.matchers.matcher import mismatches_with
@@ -14,7 +15,6 @@ from brunns.matchers.object import (
     between,
     equal_vars,
 )
-from tests.utils.builders import url_builder
 
 
 def test_has_repr():
@@ -119,10 +119,10 @@ def test_equal_vars():
     path2 = Path("some/path")
     path3 = Path("some/other/path")
 
-    furl_builder = url_builder()
-    url1 = furl_builder.value
-    url2 = furl_builder.value
-    url3 = furl_builder.with_host("example.com")
+    url_builder = UrlBuilder()
+    url1 = url_builder.build()
+    url2 = url_builder.build()
+    url3 = url_builder.with_host("example.com").build()
 
     # Then
     assert equal_vars(a, b)

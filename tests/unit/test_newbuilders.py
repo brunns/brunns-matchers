@@ -18,7 +18,7 @@ from tests.utils.newbuilders import Builder, a_string, an_integer, one_of, metho
 logger = logging.getLogger(__name__)
 
 
-def test_all_defaults():
+def test_builder_using_only_defaults():
     # Given
     class SomeClass:
         def __init__(self, a, b=None, c=None):
@@ -41,7 +41,7 @@ def test_all_defaults():
     assert_that(actual, has_properties(a=4))
 
 
-def test_positional_args():
+def test_building_using_positional_args():
     # Given
     class SomeClass:
         def __init__(self, a, b, c=None):
@@ -51,7 +51,7 @@ def test_positional_args():
 
     class SomeClassBuilder(Builder):
         target = SomeClass
-        args = [1, 2]
+        args = [1, lambda: 2]
         c = "sausages"
 
     builder = SomeClassBuilder()
@@ -64,7 +64,7 @@ def test_positional_args():
     assert_that(actual, has_properties(a=1, b=2, c="sausages"))
 
 
-def test_with_method():
+def test_setting_values_by_with_method():
     # Given
     class SomeClass:
         def __init__(self, a, b, c=None):
@@ -87,7 +87,7 @@ def test_with_method():
     assert_that(actual, has_properties(a=99))
 
 
-def test_kwargs():
+def test_setting_values_by_kwargs():
     # Given
     class SomeClass:
         def __init__(self, a, b, c=None):
@@ -130,7 +130,7 @@ def test_values_and_factories():
     assert_that(actual, has_properties(a=4, b="sausages"))
 
 
-def test_multiple_builders():
+def test_multiple_builders_do_not_interfere():
     # Given
     class SomeClass:
         def __init__(self, a, b, c=None):
@@ -205,7 +205,7 @@ def test_date_builder():
     assert_that(actual, instance_of(date))
 
 
-def test_path_builder_and_positional_args():
+def test_path_builder_with_positional_args():
     # Given
     class PathBuilder(Builder):
         target = Path

@@ -50,7 +50,9 @@ class _BuilderMeta(type):
             for name, value in kwargs.items():
                 setattr(self, name, value)
 
-            self.args = args() if callable(args) else args
+            self.args = (
+                args() if callable(args) else [arg() if callable(arg) else arg for arg in args]
+            )
 
         def __getattr__(self, item):
             """Dynamic 'with_x' methods."""

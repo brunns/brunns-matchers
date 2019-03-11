@@ -75,13 +75,13 @@ def equal_vars(left, right):
 
 def _equal_vars_for_non_objects(left, right):
     if (
-        isinstance(left, collections.Sequence)
+        isinstance(left, collections.abc.Sequence)
         and not isinstance(left, str)
-        and isinstance(right, collections.Sequence)
+        and isinstance(right, collections.abc.Sequence)
         and not isinstance(right, str)
     ):
         return all(equal_vars(l, r) for l, r in zip_longest(left, right))
-    elif isinstance(left, collections.Mapping) and isinstance(right, collections.Mapping):
+    elif isinstance(left, collections.abc.Mapping) and isinstance(right, collections.abc.Mapping):
         return left.keys() == right.keys() and all(
             equal_vars(right[key], value) for key, value in left.items()
         )

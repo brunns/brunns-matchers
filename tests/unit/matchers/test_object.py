@@ -151,6 +151,36 @@ def test_equal_vars():
     assert not equal_vars(url1, url3)
 
 
+def test_equal_vars_for_objects_containing_list_of_objects():
+    # Given
+    class SomeClass(object):
+        def __init__(self, a):
+            self.a = a
+
+    a = SomeClass(a=[SomeClass(a="a")])
+    b = SomeClass(a=[SomeClass(a="a")])
+    c = SomeClass(a=[SomeClass(a="sausages")])
+
+    # Then
+    assert equal_vars(a, b)
+    assert not equal_vars(a, c)
+
+
+def test_equal_vars_for_objects_containing_dict_of_objects():
+    # Given
+    class SomeClass(object):
+        def __init__(self, a):
+            self.a = a
+
+    a = SomeClass(a={"key": SomeClass(a="a")})
+    b = SomeClass(a={"key": SomeClass(a="a")})
+    c = SomeClass(a={"key": SomeClass(a="sausages")})
+
+    # Then
+    assert equal_vars(a, b)
+    assert not equal_vars(a, c)
+
+
 def test_truthy():
     assert_that([1], true())
     assert_that([], false())

@@ -1,5 +1,7 @@
 # encoding=utf-8
+import collections
 import inspect
+from itertools import zip_longest
 
 from hamcrest import (
     not_,
@@ -10,7 +12,6 @@ from hamcrest import (
     all_of,
 )
 from hamcrest.core.base_matcher import BaseMatcher
-
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 
@@ -69,7 +70,23 @@ def equal_vars(left, right):
             )
     except TypeError:
         pass
-    return left == right
+    return _equal_vars_for_non_objects(left, right)
+
+
+def _equal_vars_for_non_objects(left, right):
+    if (
+        isinstance(left, collections.Sequence)
+        and not isinstance(left, str)
+        and isinstance(right, collections.Sequence)
+        and not isinstance(right, str)
+    ):
+        return all(equal_vars(l, r) for l, r in zip_longest(left, right))
+    elif isinstance(left, collections.Mapping) and isinstance(right, collections.Mapping):
+        return left.keys() == right.keys() and all(
+            equal_vars(right[key], value) for key, value in left.items()
+        )
+    else:
+        return left == right
 
 
 def vars_and_properties(obj):

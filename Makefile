@@ -17,8 +17,13 @@ flake8:
 bandit:
 	tox -e bandit
 
+extra-lint: pylint mypy  ## Extra, optional linting.
+
 pylint:
 	tox -e pylint
+
+mypy:
+	tox -e mypy
 
 safety:
 	tox -e safety

@@ -54,5 +54,8 @@ setup(
         "beautifulsoup4~=4.0",
         "brunns-row~=2.0",
         "pendulum~=2.0",
+        "requests~=2.0",
+        'typing~=3.6;python_version<"3.5"',
+        "typing-extensions~=3.7",
     ],
 )

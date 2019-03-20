@@ -1,41 +1,55 @@
 # encoding=utf-8
 import logging
+from typing import Union, Mapping
 
-import furl
+from furl import furl
 from hamcrest import anything
-from hamcrest.core.base_matcher import BaseMatcher
+from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
+from hamcrest.core.matcher import Matcher
+
+from brunns.matchers.base import GenericMatcher
 
 logger = logging.getLogger(__name__)
 ANYTHING = anything()
 
 
-def to_host(matcher):
+def to_host(matcher: Union[str, Matcher]):
+    """TODO"""
     return UrlWith(host=matcher)
 
 
-def with_path(matcher):
+def with_path(matcher: Union[str, Matcher]):
+    """TODO"""
     return UrlWith(path=matcher)
 
 
-def with_query(matcher):
+def with_query(matcher: Union[Mapping[str, str], Matcher]):
+    """TODO"""
     return UrlWith(query=matcher)
 
 
-def with_fragment(matcher):
+def with_fragment(matcher: Union[str, Matcher]):
+    """TODO"""
     return UrlWith(fragment=matcher)
 
 
-class UrlWith(BaseMatcher):
-    def __init__(self, host=ANYTHING, path=ANYTHING, query=ANYTHING, fragment=ANYTHING):
+class UrlWith(GenericMatcher[Union[furl, str]]):
+    def __init__(
+        self,
+        host: Union[str, Matcher] = ANYTHING,
+        path: Union[str, Matcher] = ANYTHING,
+        query: Union[Mapping[str, str], Matcher] = ANYTHING,
+        fragment: Union[str, Matcher] = ANYTHING,
+    ) -> None:
         super(UrlWith, self).__init__()
         self.host = wrap_matcher(host)
         self.path = wrap_matcher(path)
         self.query = wrap_matcher(query)
         self.fragment = wrap_matcher(fragment)
 
-    def _matches(self, url):
-        url = url if isinstance(url, furl.furl) else furl.furl(url)
+    def _matches(self, url: Union[furl, str]) -> bool:
+        url = url if isinstance(url, furl) else furl(url)
         return (
             self.host.matches(url.host)
             and self.path.matches(url.path)
@@ -43,7 +57,7 @@ class UrlWith(BaseMatcher):
             and self.fragment.matches(url.fragment)
         )
 
-    def describe_to(self, description):
+    def describe_to(self, description: Description) -> None:
         description.append_text("URL with")
         if self.host != ANYTHING:
             description.append_text(" host ").append_description_of(self.host)
@@ -54,8 +68,8 @@ class UrlWith(BaseMatcher):
         if self.fragment != ANYTHING:
             description.append_text(" fragment ").append_description_of(self.fragment)
 
-    def describe_mismatch(self, url, mismatch_description):
-        url = url if isinstance(url, furl.furl) else furl.furl(url)
+    def describe_mismatch(self, url: Union[furl, str], mismatch_description: Description) -> None:
+        url = url if isinstance(url, furl) else furl(url)
         if self.host != ANYTHING and not self.host.matches(url.host):
             mismatch_description.append_text("host ")
             self.host.describe_mismatch(url.host, mismatch_description)

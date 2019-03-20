@@ -1,38 +1,47 @@
 # encoding=utf-8
+from typing import Union, Mapping, Optional
+
 from hamcrest import anything
-from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.core.isanything import IsAnything
+from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
+from hamcrest.core.matcher import Matcher
+from requests import Response
+
+from brunns.matchers.base import GenericMatcher
 
 ANYTHING = anything()
 
 
 def response_with(
-    status_code=ANYTHING, body=ANYTHING, content=ANYTHING, json=ANYTHING, headers=ANYTHING
-):
+    status_code: Union[int, Matcher] = ANYTHING,
+    body: Union[str, Matcher] = ANYTHING,
+    content: Union[str, Matcher] = ANYTHING,
+    json: Union[str, Matcher] = ANYTHING,
+    headers: Union[Mapping[str, str], Matcher] = ANYTHING,
+) -> Matcher:
     """Matches :requests.models.Response:.
     :param status_code: Expected status code
-    :type status_code: int or Matcher
     :param body: Expected body
-    :type body: str or Matcher
     :param content: Expected content
-    :type content: bytes or Matcher
     :param json: Expected json
-    :type json: Matcher or dict or list
     :param headers: Expected headers
-    :type headers: dict or Matcher
     :return: Matcher
-    :rtype: Matcher(requests.models.Response)
     """
     return ResponseMatcher(
         status_code=status_code, body=body, content=content, json=json, headers=headers
     )
 
 
-class ResponseMatcher(BaseMatcher):
+class ResponseMatcher(GenericMatcher[Response]):
     def __init__(
-        self, status_code=ANYTHING, body=ANYTHING, content=ANYTHING, json=ANYTHING, headers=ANYTHING
-    ):
+        self,
+        status_code: Union[int, Matcher] = ANYTHING,
+        body: Union[str, Matcher] = ANYTHING,
+        content: Union[str, Matcher] = ANYTHING,
+        json: Union[str, Matcher] = ANYTHING,
+        headers: Union[Mapping[str, str], Matcher] = ANYTHING,
+    ) -> None:
         super(ResponseMatcher, self).__init__()
         self.status_code = wrap_matcher(status_code)
         self.body = wrap_matcher(body)
@@ -40,7 +49,7 @@ class ResponseMatcher(BaseMatcher):
         self.json = wrap_matcher(json)
         self.headers = wrap_matcher(headers)
 
-    def _matches(self, response):
+    def _matches(self, response: Response) -> bool:
         return (
             self.status_code.matches(response.status_code)
             and self.body.matches(response.text)
@@ -50,17 +59,17 @@ class ResponseMatcher(BaseMatcher):
         )
 
     @staticmethod
-    def _get_response_json(response):
+    def _get_response_json(response: Response) -> Optional[str]:
         try:
             return response.json
         except ValueError:
             return None
 
-    def describe_to(self, description):
+    def describe_to(self, description: Description) -> None:
         description.append_text("response with")
         self._optional_description(description)
 
-    def _optional_description(self, description):
+    def _optional_description(self, description: Description):
         self._append_matcher_descrption(description, self.status_code, "status_code")
         self._append_matcher_descrption(description, self.body, "body")
         self._append_matcher_descrption(description, self.content, "content")
@@ -68,11 +77,11 @@ class ResponseMatcher(BaseMatcher):
         self._append_matcher_descrption(description, self.headers, "headers")
 
     @staticmethod
-    def _append_matcher_descrption(description, matcher, text):
+    def _append_matcher_descrption(description: Description, matcher: Matcher, text: str) -> None:
         if not isinstance(matcher, IsAnything):
             description.append_text(" {0}: ".format(text)).append_description_of(matcher)
 
-    def describe_mismatch(self, response, mismatch_description):
+    def describe_mismatch(self, response: Response, mismatch_description: Description) -> None:
         mismatch_description.append_text("was response with status code: ").append_description_of(
             response.status_code
         ).append_text(" body: ").append_description_of(response.text).append_text(

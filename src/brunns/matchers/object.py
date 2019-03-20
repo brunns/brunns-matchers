@@ -2,6 +2,7 @@
 import collections
 import inspect
 from itertools import zip_longest
+from typing import Any, Union, Mapping
 
 from hamcrest import (
     not_,
@@ -12,14 +13,14 @@ from hamcrest import (
     all_of,
 )
 from hamcrest.core.base_matcher import BaseMatcher
+from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
+from hamcrest.core.matcher import Matcher
 
 
-def has_repr(expected):
+def has_repr(expected: Any) -> Matcher:
     """object with repr() matching
     :param expected: Expected value.
-    :type expected: str or Matcher(str)
-    :return: Matcher(object)
     """
     return HasRepr(expected)
 
@@ -27,18 +28,18 @@ def has_repr(expected):
 class HasRepr(BaseMatcher):
     """object with repr() matching"""
 
-    def __init__(self, expected):
+    def __init__(self, expected: Union[str, Matcher]) -> None:
         self.expected = wrap_matcher(expected)
 
-    def _matches(self, actual):
+    def _matches(self, actual: Any) -> bool:
         return self.expected.matches(repr(actual))
 
-    def describe_to(self, description):
+    def describe_to(self, description: Description) -> None:
         description.append_text("an object with repr() matching ")
         self.expected.describe_to(description)
 
 
-def has_identical_properties_to(expected):
+def has_identical_properties_to(expected: Any) -> Matcher:
     """Matches object with identical properties to
     :param expected: Expected object
     :return: Matcher(object)
@@ -47,23 +48,23 @@ def has_identical_properties_to(expected):
 
 
 class HasIdenticalPropertiesTo(BaseMatcher):
-    def __init__(self, expected):
+    def __init__(self, expected: Any) -> None:
         self.expected = expected
 
-    def _matches(self, actual):
+    def _matches(self, actual: Any) -> bool:
         return equal_vars(actual, self.expected)
 
-    def describe_to(self, description):
+    def describe_to(self, description: Description) -> None:
         description.append_text(
             "object with identical properties to object "
         ).append_description_of(self.expected)
 
 
-def equal_vars(left, right):
+def equal_vars(left: Any, right: Any) -> bool:
     """Test if two objects are equal using public vars() and properties if available, with == otherwise."""
     try:
-        left_vars = vars_and_properties(left)
-        right_vars = vars_and_properties(right)
+        left_vars = _vars_and_properties(left)
+        right_vars = _vars_and_properties(right)
         if left_vars:
             return left_vars.keys() == right_vars.keys() and all(
                 equal_vars(right_vars[key], value) for key, value in left_vars.items()
@@ -73,7 +74,7 @@ def equal_vars(left, right):
     return _equal_vars_for_non_objects(left, right)
 
 
-def _equal_vars_for_non_objects(left, right):
+def _equal_vars_for_non_objects(left: Any, right: Any) -> bool:
     if (
         isinstance(left, collections.abc.Sequence)
         and not isinstance(left, str)
@@ -89,7 +90,7 @@ def _equal_vars_for_non_objects(left, right):
         return left == right
 
 
-def vars_and_properties(obj):
+def _vars_and_properties(obj: Any) -> Mapping[str, Any]:
     """Get an object's public vars() and properties. Raises TypeError if not an obcect with vars()/"""
     vars_and_props = {key: value for key, value in vars(obj).items() if not key.startswith("_")}
     classes = inspect.getmembers(obj, inspect.isclass)
@@ -101,28 +102,29 @@ def vars_and_properties(obj):
 
 
 class Truthy(BaseMatcher):
-    def describe_to(self, description):
+    def describe_to(self, description: Description) -> None:
         description.append_text("Truthy value")
 
-    def _matches(self, item):
+    def _matches(self, item: Any) -> bool:
         return bool(item)
 
 
-def true():
+def true() -> Matcher:
     """Matches truthy values.
     :return: Matcher(object)
     """
     return Truthy()
 
 
-def false():
+def false() -> Matcher:
     """Matches falsey values.
     :return: Matcher(object)
     """
     return not_(true())
 
 
-def between(lower, upper, lower_inclusive=True, upper_inclusive=True):
+def between(lower: Any, upper: Any, lower_inclusive=True, upper_inclusive=True) -> bool:
+    """TODO"""
     return all_of(
         greater_than_or_equal_to(lower) if lower_inclusive else greater_than(lower),
         less_than_or_equal_to(upper) if upper_inclusive else less_than(upper),

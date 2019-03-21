@@ -3,13 +3,12 @@ import email
 import re
 from typing import Union
 
+from brunns.matchers.base import GenericMatcher
+from brunns.utils.bunch import Bunch
 from hamcrest import anything
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
-
-from brunns.matchers.base import GenericMatcher
-from brunns.utils.bunch import Bunch
 
 ANYTHING = anything()
 

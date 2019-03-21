@@ -2,15 +2,15 @@
 import collections
 import inspect
 from itertools import zip_longest
-from typing import Any, Union, Mapping
+from typing import Any, Mapping, Union
 
 from hamcrest import (
-    not_,
-    greater_than_or_equal_to,
-    greater_than,
-    less_than_or_equal_to,
-    less_than,
     all_of,
+    greater_than,
+    greater_than_or_equal_to,
+    less_than,
+    less_than_or_equal_to,
+    not_,
 )
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description

@@ -1,13 +1,12 @@
 # encoding=utf-8
-from typing import Union, Iterable
+from typing import Iterable, Union
 
+from brunns.matchers.base import GenericMatcher
 from bs4 import BeautifulSoup, Tag
-from hamcrest import has_item, anything, contains, all_of, has_entry
+from hamcrest import all_of, anything, contains, has_entry, has_item
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
-
-from brunns.matchers.base import GenericMatcher
 
 ANYTHING = anything()
 

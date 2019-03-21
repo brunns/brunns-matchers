@@ -1,14 +1,13 @@
 # encoding=utf-8
 import logging
-from typing import Union, Mapping
+from typing import Mapping, Union
 
+from brunns.matchers.base import GenericMatcher
 from furl import furl
 from hamcrest import anything
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
-
-from brunns.matchers.base import GenericMatcher
 
 logger = logging.getLogger(__name__)
 ANYTHING = anything()

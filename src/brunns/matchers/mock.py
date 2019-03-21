@@ -1,14 +1,13 @@
 # encoding=utf-8
 from itertools import chain, zip_longest
 from numbers import Number
-from typing import Union, Any
+from typing import Any, Union
 from unittest.mock import Mock, _Call
 
+from brunns.matchers.base import GenericMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
-
-from brunns.matchers.base import GenericMatcher
 
 
 class CallHasPositionalArg(GenericMatcher[_Call]):

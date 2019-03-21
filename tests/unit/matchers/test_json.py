@@ -1,10 +1,9 @@
 # encoding=utf-8
 import json
 
-from hamcrest import assert_that, contains, has_string, matches_regexp, not_
-
 from brunns.matchers.data import json_matching
 from brunns.matchers.matcher import mismatches_with
+from hamcrest import assert_that, contains, has_string, matches_regexp, not_
 
 
 def test_json_matching():

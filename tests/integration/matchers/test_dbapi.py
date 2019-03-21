@@ -1,21 +1,20 @@
 # encoding=utf-8
 import logging
 
+from brunns.matchers.dbapi import given_select_returns_rows_matching, has_table, has_table_with_rows
+from brunns.matchers.matcher import mismatches_with
 from hamcrest import (
+    all_of,
     assert_that,
+    contains,
+    contains_inanyorder,
+    contains_string,
+    has_item,
+    has_length,
+    has_properties,
     has_string,
     not_,
-    contains,
-    has_properties,
-    has_length,
-    contains_string,
-    contains_inanyorder,
-    has_item,
-    all_of,
 )
-
-from brunns.matchers.dbapi import has_table, has_table_with_rows, given_select_returns_rows_matching
-from brunns.matchers.matcher import mismatches_with
 
 logger = logging.getLogger(__name__)
 

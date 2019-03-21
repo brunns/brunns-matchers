@@ -2,14 +2,13 @@
 import difflib
 from typing import Any
 
+from brunns.matchers.base import GenericMatcher
 from hamcrest import anything, not_
 from hamcrest.core.core.isequal import IsEqual
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 from hamcrest.core.string_description import StringDescription
-
-from brunns.matchers.base import GenericMatcher
 
 
 class MismatchesWith(GenericMatcher[Matcher]):

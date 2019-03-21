@@ -1,13 +1,12 @@
 from datetime import date
 from typing import Union
 
+from brunns.matchers.base import GenericMatcher
+from brunns.matchers.object import between
 from hamcrest import described_as
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
-
-from brunns.matchers.base import GenericMatcher
-from brunns.matchers.object import between
 
 
 def is_weekday() -> Matcher:

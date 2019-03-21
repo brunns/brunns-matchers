@@ -1,14 +1,13 @@
 # encoding=utf-8
 import logging
-from typing import Iterable, Tuple, Any, Optional
+from typing import Any, Iterable, Optional, Tuple
 
+from brunns.matchers.base import GenericMatcher
 from brunns.row.rowwrapper import RowWrapper
 from hamcrest import anything, described_as
 from hamcrest.core.description import Description
 from hamcrest.core.matcher import Matcher
 from typing_extensions import Protocol
-
-from brunns.matchers.base import GenericMatcher
 
 logger = logging.getLogger(__name__)
 

@@ -1,10 +1,9 @@
 # encoding=utf-8
 from unittest import mock
 
-from hamcrest import assert_that, has_string, not_, contains_string
-
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.response import response_with
+from hamcrest import assert_that, contains_string, has_string, not_
 
 
 def test_response_matcher_status_code():

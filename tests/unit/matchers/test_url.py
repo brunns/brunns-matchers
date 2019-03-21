@@ -1,10 +1,9 @@
 # encoding=utf-8
 import logging
 
-from hamcrest import assert_that, not_, has_string, has_entries
-
 from brunns.matchers.matcher import mismatches_with
-from brunns.matchers.url import to_host, with_path, with_query, with_fragment
+from brunns.matchers.url import to_host, with_fragment, with_path, with_query
+from hamcrest import assert_that, has_entries, has_string, not_
 
 logger = logging.getLogger(__name__)
 

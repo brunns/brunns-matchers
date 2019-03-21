@@ -1,34 +1,33 @@
 # encoding=utf-8
-from bs4 import BeautifulSoup
-from hamcrest import (
-    assert_that,
-    not_,
-    contains_string,
-    has_string,
-    contains,
-    anything,
-    matches_regexp,
-    has_item,
-    has_entries,
-    starts_with,
-    all_of,
-)
-
 from brunns.matchers.html import (
-    has_title,
-    has_named_tag,
-    has_class,
-    tag_has_string,
-    has_table,
-    has_header_row,
-    has_id_tag,
-    has_row,
-    has_link,
-    has_id,
     has_attributes,
+    has_class,
+    has_header_row,
+    has_id,
+    has_id_tag,
+    has_link,
+    has_named_tag,
+    has_row,
+    has_table,
+    has_title,
+    tag_has_string,
 )
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.url import to_host, with_path
+from bs4 import BeautifulSoup
+from hamcrest import (
+    all_of,
+    anything,
+    assert_that,
+    contains,
+    contains_string,
+    has_entries,
+    has_item,
+    has_string,
+    matches_regexp,
+    not_,
+    starts_with,
+)
 
 HTML = """\
 <html>

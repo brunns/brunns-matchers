@@ -1,12 +1,11 @@
 # encoding=utf-8
 import json
-from typing import Union, Sequence, Mapping
+from typing import Mapping, Sequence, Union
 
+from brunns.matchers.base import GenericMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
-
-from brunns.matchers.base import GenericMatcher
 
 JSON = Union[Sequence["JSON"], Mapping[str, "JSON"], str, int, bool]
 

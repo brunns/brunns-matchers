@@ -1,14 +1,13 @@
 # encoding=utf-8
-from typing import Union, Mapping, Optional
+from typing import Mapping, Optional, Union
 
+from brunns.matchers.base import GenericMatcher
 from hamcrest import anything
 from hamcrest.core.core.isanything import IsAnything
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 from requests import Response
-
-from brunns.matchers.base import GenericMatcher
 
 ANYTHING = anything()
 

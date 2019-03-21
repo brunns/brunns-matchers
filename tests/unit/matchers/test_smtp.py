@@ -1,9 +1,8 @@
 # encoding=utf-8
 from brunns.builder.email import EmailMessageBuilder
-from hamcrest import assert_that, not_, has_string
-
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.smtp import email_with
+from hamcrest import assert_that, has_string, not_
 
 
 def test_email_matcher():

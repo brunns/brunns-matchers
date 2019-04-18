@@ -1,45 +1,21 @@
 language: python
 matrix:
- include:
-  - python: 3.4
-    env:
-     - TOX_ENV=py34
-  - python: 3.7
-    dist: xenial
-    sudo: yes
-    env:
-     - TOX_ENV=py37
-  - os: osx
-    language: generic
-    python: 3.6
-    env:
-      - TOX_ENV=py36
-  - python: 3.5
-    env:
-     - TOX_ENV=py35
-  - python: 3.6
-    env:
-     - TOX_ENV=py36
-  - python: 3.6
-    env:
-      - TOX_ENV=pypy3.6
-  - python: 3.6
-    env:
-     - TOX_ENV=check-format
-  - python: 3.6
-    env:
-     - TOX_ENV=flake8
-  - python: 3.6
-    env:
-     - TOX_ENV=bandit
-  - python: 3.6
-    env:
-     - TOX_ENV=safety
-  - python: 3.6
-    env:
-     - TOX_ENV=publish-coverage
-     - secure: "BM1wnrYZkElNVvWT2q8MafzMDGpxvqnVFzAUEHg1pHD2R+aiqxM9m1W+/SttFKgICocZvOKFpAg5XeZ9tVI1wCTp6Zs9IWykgz/X/eLccH4iArtxrI/L1mfGUMZRJNqdEmk3UKwhbH3RGkWmQjntqezkkUAJDj9E/TAb5fK6NqS61WLRCs9zVFa7WOfY88rZqzsz0LeI/Fn4XOH3q0YI+bOfSUmwyJ5JlVo5OaahBCTopovCyGf3xNKcygQcBaRPFCdyjF1pzCGHwepupg3wO9XIyp1UYmYTnCJiwe8OnN0SVBG0qIG+SofrnFgOARLglWRTNLtGQkpcRCN10q6ZqGiBlGbxrR9K7SCveq1zQVeWqn7p0vP7g15jAmq4Tte9X+NErIuV17OB7kNRA8wg54qjj02cMZBDt+J3X0W1uxp4+yIENpbg4u9KFlWG/UmeAmeYNiM29zKt4IT+R1Gffjdt8opW5e0P4cFc4Nbi9FB6K8rH+tRusKC1qtRn1Amfzzhc+vXnTGEuYCMMgUIGJ1z2o4FaZ6ZXjaNUsozrDjRnj41Qs0jtREvGyeKWdejsg0GoTI3qna6XgAAIyOrFZea1e3CKAe860DAJ6r4mDdClz6Hubw2B32RHqpSggU2wHkEXrRmJ/FkxWGZK2b251dsdqEWcyMWBVc53JVeQNzc="
   allow_failures:
+    - os: windows
+  include:
+    - python: 3.4
+      env:
+        - TOX_ENV=py34
+    - python: 3.7
+      dist: xenial
+      sudo: yes
+      env:
+        - TOX_ENV=py37
+    - os: osx
+      language: generic
+      python: 3.6
+      env:
+        - TOX_ENV=py36
     - os: windows
       language: sh
       python: 3.7
@@ -49,7 +25,32 @@ matrix:
         - python -m pip install --upgrade pip wheel
       env:
         - TOX_ENV=py37
+    - python: 3.5
+      env:
+        - TOX_ENV=py35
+    - python: 3.6
+      env:
+        - TOX_ENV=py36
+    - python: 3.6
+      env:
+        - TOX_ENV=pypy3.6
+    - python: 3.6
+      env:
+        - TOX_ENV=check-format
+    - python: 3.6
+      env:
+        - TOX_ENV=flake8
+    - python: 3.6
+      env:
+        - TOX_ENV=bandit
+    - python: 3.6
+      env:
+        - TOX_ENV=safety
+    - python: 3.6
+      env:
+        - TOX_ENV=publish-coverage
+        - secure: "BM1wnrYZkElNVvWT2q8MafzMDGpxvqnVFzAUEHg1pHD2R+aiqxM9m1W+/SttFKgICocZvOKFpAg5XeZ9tVI1wCTp6Zs9IWykgz/X/eLccH4iArtxrI/L1mfGUMZRJNqdEmk3UKwhbH3RGkWmQjntqezkkUAJDj9E/TAb5fK6NqS61WLRCs9zVFa7WOfY88rZqzsz0LeI/Fn4XOH3q0YI+bOfSUmwyJ5JlVo5OaahBCTopovCyGf3xNKcygQcBaRPFCdyjF1pzCGHwepupg3wO9XIyp1UYmYTnCJiwe8OnN0SVBG0qIG+SofrnFgOARLglWRTNLtGQkpcRCN10q6ZqGiBlGbxrR9K7SCveq1zQVeWqn7p0vP7g15jAmq4Tte9X+NErIuV17OB7kNRA8wg54qjj02cMZBDt+J3X0W1uxp4+yIENpbg4u9KFlWG/UmeAmeYNiM29zKt4IT+R1Gffjdt8opW5e0P4cFc4Nbi9FB6K8rH+tRusKC1qtRn1Amfzzhc+vXnTGEuYCMMgUIGJ1z2o4FaZ6ZXjaNUsozrDjRnj41Qs0jtREvGyeKWdejsg0GoTI3qna6XgAAIyOrFZea1e3CKAe860DAJ6r4mDdClz6Hubw2B32RHqpSggU2wHkEXrRmJ/FkxWGZK2b251dsdqEWcyMWBVc53JVeQNzc="
 install:
- - pip install --upgrade tox
+  - pip install --upgrade tox
 script:
- - tox -e $TOX_ENV
+  - tox -e $TOX_ENV

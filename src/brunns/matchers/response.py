@@ -2,11 +2,13 @@
 from typing import Mapping, Optional, Union
 
 from brunns.matchers.base import GenericMatcher
-from hamcrest import anything
+from brunns.matchers.object import between
+from hamcrest import anything, described_as, has_entry
 from hamcrest.core.core.isanything import IsAnything
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
+from hamcrest.core.string_description import StringDescription
 from requests import Response
 
 ANYTHING = anything()
@@ -17,7 +19,7 @@ def response_with(
     body: Union[str, Matcher] = ANYTHING,
     content: Union[str, Matcher] = ANYTHING,
     json: Union[str, Matcher] = ANYTHING,
-    headers: Union[Mapping[str, str], Matcher] = ANYTHING,
+    headers: Union[Mapping[str, Union[str, Matcher]], Matcher] = ANYTHING,
 ) -> Matcher:
     """Matches :requests.models.Response:.
     :param status_code: Expected status code
@@ -96,3 +98,16 @@ class ResponseMatcher(GenericMatcher[Response]):
         ).append_description_of(
             response.headers
         )
+
+
+def redirects_to(url_matcher: Union[str, Matcher]) -> GenericMatcher[Response]:
+    """Is a response a redirect to a URL matching the suplplied matcher? Matches :requests.models.Response:.
+    :param url_matcher: Expected URL.
+    """
+    description = str(
+        StringDescription().append_text("redirects to ").append_description_of(url_matcher)
+    )
+    matcher = response_with(
+        status_code=between(300, 399), headers=has_entry("Location", url_matcher)
+    )
+    return described_as(description, matcher)

@@ -21,7 +21,7 @@ except IOError:
 setup(
     name="brunns-matchers",
     zip_safe=False,
-    version="2.1.1",
+    version="2.2.0",
     description="Custom PyHamcrest matchers",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -57,5 +57,6 @@ setup(
         "requests~=2.0",
         'typing~=3.6;python_version<"3.5"',
         "typing-extensions~=3.7",
+        "Deprecated~=1.2",
     ],
 )

@@ -1,8 +1,10 @@
 # encoding=utf-8
 from unittest import mock
 
+from brunns.builder.internet import UrlBuilder
 from brunns.matchers.matcher import mismatches_with
-from brunns.matchers.response import response_with
+from brunns.matchers.response import redirects_to, response_with
+from brunns.matchers.url import with_path
 from hamcrest import assert_that, contains_string, has_string, not_
 
 
@@ -131,4 +133,20 @@ def test_response_matcher_invalid_json():
                 "json: <None> headers: <{'key': 'value'}>"
             ),
         ),
+    )
+
+
+def test_redirect_to():
+    # Given
+    response = mock.MagicMock(
+        status_code=301, headers={"Location": UrlBuilder().with_path("/sausages").build()}
+    )
+
+    # When
+
+    # Then
+    assert_that(response, redirects_to(with_path("/sausages")))
+    assert_that(response, not_(redirects_to(with_path("/bacon"))))
+    assert_that(
+        redirects_to(with_path("/sausages")), has_string("redirects to URL with path '/sausages'")
     )

@@ -3,6 +3,7 @@ import logging
 from typing import Mapping, Union
 
 from brunns.matchers.base import GenericMatcher
+from deprecated import deprecated
 from furl import furl
 from hamcrest import anything
 from hamcrest.core.description import Description
@@ -13,24 +14,44 @@ logger = logging.getLogger(__name__)
 ANYTHING = anything()
 
 
-def to_host(matcher: Union[str, Matcher]):
+def url_with_host(matcher: Union[str, Matcher]):
     """TODO"""
     return UrlWith(host=matcher)
 
 
-def with_path(matcher: Union[str, Matcher]):
+def url_with_path(matcher: Union[str, Matcher]):
     """TODO"""
     return UrlWith(path=matcher)
 
 
-def with_query(matcher: Union[Mapping[str, str], Matcher]):
+def url_with_query(matcher: Union[Mapping[str, str], Matcher]):
     """TODO"""
     return UrlWith(query=matcher)
 
 
-def with_fragment(matcher: Union[str, Matcher]):
+def url_with_fragment(matcher: Union[str, Matcher]):
     """TODO"""
     return UrlWith(fragment=matcher)
+
+
+@deprecated(version="2.2.0", reason="Use url_with_host()")
+def to_host(matcher: Union[str, Matcher]):  # pragma: no cover
+    return url_with_host(matcher)
+
+
+@deprecated(version="2.2.0", reason="Use url_with_path()")
+def with_path(matcher: Union[str, Matcher]):  # pragma: no cover
+    return url_with_path(matcher)
+
+
+@deprecated(version="2.2.0", reason="Use url_with_query()")
+def with_query(matcher: Union[Mapping[str, str], Matcher]):  # pragma: no cover
+    return url_with_query(matcher)
+
+
+@deprecated(version="2.2.0", reason="Use url_with_fragment()")
+def with_fragment(matcher: Union[str, Matcher]):  # pragma: no cover
+    return url_with_fragment(matcher)
 
 
 class UrlWith(GenericMatcher[Union[furl, str]]):

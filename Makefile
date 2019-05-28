@@ -37,6 +37,10 @@ format: ## Format code
 piprot: ## Check for outdated dependencies
 	tox -e piprot
 
+.PHONY: docs
+docs:  ## Generate documentation
+	tox -e docs
+
 precommit: test lint coverage ## Pre-commit targets
 	@ python -m this
 

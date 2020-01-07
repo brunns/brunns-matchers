@@ -13,6 +13,7 @@ from hamcrest import (
     has_length,
     has_properties,
     has_string,
+    matches_regexp,
     not_,
 )
 
@@ -59,10 +60,12 @@ def test_has_rows(db):
             contains(has_properties(kind="cumberland"), has_properties(kind="lincolnshire")),
         ),
         has_string(
-            "DB connection with table 'sausages' with rows matching a sequence containing ["
-            "(an object with a property 'kind' matching 'cumberland'), "
-            "(an object with a property 'kind' matching 'lincolnshire')"
-            "]"
+            matches_regexp(
+                r"DB connection with table 'sausages' with rows matching a sequence containing \["
+                r"\(?an object with a property 'kind' matching 'cumberland'\)?, "
+                r"\(?an object with a property 'kind' matching 'lincolnshire'\)?"
+                r"\]"
+            )
         ),
     )
     assert_that(

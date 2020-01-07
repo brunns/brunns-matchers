@@ -4,7 +4,7 @@ default: help
 .PHONY: help
 
 test: ## Run tests
-	tox -e py35,py36,py37,py38
+	tox -e py35,py38
 
 coverage: ## Test coverage report
 	tox -e coverage
@@ -55,10 +55,10 @@ clean: ## Clean generated files
 	find . -name "test-output" -type d -print | xargs -t rm -r
 
 repl: ## Python REPL
-	tox -e py37 -- python
+	tox -e py38 -- python
 
 outdated: ## List outdated dependancies
-	tox -e py37 -- pip list --outdated
+	tox -e py38 -- pip list --outdated
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1,$$2}'

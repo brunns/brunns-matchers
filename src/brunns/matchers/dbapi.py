@@ -7,7 +7,12 @@ from brunns.row.rowwrapper import RowWrapper
 from hamcrest import anything, described_as
 from hamcrest.core.description import Description
 from hamcrest.core.matcher import Matcher
-from typing_extensions import Protocol
+
+try:
+    from typing import Protocol
+except ImportError:
+    from typing_extensions import Protocol
+
 
 logger = logging.getLogger(__name__)
 

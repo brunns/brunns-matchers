@@ -45,7 +45,7 @@ precommit: test lint coverage ## Pre-commit targets
 	@ python -m this
 
 recreate: ## Recreate tox environments
-	tox --recreate --notest -e py35,py36,py37,format,flake8,bandit,safety,piprot
+	tox --recreate --notest -e py35,py36,py37,py38,format,flake8,bandit,safety,piprot
 
 clean: ## Clean generated files
 	find . -name '*.pyc' -delete

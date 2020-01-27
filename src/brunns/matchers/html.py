@@ -1,9 +1,9 @@
 # encoding=utf-8
 from typing import Iterable, Union
 
-from brunns.matchers.base import GenericMatcher
 from bs4 import BeautifulSoup, Tag
 from hamcrest import all_of, anything, contains, has_entry, has_item
+from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
@@ -11,7 +11,7 @@ from hamcrest.core.matcher import Matcher
 ANYTHING = anything()
 
 
-class HtmlWithTag(GenericMatcher[str]):
+class HtmlWithTag(BaseMatcher[str]):
     def __init__(self, matcher: Union[str, Matcher], name: str = None, id_: str = None) -> None:
         self.name = name
         self.id_ = id_
@@ -43,7 +43,7 @@ class HtmlWithTag(GenericMatcher[str]):
         mismatch_description.append_list(" values [", ", ", "]", [repr(t) for t in found])
 
 
-class TagWith(GenericMatcher[Tag]):
+class TagWith(BaseMatcher[Tag]):
     def __init__(
         self,
         name: Union[str, Matcher] = ANYTHING,
@@ -76,7 +76,7 @@ class TagWith(GenericMatcher[Tag]):
             description.append_text(" attributes matching ").append_description_of(self.attributes)
 
 
-class HtmlHasTable(GenericMatcher[str]):
+class HtmlHasTable(BaseMatcher[str]):
     def __init__(self, matcher: Matcher, id_: Union[str, Matcher] = ANYTHING) -> None:
         self.matcher = matcher
         self.id_ = id_
@@ -91,7 +91,7 @@ class HtmlHasTable(GenericMatcher[str]):
         self.matcher.describe_to(description)
 
 
-class TableHasRow(GenericMatcher[Tag]):
+class TableHasRow(BaseMatcher[Tag]):
     def __init__(
         self,
         row_matcher: Matcher = ANYTHING,

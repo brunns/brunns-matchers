@@ -2,8 +2,8 @@
 import difflib
 from typing import Any
 
-from brunns.matchers.base import GenericMatcher
 from hamcrest import anything, not_
+from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.core.isequal import IsEqual
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
@@ -11,7 +11,7 @@ from hamcrest.core.matcher import Matcher
 from hamcrest.core.string_description import StringDescription
 
 
-class MismatchesWith(GenericMatcher[Matcher]):
+class MismatchesWith(BaseMatcher[Matcher]):
     def __init__(self, value_not_to_match: Any, expected_message: str) -> None:
         super(MismatchesWith, self).__init__()
         self.value_not_to_match = value_not_to_match

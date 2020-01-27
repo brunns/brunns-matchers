@@ -1,9 +1,9 @@
 # encoding=utf-8
 from typing import Mapping, Optional, Union
 
-from brunns.matchers.base import GenericMatcher
 from brunns.matchers.object import between
 from hamcrest import anything, described_as, has_entry
+from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.core.isanything import IsAnything
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
@@ -34,7 +34,7 @@ def response_with(
     )
 
 
-class ResponseMatcher(GenericMatcher[Response]):
+class ResponseMatcher(BaseMatcher[Response]):
     def __init__(
         self,
         status_code: Union[int, Matcher] = ANYTHING,
@@ -100,7 +100,7 @@ class ResponseMatcher(GenericMatcher[Response]):
         )
 
 
-def redirects_to(url_matcher: Union[str, Matcher]) -> GenericMatcher[Response]:
+def redirects_to(url_matcher: Union[str, Matcher]) -> BaseMatcher[Response]:
     """Is a response a redirect to a URL matching the suplplied matcher? Matches :requests.models.Response:.
     :param url_matcher: Expected URL.
     """

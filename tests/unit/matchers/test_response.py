@@ -4,7 +4,7 @@ from unittest import mock
 from brunns.builder.internet import UrlBuilder
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.response import redirects_to, response_with
-from brunns.matchers.url import with_path
+from brunns.matchers.url import url_with_path
 from hamcrest import assert_that, contains_string, has_string, not_
 
 
@@ -145,8 +145,9 @@ def test_redirect_to():
     # When
 
     # Then
-    assert_that(response, redirects_to(with_path("/sausages")))
-    assert_that(response, not_(redirects_to(with_path("/bacon"))))
+    assert_that(response, redirects_to(url_with_path("/sausages")))
+    assert_that(response, not_(redirects_to(url_with_path("/bacon"))))
     assert_that(
-        redirects_to(with_path("/sausages")), has_string("redirects to URL with path '/sausages'")
+        redirects_to(url_with_path("/sausages")),
+        has_string("redirects to URL with path '/sausages'"),
     )

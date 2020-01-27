@@ -2,7 +2,7 @@
 import json
 from typing import Mapping, Sequence, Union
 
-from brunns.matchers.base import GenericMatcher
+from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
@@ -10,7 +10,7 @@ from hamcrest.core.matcher import Matcher
 JSON = Union[Sequence["JSON"], Mapping[str, "JSON"], str, int, bool]
 
 
-class JsonMatching(GenericMatcher[str]):
+class JsonMatching(BaseMatcher[str]):
     def __init__(self, matcher: Union[Matcher, JSON]) -> None:
         self.matcher = wrap_matcher(matcher)
 

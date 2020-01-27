@@ -2,9 +2,9 @@
 import logging
 from typing import Any, Iterable, Optional, Tuple
 
-from brunns.matchers.base import GenericMatcher
 from brunns.row.rowwrapper import RowWrapper
 from hamcrest import anything, described_as
+from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.matcher import Matcher
 
@@ -34,7 +34,7 @@ class Connection(Protocol):
         ...
 
 
-class SelectReturnsRowsMatching(GenericMatcher[Connection]):
+class SelectReturnsRowsMatching(BaseMatcher[Connection]):
     def __init__(self, select: str, row_matcher: Matcher) -> None:
         self.select = select
         self.row_matcher = row_matcher

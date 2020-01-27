@@ -4,13 +4,13 @@ from numbers import Number
 from typing import Any, Union
 from unittest.mock import Mock, _Call
 
-from brunns.matchers.base import GenericMatcher
+from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 
 
-class CallHasPositionalArg(GenericMatcher[_Call]):
+class CallHasPositionalArg(BaseMatcher[_Call]):
     def __init__(self, index: int, expected: Any) -> None:
         super(CallHasPositionalArg, self).__init__()
         self.index = index
@@ -40,7 +40,7 @@ class CallHasPositionalArg(GenericMatcher[_Call]):
             ).append_description_of(self.index)
 
 
-class CallHasKeywordArg(GenericMatcher[_Call]):
+class CallHasKeywordArg(BaseMatcher[_Call]):
     def __init__(self, key: str, expected: Any) -> None:
         super(CallHasKeywordArg, self).__init__()
         self.key = key
@@ -70,7 +70,7 @@ class CallHasKeywordArg(GenericMatcher[_Call]):
             ).append_description_of(self.key)
 
 
-class HasCall(GenericMatcher[Mock]):
+class HasCall(BaseMatcher[Mock]):
     def __init__(self, call_matcher: Matcher) -> None:
         super(HasCall, self).__init__()
         self.call_matcher = call_matcher
@@ -91,7 +91,7 @@ class HasCall(GenericMatcher[Mock]):
         )
 
 
-class CallHasArgs(GenericMatcher[_Call]):
+class CallHasArgs(BaseMatcher[_Call]):
     """mock.call with arguments"""
 
     def __init__(self, *args, **kwargs) -> None:
@@ -127,7 +127,7 @@ class CallHasArgs(GenericMatcher[_Call]):
         ).append_text(")")
 
 
-def call_has_arg(arg: Union[int, str], expected: Any) -> GenericMatcher[_Call]:
+def call_has_arg(arg: Union[int, str], expected: Any) -> BaseMatcher[_Call]:
     """TODO"""
     if isinstance(arg, Number):
         return CallHasPositionalArg(arg, expected)

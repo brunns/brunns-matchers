@@ -2,10 +2,10 @@
 import logging
 from typing import Mapping, Union
 
-from brunns.matchers.base import GenericMatcher
 from deprecated import deprecated
 from furl import furl
 from hamcrest import anything
+from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
@@ -54,7 +54,7 @@ def with_fragment(matcher: Union[str, Matcher]):  # pragma: no cover
     return url_with_fragment(matcher)
 
 
-class UrlWith(GenericMatcher[Union[furl, str]]):
+class UrlWith(BaseMatcher[Union[furl, str]]):
     def __init__(
         self,
         host: Union[str, Matcher] = ANYTHING,

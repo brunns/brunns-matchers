@@ -1,9 +1,9 @@
 from datetime import date
 from typing import Union
 
-from brunns.matchers.base import GenericMatcher
 from brunns.matchers.object import between
 from hamcrest import described_as
+from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
@@ -15,7 +15,7 @@ def is_weekday() -> Matcher:
     return described_as("A weekday", matcher)
 
 
-class HasWeekday(GenericMatcher[date]):
+class HasWeekday(BaseMatcher[date]):
     def __init__(self, day: Union[int, Matcher]) -> None:
         self.day = wrap_matcher(day)
 

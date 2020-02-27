@@ -1,23 +1,24 @@
 # encoding=utf-8
 import json
-from typing import Mapping, Sequence, Union
+from typing import Any, Union
 
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 
-JSON = Union[Sequence["JSON"], Mapping[str, "JSON"], str, int, bool]
+# JsonStructure = Union[MutableMapping[str, "JsonStructure"], Iterable["JsonStructure"], str, int, bool, None]
+JsonStructure = Any  # TODO Pending a better solution to https://github.com/python/typing/issues/182
 
 
 class JsonMatching(BaseMatcher[str]):
-    def __init__(self, matcher: Union[Matcher, JSON]) -> None:
-        self.matcher = wrap_matcher(matcher)
+    def __init__(self, matcher: Union[Matcher[JsonStructure], JsonStructure]) -> None:
+        self.matcher = wrap_matcher(matcher)  # type: Matcher[JsonStructure]
 
     def describe_to(self, description: Description) -> None:
         description.append_text("JSON structure matching ").append_description_of(self.matcher)
 
-    def _matches(self, json_string) -> bool:
+    def _matches(self, json_string: str) -> bool:
         try:
             loads = json.loads(json_string)
         except ValueError:
@@ -33,7 +34,7 @@ class JsonMatching(BaseMatcher[str]):
             self.matcher.describe_mismatch(loads, description)
 
 
-def json_matching(matcher: Union[Matcher, JSON]) -> JsonMatching:
+def json_matching(matcher: Union[Matcher[JsonStructure], JsonStructure]) -> JsonMatching:
     """Matches string containing JSON data.
     :param matcher: Expected JSON
     """

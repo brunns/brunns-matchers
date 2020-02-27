@@ -1,6 +1,6 @@
 # encoding=utf-8
 import difflib
-from typing import Any
+from typing import Any, Union
 
 from hamcrest import anything, not_
 from hamcrest.core.base_matcher import BaseMatcher
@@ -12,12 +12,12 @@ from hamcrest.core.string_description import StringDescription
 
 
 class MismatchesWith(BaseMatcher[Matcher]):
-    def __init__(self, value_not_to_match: Any, expected_message: str) -> None:
+    def __init__(self, value_not_to_match: Any, expected_message: Union[str, Matcher[str]]) -> None:
         super(MismatchesWith, self).__init__()
         self.value_not_to_match = value_not_to_match
-        self.expected_message = wrap_matcher(expected_message)
+        self.expected_message = wrap_matcher(expected_message)  # type: Matcher[str]
 
-    def _matches(self, matcher_under_test: Matcher) -> bool:
+    def _matches(self, matcher_under_test: Matcher[Any]) -> bool:
         actual = StringDescription()
         matched = matcher_under_test.matches(self.value_not_to_match, actual)
         return not matched and self.expected_message.matches(actual.out)
@@ -27,7 +27,7 @@ class MismatchesWith(BaseMatcher[Matcher]):
             self.value_not_to_match
         ).append_text("\ngiving message ").append_description_of(self.expected_message)
 
-    def describe_mismatch(self, matcher_under_test: Matcher, description: Description) -> None:
+    def describe_mismatch(self, matcher_under_test: Matcher[Any], description: Description) -> None:
         actual_message = StringDescription()
         if matcher_under_test.matches(self.value_not_to_match, actual_message):
             description.append_text("matched")
@@ -41,7 +41,9 @@ class MismatchesWith(BaseMatcher[Matcher]):
             description.append_text("\ndiff:\n").append_text("\n".join(diff))
 
 
-def mismatches_with(value_not_to_match: Any, expected_message: str) -> MismatchesWith:
+def mismatches_with(
+    value_not_to_match: Any, expected_message: Union[str, Matcher[str]]
+) -> MismatchesWith:
     """TODO"""
     return MismatchesWith(value_not_to_match, expected_message)
 

@@ -2,16 +2,16 @@
 import logging
 from typing import Any, Iterable, Optional, Tuple
 
-from brunns.row.rowwrapper import RowWrapper
+from brunns.row.rowwrapper import RowWrapper  # type: ignore
 from hamcrest import anything, described_as
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.matcher import Matcher
 
 try:
-    from typing import Protocol
+    from typing import Protocol  # type: ignore
 except ImportError:
-    from typing_extensions import Protocol
+    from typing_extensions import Protocol  # type: ignore
 
 
 logger = logging.getLogger(__name__)

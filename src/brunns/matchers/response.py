@@ -1,6 +1,7 @@
 # encoding=utf-8
-from typing import Mapping, Optional, Union
+from typing import Any, Mapping, Optional, Union
 
+from brunns.matchers.data import JsonStructure
 from brunns.matchers.object import between
 from hamcrest import anything, described_as, has_entry
 from hamcrest.core.base_matcher import BaseMatcher
@@ -15,11 +16,13 @@ ANYTHING = anything()
 
 
 def response_with(
-    status_code: Union[int, Matcher] = ANYTHING,
-    body: Union[str, Matcher] = ANYTHING,
-    content: Union[str, Matcher] = ANYTHING,
-    json: Union[str, Matcher] = ANYTHING,
-    headers: Union[Mapping[str, Union[str, Matcher]], Matcher] = ANYTHING,
+    status_code: Union[int, Matcher[int]] = ANYTHING,
+    body: Union[str, Matcher[str]] = ANYTHING,
+    content: Union[bytes, Matcher[bytes]] = ANYTHING,
+    json: Union[JsonStructure, Matcher[JsonStructure]] = ANYTHING,
+    headers: Union[
+        Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+    ] = ANYTHING,
 ) -> Matcher:
     """Matches :requests.models.Response:.
     :param status_code: Expected status code
@@ -27,7 +30,6 @@ def response_with(
     :param content: Expected content
     :param json: Expected json
     :param headers: Expected headers
-    :return: Matcher
     """
     return ResponseMatcher(
         status_code=status_code, body=body, content=content, json=json, headers=headers
@@ -35,34 +37,47 @@ def response_with(
 
 
 class ResponseMatcher(BaseMatcher[Response]):
+    """Matches :requests.models.Response:.
+    :param status_code: Expected status code
+    :param body: Expected body
+    :param content: Expected content
+    :param json: Expected json
+    :param headers: Expected headers
+    """
+
     def __init__(
         self,
-        status_code: Union[int, Matcher] = ANYTHING,
-        body: Union[str, Matcher] = ANYTHING,
-        content: Union[str, Matcher] = ANYTHING,
-        json: Union[str, Matcher] = ANYTHING,
-        headers: Union[Mapping[str, str], Matcher] = ANYTHING,
+        status_code: Union[int, Matcher[int]] = ANYTHING,
+        body: Union[str, Matcher[str]] = ANYTHING,
+        content: Union[bytes, Matcher[bytes]] = ANYTHING,
+        json: Union[JsonStructure, Matcher[JsonStructure]] = ANYTHING,
+        headers: Union[
+            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+        ] = ANYTHING,
     ) -> None:
         super(ResponseMatcher, self).__init__()
-        self.status_code = wrap_matcher(status_code)
-        self.body = wrap_matcher(body)
-        self.content = wrap_matcher(content)
-        self.json = wrap_matcher(json)
-        self.headers = wrap_matcher(headers)
+        self.status_code = wrap_matcher(status_code)  # type: Matcher[int]
+        self.body = wrap_matcher(body)  # type: Matcher[str]
+        self.content = wrap_matcher(content)  # type: Matcher[bytes]
+        self.json = wrap_matcher(json)  # type: Matcher[JsonStructure]
+        self.headers = wrap_matcher(
+            headers
+        )  # type: Matcher[Mapping[str, Union[str, Matcher[str]]]]
 
     def _matches(self, response: Response) -> bool:
+        response_json = self._get_response_json(response)
         return (
             self.status_code.matches(response.status_code)
             and self.body.matches(response.text)
             and self.content.matches(response.content)
-            and self.json.matches(self._get_response_json(response))
+            and self.json.matches(response_json)
             and self.headers.matches(response.headers)
         )
 
     @staticmethod
     def _get_response_json(response: Response) -> Optional[str]:
         try:
-            return response.json
+            return response.json()
         except ValueError:
             return None
 
@@ -83,24 +98,35 @@ class ResponseMatcher(BaseMatcher[Response]):
             description.append_text(" {0}: ".format(text)).append_description_of(matcher)
 
     def describe_mismatch(self, response: Response, mismatch_description: Description) -> None:
-        mismatch_description.append_text("was response with status code: ").append_description_of(
-            response.status_code
-        ).append_text(" body: ").append_description_of(response.text).append_text(
-            " content: "
-        ).append_description_of(
-            response.content
-        ).append_text(
-            " json: "
-        ).append_description_of(
-            self._get_response_json(response)
-        ).append_text(
-            " headers: "
-        ).append_description_of(
-            response.headers
+        mismatch_description.append_text("was response with")
+        self._describe_field_mismatch(
+            self.status_code, "status code", response.status_code, mismatch_description
+        )
+        self._describe_field_mismatch(self.body, "body", response.text, mismatch_description)
+        self._describe_field_mismatch(
+            self.content, "content", response.content, mismatch_description
+        )
+        self._describe_field_mismatch(
+            self.json, "json", self._get_response_json(response), mismatch_description
+        )
+        self._describe_field_mismatch(
+            self.headers, "headers", response.headers, mismatch_description
         )
 
+    @staticmethod
+    def _describe_field_mismatch(
+        field_matcher: Matcher[Any],
+        field_name: str,
+        actual_value: Any,
+        mismatch_description: Description,
+    ) -> None:
+        if field_matcher is not ANYTHING:
+            mismatch_description.append_text(" {0}: ".format(field_name)).append_description_of(
+                actual_value
+            )
 
-def redirects_to(url_matcher: Union[str, Matcher]) -> BaseMatcher[Response]:
+
+def redirects_to(url_matcher: Union[str, Matcher]) -> Matcher[Response]:
     """Is a response a redirect to a URL matching the suplplied matcher? Matches :requests.models.Response:.
     :param url_matcher: Expected URL.
     """

@@ -1,9 +1,8 @@
 # encoding=utf-8
 import email
 import re
-from typing import Union
+from typing import Match, NamedTuple, Union, cast
 
-from brunns.utils.bunch import Bunch
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
@@ -13,13 +12,26 @@ from hamcrest.core.matcher import Matcher
 ANYTHING = anything()
 
 
+Email = NamedTuple(
+    "Email",
+    [
+        ("actual_to_name", str),
+        ("actual_to_address", str),
+        ("actual_from_name", str),
+        ("actual_from_address", str),
+        ("actual_subject", str),
+        ("actual_body_text", str),
+    ],
+)
+
+
 def email_with(
-    to_name: Union[str, Matcher] = ANYTHING,
-    to_address: Union[str, Matcher] = ANYTHING,
-    from_name: Union[str, Matcher] = ANYTHING,
-    from_address: Union[str, Matcher] = ANYTHING,
-    subject: Union[str, Matcher] = ANYTHING,
-    body_text: Union[str, Matcher] = ANYTHING,
+    to_name: Union[str, Matcher[str]] = ANYTHING,
+    to_address: Union[str, Matcher[str]] = ANYTHING,
+    from_name: Union[str, Matcher[str]] = ANYTHING,
+    from_address: Union[str, Matcher[str]] = ANYTHING,
+    subject: Union[str, Matcher[str]] = ANYTHING,
+    body_text: Union[str, Matcher[str]] = ANYTHING,
 ) -> Matcher:
     """Match email with
     :param to_name:
@@ -43,19 +55,19 @@ def email_with(
 class EmailWith(BaseMatcher[str]):
     def __init__(
         self,
-        to_name: Union[str, Matcher] = ANYTHING,
-        to_address: Union[str, Matcher] = ANYTHING,
-        from_name: Union[str, Matcher] = ANYTHING,
-        from_address: Union[str, Matcher] = ANYTHING,
-        subject: Union[str, Matcher] = ANYTHING,
-        body_text: Union[str, Matcher] = ANYTHING,
+        to_name: Union[str, Matcher[str]] = ANYTHING,
+        to_address: Union[str, Matcher[str]] = ANYTHING,
+        from_name: Union[str, Matcher[str]] = ANYTHING,
+        from_address: Union[str, Matcher[str]] = ANYTHING,
+        subject: Union[str, Matcher[str]] = ANYTHING,
+        body_text: Union[str, Matcher[str]] = ANYTHING,
     ) -> None:
-        self.to_name = wrap_matcher(to_name)
-        self.to_address = wrap_matcher(to_address)
-        self.from_name = wrap_matcher(from_name)
-        self.from_address = wrap_matcher(from_address)
-        self.subject = wrap_matcher(subject)
-        self.body_text = wrap_matcher(body_text)
+        self.to_name = wrap_matcher(to_name)  # type: Matcher[str]
+        self.to_address = wrap_matcher(to_address)  # type: Matcher[str]
+        self.from_name = wrap_matcher(from_name)  # type: Matcher[str]
+        self.from_address = wrap_matcher(from_address)  # type: Matcher[str]
+        self.subject = wrap_matcher(subject)  # type: Matcher[str]
+        self.body_text = wrap_matcher(body_text)  # type: Matcher[str]
 
     def _matches(self, actual_email: str) -> bool:
         email = self._parse_email(actual_email)
@@ -69,13 +81,17 @@ class EmailWith(BaseMatcher[str]):
         )
 
     @staticmethod
-    def _parse_email(actual_email: str) -> Bunch:
+    def _parse_email(actual_email: str) -> Email:
         parsed = email.message_from_string(actual_email)
-        actual_to_name, actual_to_address = re.match("(.*) <(.*)>", parsed["To"]).groups()
-        actual_from_name, actual_from_address = re.match("(.*) <(.*)>", parsed["From"]).groups()
+        actual_to_name, actual_to_address = cast(
+            Match, re.match("(.*) <(.*)>", parsed["To"])
+        ).groups()
+        actual_from_name, actual_from_address = cast(
+            Match, re.match("(.*) <(.*)>", parsed["From"])
+        ).groups()
         actual_subject = parsed["Subject"]
         actual_body_text = parsed.get_payload()
-        return Bunch(
+        return Email(
             actual_to_name=actual_to_name,
             actual_to_address=actual_to_address,
             actual_from_name=actual_from_name,

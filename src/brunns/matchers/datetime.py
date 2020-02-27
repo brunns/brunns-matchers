@@ -9,14 +9,14 @@ from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 
 
-def is_weekday() -> Matcher:
+def is_weekday() -> Matcher[date]:
     """TODO"""
     matcher = HasWeekday(between(0, 4))
     return described_as("A weekday", matcher)
 
 
 class HasWeekday(BaseMatcher[date]):
-    def __init__(self, day: Union[int, Matcher]) -> None:
+    def __init__(self, day: Union[int, Matcher[int]]) -> None:
         self.day = wrap_matcher(day)
 
     def _matches(self, actual: date) -> bool:

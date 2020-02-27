@@ -1,18 +1,24 @@
 # encoding=utf-8
 from unittest import mock
 
-from brunns.builder.internet import UrlBuilder
+from brunns.builder.internet import UrlBuilder  # type: ignore
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.response import redirects_to, response_with
 from brunns.matchers.url import url_with_path
 from hamcrest import assert_that, contains_string, has_string, not_
 
+MOCK_RESPONSE = mock.MagicMock(
+    status_code=200,
+    text="sausages",
+    content=b"content",
+    json=mock.MagicMock(return_value={"a": "b"}),
+    headers={"key": "value"},
+)
+
 
 def test_response_matcher_status_code():
     # Given
-    response = mock.MagicMock(
-        status_code=200, text="body", content=b"content", json=[1, 2, 3], headers={"key": "value"}
-    )
+    response = MOCK_RESPONSE
 
     # When
 
@@ -22,25 +28,13 @@ def test_response_matcher_status_code():
     assert_that(response_with(status_code=200), has_string("response with status_code: <200>"))
     assert_that(
         response_with(status_code=201),
-        mismatches_with(
-            response,
-            contains_string(
-                "was response with status code: <200> body: 'body' content: <b'content'> "
-                "json: <[1, 2, 3]> headers: <{'key': 'value'}>"
-            ),
-        ),
+        mismatches_with(response, contains_string("was response with status code: <200>"),),
     )
 
 
 def test_response_matcher_body():
     # Given
-    response = mock.MagicMock(
-        status_code=200,
-        text="sausages",
-        content=b"content",
-        json=[1, 2, 3],
-        headers={"key": "value"},
-    )
+    response = MOCK_RESPONSE
 
     # When
 
@@ -50,21 +44,13 @@ def test_response_matcher_body():
     assert_that(response_with(body="chips"), has_string("response with body: 'chips'"))
     assert_that(
         response_with(body="chips"),
-        mismatches_with(
-            response,
-            contains_string(
-                "was response with status code: <200> body: 'sausages' content: <b'content'> "
-                "json: <[1, 2, 3]> headers: <{'key': 'value'}>"
-            ),
-        ),
+        mismatches_with(response, contains_string("was response with body: 'sausages'"),),
     )
 
 
 def test_response_matcher_content():
     # Given
-    response = mock.MagicMock(
-        status_code=200, text="body", content=b"content", json=[1, 2, 3], headers={"key": "value"}
-    )
+    response = MOCK_RESPONSE
 
     # When
 
@@ -77,39 +63,44 @@ def test_response_matcher_content():
     )
     assert_that(
         response_with(content=b"chips"),
-        mismatches_with(
-            response,
-            contains_string(
-                "was response with status code: <200> body: 'body' content: <b'content'> "
-                "json: <[1, 2, 3]> headers: <{'key': 'value'}>"
-            ),
-        ),
+        mismatches_with(response, contains_string("was response with content: <b'content'>"),),
     )
 
 
 def test_response_matcher_json():
     # Given
-    response = mock.MagicMock(
-        status_code=200, text="body", content=b"content", json=[1, 2, 3], headers={"key": "value"}
-    )
+    response = MOCK_RESPONSE
 
     # When
 
     # Then
-    assert_that(response, response_with(json=[1, 2, 3]))
-    assert_that(response, not_(response_with(json=[1, 2, 4])))
+    assert_that(response, response_with(json={"a": "b"}))
+    assert_that(response, not_(response_with(json={"a": "c"})))
     assert_that(
-        str(response_with(json=[1, 2, 3])), contains_string("response with json: <[1, 2, 3]>")
+        str(response_with(json={"a": "b"})), contains_string("response with json: <{'a': 'b'}>"),
     )
     assert_that(
         response_with(json=[1, 2, 4]),
-        mismatches_with(
-            response,
-            contains_string(
-                "was response with status code: <200> body: 'body' content: <b'content'> "
-                "json: <[1, 2, 3]> headers: <{'key': 'value'}>"
-            ),
-        ),
+        mismatches_with(response, contains_string("was response with json: <{'a': 'b'}>"),),
+    )
+
+
+def test_response_matcher_headers():
+    # Given
+    response = MOCK_RESPONSE
+
+    # When
+
+    # Then
+    assert_that(response, response_with(headers={"key": "value"}))
+    assert_that(response, not_(response_with(headers={"key": "nope"})))
+    assert_that(
+        str(response_with(headers={"key": "value"})),
+        contains_string("response with headers: <{'key': 'value'}"),
+    )
+    assert_that(
+        response_with(headers={"key": "nope"}),
+        mismatches_with(response, contains_string("was response with headers: <{'key': 'value'}"),),
     )
 
 
@@ -126,13 +117,7 @@ def test_response_matcher_invalid_json():
     assert_that(response, not_(response_with(json=[1, 2, 4])))
     assert_that(
         response_with(json=[1, 2, 4]),
-        mismatches_with(
-            response,
-            contains_string(
-                "was response with status code: <200> body: 'body' content: <b'content'> "
-                "json: <None> headers: <{'key': 'value'}>"
-            ),
-        ),
+        mismatches_with(response, contains_string("was response with json: <None>"),),
     )
 
 

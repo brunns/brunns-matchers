@@ -18,18 +18,18 @@ from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 
 
-def has_repr(expected: Any) -> Matcher:
+def has_repr(expected: Any) -> Matcher[Any]:
     """object with repr() matching
     :param expected: Expected value.
     """
     return HasRepr(expected)
 
 
-class HasRepr(BaseMatcher):
+class HasRepr(BaseMatcher[Any]):
     """object with repr() matching"""
 
-    def __init__(self, expected: Union[str, Matcher]) -> None:
-        self.expected = wrap_matcher(expected)
+    def __init__(self, expected: Union[str, Matcher[str]]) -> None:
+        self.expected = wrap_matcher(expected)  # type: Matcher[str]
 
     def _matches(self, actual: Any) -> bool:
         return self.expected.matches(repr(actual))
@@ -39,7 +39,7 @@ class HasRepr(BaseMatcher):
         self.expected.describe_to(description)
 
 
-def has_identical_properties_to(expected: Any) -> Matcher:
+def has_identical_properties_to(expected: Any) -> Matcher[Any]:
     """Matches object with identical properties to
     :param expected: Expected object
     :return: Matcher(object)
@@ -47,7 +47,7 @@ def has_identical_properties_to(expected: Any) -> Matcher:
     return HasIdenticalPropertiesTo(expected)
 
 
-class HasIdenticalPropertiesTo(BaseMatcher):
+class HasIdenticalPropertiesTo(BaseMatcher[Any]):
     def __init__(self, expected: Any) -> None:
         self.expected = expected
 
@@ -101,7 +101,7 @@ def _vars_and_properties(obj: Any) -> Mapping[str, Any]:
     return vars_and_props
 
 
-class Truthy(BaseMatcher):
+class Truthy(BaseMatcher[Any]):
     def describe_to(self, description: Description) -> None:
         description.append_text("Truthy value")
 
@@ -109,21 +109,21 @@ class Truthy(BaseMatcher):
         return bool(item)
 
 
-def true() -> Matcher:
+def true() -> Matcher[Any]:
     """Matches truthy values.
     :return: Matcher(object)
     """
     return Truthy()
 
 
-def false() -> Matcher:
+def false() -> Matcher[Any]:
     """Matches falsey values.
     :return: Matcher(object)
     """
     return not_(true())
 
 
-def between(lower: Any, upper: Any, lower_inclusive=True, upper_inclusive=True) -> bool:
+def between(lower: Any, upper: Any, lower_inclusive=True, upper_inclusive=True) -> Matcher[Any]:
     """TODO"""
     return all_of(
         greater_than_or_equal_to(lower) if lower_inclusive else greater_than(lower),

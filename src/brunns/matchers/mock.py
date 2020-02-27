@@ -1,7 +1,6 @@
 # encoding=utf-8
 from itertools import chain, zip_longest
-from numbers import Number
-from typing import Any, Union
+from typing import Any, Union, cast
 from unittest.mock import Mock, _Call
 
 from hamcrest.core.base_matcher import BaseMatcher
@@ -129,9 +128,9 @@ class CallHasArgs(BaseMatcher[_Call]):
 
 def call_has_arg(arg: Union[int, str], expected: Any) -> BaseMatcher[_Call]:
     """TODO"""
-    if isinstance(arg, Number):
-        return CallHasPositionalArg(arg, expected)
-    return CallHasKeywordArg(arg, expected)
+    if isinstance(arg, int):
+        return CallHasPositionalArg(cast("int", arg), expected)
+    return CallHasKeywordArg(cast("str", arg), expected)
 
 
 def has_call(call_matcher: Matcher) -> HasCall:

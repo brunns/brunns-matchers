@@ -41,11 +41,11 @@ piprot: ## Check for outdated dependencies
 docs:  ## Generate documentation
 	tox -e docs
 
-precommit: test lint coverage ## Pre-commit targets
+precommit: test lint coverage mypy ## Pre-commit targets
 	@ python -m this
 
 recreate: ## Recreate tox environments
-	tox --recreate --notest -e py35,py36,py37,py38,format,flake8,bandit,safety,piprot
+	tox --recreate --notest -e py35,py36,py37,py38,py39,format,flake8,bandit,safety,piprot,mypy
 
 clean: ## Clean generated files
 	find . -name '*.pyc' -delete

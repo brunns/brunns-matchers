@@ -30,7 +30,7 @@ setup(
     url="https://github.com/brunns/brunns-matchers/",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
-    package_data={"": ["README.md"]},
+    package_data={"": ["README.md"], "brunns": ["py.typed"]},
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",

@@ -2,7 +2,6 @@
 import datetime
 from pathlib import Path
 
-import pendulum
 from brunns.builder.internet import UrlBuilder
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.object import (
@@ -110,9 +109,9 @@ def test_equal_vars():
     c = SomeClass(1, SomeClass(2, 4, 5), 6)
     d = SomeClass(1, SomeClass(2, 4, 5), SomeClass(2, 4, 5))
 
-    date1 = pendulum.date(1968, 7, 21)
-    date2 = pendulum.date(1968, 7, 21)
-    date3 = pendulum.today()
+    date1 = datetime.date(1968, 7, 21)
+    date2 = datetime.date(1968, 7, 21)
+    date3 = datetime.date.today()
 
     path1 = Path("some/path")
     path2 = Path("some/path")

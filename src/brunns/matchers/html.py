@@ -1,4 +1,5 @@
 # encoding=utf-8
+# type: ignore
 from typing import Iterable, Union
 
 from bs4 import BeautifulSoup, Tag

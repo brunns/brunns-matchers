@@ -18,10 +18,12 @@ Install from `Pypi <https://pypi.org/project/brunns-matchers/>`_ as usual, using
 
 .. _tox: https://tox.readthedocs.io
 
-Usage
------
+Provided matchers
+-------------------
 
-TODO
+* JSON
+
+  * :py:func:`~brunns.matchers.data.json_matching` - match JSON string.
 
 Indices and tables
 ==================

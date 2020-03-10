@@ -12,7 +12,12 @@ JsonStructure = Any  # TODO Pending a better solution to https://github.com/pyth
 
 
 class JsonMatching(BaseMatcher[str]):
-    def __init__(self, matcher: Union[Matcher[JsonStructure], JsonStructure]) -> None:
+    """Matches string containing JSON data.
+
+    :param matcher: Value to match against deserialised JSON.
+    """
+
+    def __init__(self, matcher: Union[JsonStructure, Matcher[JsonStructure]]) -> None:
         self.matcher = wrap_matcher(matcher)  # type: Matcher[JsonStructure]
 
     def describe_to(self, description: Description) -> None:
@@ -36,6 +41,7 @@ class JsonMatching(BaseMatcher[str]):
 
 def json_matching(matcher: Union[Matcher[JsonStructure], JsonStructure]) -> JsonMatching:
     """Matches string containing JSON data.
-    :param matcher: Expected JSON
+
+    :param matcher: Value to match against deserialised JSON.
     """
     return JsonMatching(matcher)

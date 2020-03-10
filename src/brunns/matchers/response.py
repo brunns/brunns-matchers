@@ -1,7 +1,6 @@
 # encoding=utf-8
 from typing import Any, Mapping, Optional, Union
 
-from brunns.builder import Builder  # type: ignore
 from brunns.matchers.data import JsonStructure
 from brunns.matchers.object import between
 from hamcrest import anything, described_as, has_entry
@@ -140,5 +139,21 @@ def redirects_to(url_matcher: Union[str, Matcher]) -> Matcher[Response]:
     return described_as(description, matcher)
 
 
-class response(Builder):
-    target = ResponseMatcher
+class ResponseMatcherBuilder(ResponseMatcher):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def __getattr__(self, item):
+        """Dynamic 'with_x' and 'and_x' methods."""
+        attr_name = item.partition("with_")[2] or item.partition("and_")[2]
+
+        def with_(value):
+            setattr(self, attr_name, wrap_matcher(value))
+            return self
+
+        return with_
+
+
+def is_response() -> ResponseMatcherBuilder:
+    """TODO"""
+    return ResponseMatcherBuilder()

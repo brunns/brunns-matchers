@@ -3,7 +3,7 @@ from unittest import mock
 
 from brunns.builder.internet import UrlBuilder  # type: ignore
 from brunns.matchers.matcher import mismatches_with
-from brunns.matchers.response import redirects_to, response, response_with
+from brunns.matchers.response import is_response, redirects_to, response_with
 from brunns.matchers.url import url_with_path
 from hamcrest import assert_that, contains_string, has_string, not_
 
@@ -141,8 +141,8 @@ def test_redirect_to():
 def test_response_matcher_builder():
     # Given
     stub_response = MOCK_RESPONSE
-    matcher = response().with_status_code(200)
-    mismatcher = response().with_status_code(201)
+    matcher = is_response().with_status_code(200)
+    mismatcher = is_response().with_status_code(201)
 
     # When
 

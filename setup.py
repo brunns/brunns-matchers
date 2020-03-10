@@ -53,7 +53,6 @@ setup(
         "pytest>=4.0,<6.0",
         "beautifulsoup4~=4.0",
         "brunns-row~=2.0",
-        "brunns-builder~=0.3",
         "requests~=2.0",
         "typing-extensions~=3.7 ; python_version<'3.8'",
         "Deprecated~=1.2",

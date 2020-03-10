@@ -41,7 +41,7 @@ piprot: ## Check for outdated dependencies
 docs:  ## Generate documentation
 	tox -e docs
 
-precommit: test lint coverage mypy ## Pre-commit targets
+precommit: test lint coverage mypy docs ## Pre-commit targets
 	@ python -m this
 
 recreate: ## Recreate tox environments

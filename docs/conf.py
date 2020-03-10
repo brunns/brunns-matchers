@@ -20,11 +20,11 @@ sys.path.insert(0, os.path.abspath('../src/brunns/'))
 # -- Project information -----------------------------------------------------
 
 project = 'brunns-matchers'
-copyright = '2019, Simon Brunning'
+copyright = '2020, Simon Brunning'
 author = 'Simon Brunning'
 
 # The short X.Y version
-version = '2.2.0'
+version = '2.2'
 # The full version, including alpha/beta/rc tags
 release = '2.2.0'
 
@@ -45,7 +45,16 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
+    'sphinx.ext.intersphinx',
 ]
+# Extension settings:
+autodoc_member_order = 'bysource'
+intersphinx_mapping = {
+    'python': ('http://docs.python.org/3', None),
+    'requests': ('http://requests.readthedocs.org/en/latest', None),
+    'pyhamcrest': ('https://pyhamcrest.readthedocs.io/en/latest/', None),
+    'pytest': ('https://docs.pytest.org/en/latest/', None),
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

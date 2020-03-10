@@ -1,6 +1,7 @@
 # encoding=utf-8
 from typing import Any, Mapping, Optional, Union
 
+from brunns.builder import Builder  # type: ignore
 from brunns.matchers.data import JsonStructure
 from brunns.matchers.object import between
 from hamcrest import anything, described_as, has_entry
@@ -137,3 +138,7 @@ def redirects_to(url_matcher: Union[str, Matcher]) -> Matcher[Response]:
         status_code=between(300, 399), headers=has_entry("Location", url_matcher)
     )
     return described_as(description, matcher)
+
+
+class response(Builder):
+    target = ResponseMatcher

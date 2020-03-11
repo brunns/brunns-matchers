@@ -57,10 +57,12 @@ def with_fragment(matcher: Union[str, Matcher]):  # pragma: no cover
 class UrlWith(BaseMatcher[Union[furl, str]]):
     def __init__(
         self,
-        host: Union[str, Matcher] = ANYTHING,
-        path: Union[str, Matcher] = ANYTHING,
-        query: Union[Mapping[str, str], Matcher] = ANYTHING,
-        fragment: Union[str, Matcher] = ANYTHING,
+        host: Union[str, Matcher[str]] = ANYTHING,
+        path: Union[str, Matcher[str]] = ANYTHING,
+        query: Union[
+            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+        ] = ANYTHING,
+        fragment: Union[str, Matcher[str]] = ANYTHING,
     ) -> None:
         super(UrlWith, self).__init__()
         self.host = wrap_matcher(host)

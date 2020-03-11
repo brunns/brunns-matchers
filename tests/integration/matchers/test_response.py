@@ -1,15 +1,20 @@
 # encoding=utf-8
 import logging
 
+import pytest
 import requests
 from brunns.matchers.bytestring import contains_bytestring
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.response import is_response, response_with
+from brunns.utils.network import internet_connection
 from hamcrest import assert_that, contains_string, has_key, not_
 
 logger = logging.getLogger(__name__)
 
+INTERNET_CONNECTED = internet_connection()
 
+
+@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
 def test_response_status_code():
     # Given
 
@@ -25,6 +30,7 @@ def test_response_status_code():
     )
 
 
+@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
 def test_response_json():
     # Given
 
@@ -36,6 +42,7 @@ def test_response_json():
     assert_that(actual, not_(response_with(json=has_key("shitshow"))))
 
 
+@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
 def test_response_content():
     # Given
 

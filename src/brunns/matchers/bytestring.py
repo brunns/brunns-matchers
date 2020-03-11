@@ -8,7 +8,10 @@ logger = logging.getLogger(__name__)
 
 
 class ContainsBytestring(BaseMatcher[bytes]):
-    """TODO"""
+    """Matches if object is a bytestring containing a given bytestring.
+
+    :param bytestring: The string to search for.
+    """
 
     def __init__(self, bytestring: bytes) -> None:
         super().__init__()
@@ -22,5 +25,8 @@ class ContainsBytestring(BaseMatcher[bytes]):
 
 
 def contains_bytestring(bytestring: bytes) -> ContainsBytestring:
-    """TODO"""
+    """Matches if object is a bytestring containing a given bytestring.
+
+    :param bytestring: The string to search for.
+    """
     return ContainsBytestring(bytestring)

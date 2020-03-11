@@ -1,5 +1,6 @@
 # To Do
-
+* url, smtp & request matchers - builder style
 * Docs
-    * Generation
     * Doc strings
+    * Type hints
+    * Reference

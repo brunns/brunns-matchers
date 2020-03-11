@@ -19,11 +19,22 @@ Install from `Pypi <https://pypi.org/project/brunns-matchers/>`_ as usual, using
 .. _tox: https://tox.readthedocs.io
 
 Provided matchers
--------------------
+-----------------
 
-* JSON
+Bytestring
+~~~~~~~~~~
 
-  * :py:func:`~brunns.matchers.data.json_matching` - match JSON string.
+* :py:func:`~brunns.matchers.bytestring.contains_bytestring` - match if bytestring contains another.
+
+JSON
+~~~~
+
+* :py:func:`~brunns.matchers.data.json_matching` - match JSON string.
+
+Date & time
+~~~~~~~~~~~
+
+* :py:func:`~brunns.matchers.datetime.is_weekday` - matches date is it's a weekday.
 
 Indices and tables
 ==================

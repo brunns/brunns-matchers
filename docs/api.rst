@@ -5,7 +5,7 @@ The "brunns.matchers" package
 -----------------------------
 
 The "brunns.matchers.bytestring" module
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: brunns.matchers.bytestring
     :members:

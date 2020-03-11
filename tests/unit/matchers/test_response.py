@@ -5,7 +5,7 @@ from brunns.builder.internet import UrlBuilder  # type: ignore
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.response import is_response, redirects_to, response_with
 from brunns.matchers.url import url_with_path
-from hamcrest import assert_that, contains_string, has_string, not_
+from hamcrest import assert_that, contains_string, has_entries, has_string, not_
 
 MOCK_RESPONSE = mock.MagicMock(
     status_code=200,
@@ -141,15 +141,31 @@ def test_redirect_to():
 def test_response_matcher_builder():
     # Given
     stub_response = MOCK_RESPONSE
-    matcher = is_response().with_status_code(200)
-    mismatcher = is_response().with_status_code(201)
+    matcher = (
+        is_response()
+        .with_status_code(200)
+        .and_body("sausages")
+        .and_content(b"content")
+        .and_json(has_entries(a="b"))
+        .and_headers(has_entries(key="value"))
+    )
+    mismatcher = is_response().with_body("kale").and_status_code(404)
 
     # When
 
     # Then
     assert_that(stub_response, matcher)
     assert_that(stub_response, not_(mismatcher))
-    assert_that(matcher, has_string("response with status_code: <200>"))
+    assert_that(
+        matcher,
+        has_string(
+            "response with status_code: <200> "
+            "body: 'sausages' "
+            "content: <b'content'> "
+            "json: a dictionary containing {'a': 'b'} "
+            "headers: a dictionary containing {'key': 'value'}"
+        ),
+    )
     assert_that(
         mismatcher,
         mismatches_with(stub_response, contains_string("was response with status code: <200>"),),

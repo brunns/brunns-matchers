@@ -3,6 +3,7 @@ from typing import Any, Mapping, Optional, Union
 
 from brunns.matchers.data import JsonStructure
 from brunns.matchers.object import between
+from deprecated import deprecated
 from hamcrest import anything, described_as, has_entry
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.core.isanything import IsAnything
@@ -15,6 +16,15 @@ from requests import Response
 ANYTHING = anything()
 
 
+def is_response() -> "ResponseMatcher":
+    """Matches :requests.models.Response:.
+
+
+    """
+    return ResponseMatcher()
+
+
+@deprecated(version="2.3.0", reason="Use builder style is_response()")
 def response_with(
     status_code: Union[int, Matcher[int]] = ANYTHING,
     body: Union[str, Matcher[str]] = ANYTHING,
@@ -23,8 +33,9 @@ def response_with(
     headers: Union[
         Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
     ] = ANYTHING,
-) -> Matcher:
+) -> "ResponseMatcher":
     """Matches :requests.models.Response:.
+
     :param status_code: Expected status code
     :param body: Expected body
     :param content: Expected content
@@ -125,6 +136,51 @@ class ResponseMatcher(BaseMatcher[Response]):
                 actual_value
             )
 
+    def with_status_code(self, status_code: Union[int, Matcher[int]]):
+        self.status_code = wrap_matcher(status_code)
+        return self
+
+    def and_status_code(self, status_code: Union[int, Matcher[int]]):
+        return self.with_status_code(status_code)
+
+    def with_body(self, body: Union[str, Matcher[str]]):
+        self.body = wrap_matcher(body)
+        return self
+
+    def and_body(self, body: Union[str, Matcher[str]]):
+        return self.with_body(body)
+
+    def with_content(self, content: Union[bytes, Matcher[bytes]]):
+        self.content = wrap_matcher(content)
+        return self
+
+    def and_content(self, content: Union[bytes, Matcher[bytes]]):
+        return self.with_content(content)
+
+    def with_json(self, json: Union[JsonStructure, Matcher[JsonStructure]]):
+        self.json = wrap_matcher(json)
+        return self
+
+    def and_json(self, json: Union[JsonStructure, Matcher[JsonStructure]]):
+        return self.with_json(json)
+
+    def with_headers(
+        self,
+        headers: Union[
+            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+        ],
+    ):
+        self.headers = wrap_matcher(headers)
+        return self
+
+    def and_headers(
+        self,
+        headers: Union[
+            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+        ],
+    ):
+        return self.with_headers(headers)
+
 
 def redirects_to(url_matcher: Union[str, Matcher]) -> Matcher[Response]:
     """Is a response a redirect to a URL matching the suplplied matcher? Matches :requests.models.Response:.
@@ -137,23 +193,3 @@ def redirects_to(url_matcher: Union[str, Matcher]) -> Matcher[Response]:
         status_code=between(300, 399), headers=has_entry("Location", url_matcher)
     )
     return described_as(description, matcher)
-
-
-class ResponseMatcherBuilder(ResponseMatcher):
-    def __init__(self) -> None:
-        super().__init__()
-
-    def __getattr__(self, item):
-        """Dynamic 'with_x' and 'and_x' methods."""
-        attr_name = item.partition("with_")[2] or item.partition("and_")[2]
-
-        def with_(value):
-            setattr(self, attr_name, wrap_matcher(value))
-            return self
-
-        return with_
-
-
-def is_response() -> ResponseMatcherBuilder:
-    """TODO"""
-    return ResponseMatcherBuilder()

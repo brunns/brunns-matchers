@@ -1,4 +1,5 @@
 # encoding=utf-8
+from datetime import timedelta
 from typing import Any, Mapping, Optional, Union
 
 from brunns.matchers.data import JsonStructure
@@ -55,6 +56,7 @@ class ResponseMatcher(BaseMatcher[Response]):
     :param json: Expected json
     :param headers: Expected headers
     :param cookies: Expected cookies
+    :param elapsed: Expected elapsed time
     """
 
     def __init__(
@@ -69,6 +71,7 @@ class ResponseMatcher(BaseMatcher[Response]):
         cookies: Union[
             Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
         ] = ANYTHING,
+        elapsed: Union[timedelta, Matcher[timedelta]] = ANYTHING,
     ) -> None:
         super(ResponseMatcher, self).__init__()
         self.status_code = wrap_matcher(status_code)  # type: Matcher[int]
@@ -81,6 +84,7 @@ class ResponseMatcher(BaseMatcher[Response]):
         self.cookies = wrap_matcher(
             cookies
         )  # type: Matcher[Mapping[str, Union[str, Matcher[str]]]]
+        self.elapsed = wrap_matcher(elapsed)
 
     def _matches(self, response: Response) -> bool:
         response_json = self._get_response_json(response)
@@ -91,6 +95,7 @@ class ResponseMatcher(BaseMatcher[Response]):
             and self.json.matches(response_json)
             and self.headers.matches(response.headers)
             and self.cookies.matches(response.cookies)
+            and self.elapsed.matches(response.elapsed)
         )
 
     @staticmethod
@@ -111,6 +116,7 @@ class ResponseMatcher(BaseMatcher[Response]):
         self._append_matcher_descrption(description, self.json, "json")
         self._append_matcher_descrption(description, self.headers, "headers")
         self._append_matcher_descrption(description, self.cookies, "cookies")
+        self._append_matcher_descrption(description, self.elapsed, "elapsed")
 
     @staticmethod
     def _append_matcher_descrption(description: Description, matcher: Matcher, text: str) -> None:
@@ -134,6 +140,9 @@ class ResponseMatcher(BaseMatcher[Response]):
         )
         self._describe_field_mismatch(
             self.cookies, "cookies", response.cookies, mismatch_description
+        )
+        self._describe_field_mismatch(
+            self.elapsed, "elapsed", response.elapsed, mismatch_description
         )
 
     @staticmethod
@@ -209,6 +218,13 @@ class ResponseMatcher(BaseMatcher[Response]):
         ],
     ):
         return self.with_cookies(cookies)
+
+    def with_elapsed(self, elapsed: Union[timedelta, Matcher[timedelta]]):
+        self.elapsed = wrap_matcher(elapsed)
+        return self
+
+    def and_elapsed(self, elapsed: Union[timedelta, Matcher[timedelta]]):
+        return self.with_elapsed(elapsed)
 
 
 def redirects_to(url_matcher: Union[str, Matcher]) -> Matcher[Response]:

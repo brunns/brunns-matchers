@@ -1,4 +1,5 @@
 # encoding=utf-8
+from datetime import timedelta
 from unittest import mock
 
 from brunns.builder.internet import UrlBuilder  # type: ignore
@@ -14,6 +15,7 @@ MOCK_RESPONSE = mock.MagicMock(
     json=mock.MagicMock(return_value={"a": "b"}),
     headers={"key": "value"},
     cookies={"name": "value"},
+    elapsed=timedelta(seconds=1),
 )
 
 
@@ -122,6 +124,28 @@ def test_response_matcher_cookies():
         is_response().with_cookies({"name": "nope"}),
         mismatches_with(response, contains_string("was response with cookies: <{'name': 'value'}")),
     )
+
+
+def test_response_matcher_elapsed():
+    # Given
+    response = MOCK_RESPONSE
+
+    # When
+
+    # Then
+    assert_that(response, is_response().with_elapsed(timedelta(seconds=1)))
+    assert_that(response, not_(is_response().with_elapsed(timedelta(seconds=60))))
+    assert_that(
+        str(is_response().with_elapsed(timedelta(seconds=1))),
+        contains_string("response with elapsed: <0:00:01>"),
+    )
+    assert_that(
+        is_response().with_elapsed(timedelta(seconds=60)),
+        mismatches_with(response, contains_string("was response with elapsed: <0:00:01>")),
+    )
+
+
+# TODO history, encoding, url
 
 
 def test_response_matcher_invalid_json():

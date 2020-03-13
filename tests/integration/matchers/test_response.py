@@ -1,10 +1,12 @@
 # encoding=utf-8
 import logging
+from datetime import timedelta
 
 import pytest
 import requests
 from brunns.matchers.bytestring import contains_bytestring
 from brunns.matchers.matcher import mismatches_with
+from brunns.matchers.object import between
 from brunns.matchers.response import is_response, response_with
 from brunns.utils.network import internet_connection
 from hamcrest import assert_that, contains_string, has_entries, has_key, not_
@@ -68,3 +70,19 @@ def test_response_cookies():
 
     # Then
     assert_that(actual, is_response().with_status_code(302).and_cookies(has_entries(foo="bar")))
+
+
+@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
+def test_response_elapsed():
+    # Given
+
+    # When
+    actual = requests.get("https://httpbin.org/delay/0.5")
+
+    # Then
+    assert_that(
+        actual,
+        is_response()
+        .with_status_code(200)
+        .and_elapsed(between(timedelta(seconds=0.5), timedelta(seconds=1.5))),
+    )

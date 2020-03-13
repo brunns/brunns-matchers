@@ -1,10 +1,11 @@
 # encoding=utf-8
 from datetime import timedelta
-from typing import Any, Mapping, Optional, Union
+from typing import Any, Mapping, Optional, Sequence, Union
 
 from brunns.matchers.data import JsonStructure
 from brunns.matchers.object import between
 from deprecated import deprecated
+from furl import furl
 from hamcrest import anything, described_as, has_entry
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.core.isanything import IsAnything
@@ -34,6 +35,7 @@ class ResponseMatcher(BaseMatcher[Response]):
     :param headers: Expected headers
     :param cookies: Expected cookies
     :param elapsed: Expected elapsed time
+    :param history: Expected history
     """
 
     def __init__(
@@ -49,6 +51,11 @@ class ResponseMatcher(BaseMatcher[Response]):
             Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
         ] = ANYTHING,
         elapsed: Union[timedelta, Matcher[timedelta]] = ANYTHING,
+        history: Union[
+            Sequence[Union[Response, Matcher[Response]]],
+            Matcher[Sequence[Union[Response, Matcher[Response]]]],
+        ] = ANYTHING,
+        url: Union[furl, str, Matcher[Union[furl, str]]] = ANYTHING,
     ) -> None:
         super(ResponseMatcher, self).__init__()
         self.status_code = wrap_matcher(status_code)  # type: Matcher[int]
@@ -62,6 +69,8 @@ class ResponseMatcher(BaseMatcher[Response]):
             cookies
         )  # type: Matcher[Mapping[str, Union[str, Matcher[str]]]]
         self.elapsed = wrap_matcher(elapsed)
+        self.history = wrap_matcher(history)
+        self.url = wrap_matcher(url)
 
     def _matches(self, response: Response) -> bool:
         response_json = self._get_response_json(response)
@@ -73,6 +82,8 @@ class ResponseMatcher(BaseMatcher[Response]):
             and self.headers.matches(response.headers)
             and self.cookies.matches(response.cookies)
             and self.elapsed.matches(response.elapsed)
+            and self.history.matches(response.history)
+            and self.url.matches(response.url)
         )
 
     @staticmethod
@@ -91,6 +102,8 @@ class ResponseMatcher(BaseMatcher[Response]):
         self._append_matcher_description(description, self.headers, "headers")
         self._append_matcher_description(description, self.cookies, "cookies")
         self._append_matcher_description(description, self.elapsed, "elapsed")
+        self._append_matcher_description(description, self.history, "history")
+        self._append_matcher_description(description, self.url, "url")
 
     @staticmethod
     def _append_matcher_description(description: Description, matcher: Matcher, text: str) -> None:
@@ -118,6 +131,10 @@ class ResponseMatcher(BaseMatcher[Response]):
         self._describe_field_mismatch(
             self.elapsed, "elapsed", response.elapsed, mismatch_description
         )
+        self._describe_field_mismatch(
+            self.history, "history", response.history, mismatch_description
+        )
+        self._describe_field_mismatch(self.url, "url", response.url, mismatch_description)
 
     @staticmethod
     def _describe_field_mismatch(
@@ -198,6 +215,32 @@ class ResponseMatcher(BaseMatcher[Response]):
 
     def and_elapsed(self, elapsed: Union[timedelta, Matcher[timedelta]]):
         return self.with_elapsed(elapsed)
+
+    def with_history(
+        self,
+        history: Union[
+            Sequence[Union[Response, Matcher[Response]]],
+            Matcher[Sequence[Union[Response, Matcher[Response]]]],
+        ],
+    ):
+        self.history = wrap_matcher(history)
+        return self
+
+    def and_history(
+        self,
+        history: Union[
+            Sequence[Union[Response, Matcher[Response]]],
+            Matcher[Sequence[Union[Response, Matcher[Response]]]],
+        ],
+    ):
+        return self.with_history(history)
+
+    def with_url(self, url: Union[furl, str, Matcher[Union[furl, str]]]):
+        self.url = wrap_matcher(url)
+        return self
+
+    def and_url(self, url: Union[furl, str, Matcher[Union[furl, str]]]):
+        return self.with_url(url)
 
 
 def redirects_to(url_matcher: Union[str, Matcher]) -> Matcher[Response]:

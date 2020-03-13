@@ -8,8 +8,9 @@ from brunns.matchers.bytestring import contains_bytestring
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.object import between
 from brunns.matchers.response import is_response
+from brunns.matchers.url import is_url
 from brunns.utils.network import internet_connection
-from hamcrest import assert_that, contains_string, has_entries, has_key, not_
+from hamcrest import assert_that, contains_exactly, contains_string, has_entries, has_key, not_
 
 logger = logging.getLogger(__name__)
 
@@ -85,4 +86,21 @@ def test_response_elapsed():
         is_response()
         .with_status_code(200)
         .and_elapsed(between(timedelta(seconds=0.5), timedelta(seconds=1.5))),
+    )
+
+
+@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
+def test_response_history():
+    # Given
+
+    # When
+    actual = requests.get("https://httpbin.org/cookies/set?foo=bar")
+
+    # Then
+    assert_that(
+        actual,
+        is_response()
+        .with_status_code(200)
+        .and_url(is_url().with_path("/cookies"))
+        .and_history(contains_exactly(is_response().with_url(is_url().with_path("/cookies/set")))),
     )

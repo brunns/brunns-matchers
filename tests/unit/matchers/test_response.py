@@ -2,11 +2,12 @@
 from datetime import timedelta
 from unittest import mock
 
-from brunns.builder.internet import UrlBuilder  # type: ignore
+from brunns.builder.internet import UrlBuilder as a_url  # type: ignore
 from brunns.matchers.matcher import mismatches_with
+from brunns.matchers.object import between
 from brunns.matchers.response import is_response, redirects_to
 from brunns.matchers.url import is_url
-from hamcrest import assert_that, contains_string, has_entries, has_string, not_
+from hamcrest import assert_that, contains_exactly, contains_string, has_entries, has_string, not_
 
 MOCK_RESPONSE = mock.MagicMock(
     status_code=200,
@@ -16,6 +17,11 @@ MOCK_RESPONSE = mock.MagicMock(
     headers={"key": "value"},
     cookies={"name": "value"},
     elapsed=timedelta(seconds=1),
+    history=[
+        mock.MagicMock(url=a_url().with_path("/path1").build()),
+        mock.MagicMock(url=a_url().with_path("/path2").build()),
+    ],
+    url=a_url().with_path("/path0").build(),
 )
 
 
@@ -156,7 +162,85 @@ def test_response_matcher_elapsed():
     )
 
 
-# TODO history, encoding, url
+def test_response_matcher_history_and_url():
+    # Given
+    response = MOCK_RESPONSE
+
+    # When
+
+    # Then
+    assert_that(
+        response,
+        is_response().with_history(
+            contains_exactly(
+                is_response().with_url(is_url().with_path("/path1")),
+                is_response().with_url(is_url().with_path("/path2")),
+            )
+        ),
+    )
+    assert_that(
+        response,
+        not_(
+            is_response().with_history(
+                contains_exactly(
+                    is_response().with_url(is_url().with_path("/path1")),
+                    is_response().with_url(is_url().with_path("/path3")),
+                )
+            )
+        ),
+    )
+    assert_that(
+        str(
+            is_response().with_history(
+                contains_exactly(
+                    is_response().with_url(is_url().with_path("/path1")),
+                    is_response().with_url(is_url().with_path("/path2")),
+                )
+            )
+        ),
+        contains_string(
+            "response with history: a sequence containing "
+            "[response with url: URL with path: '/path1', response with url: URL with path: '/path2']"
+        ),
+    )
+    assert_that(
+        is_response().with_history(
+            contains_exactly(
+                is_response().with_url(is_url().with_path("/path1")),
+                is_response().with_url(is_url().with_path("/path3")),
+            )
+        ),
+        mismatches_with(
+            response,
+            contains_string(
+                "was response with history: item 1: was response with url: was URL with path: was </path2>"
+            ),
+        ),
+    )
+
+
+def test_response_matcher_url():
+    # Given
+    response = MOCK_RESPONSE
+
+    # When
+
+    # Then
+    assert_that(response, is_response().with_url(is_url().with_path("/path0")))
+    assert_that(response, not_(is_response().with_url(is_url().with_path("/nope"))))
+    assert_that(
+        str(is_response().with_url(is_url().with_path("/path0"))),
+        contains_string("response with url: URL with path: '/path0'"),
+    )
+    assert_that(
+        is_response().with_url(is_url().with_path("/nope")),
+        mismatches_with(
+            response, contains_string("was response with url: was URL with path: was </path0>")
+        ),
+    )
+
+
+# TODO encoding
 
 
 def test_response_matcher_invalid_json():
@@ -179,7 +263,7 @@ def test_response_matcher_invalid_json():
 def test_redirect_to():
     # Given
     stub_response = mock.MagicMock(
-        status_code=301, headers={"Location": UrlBuilder().with_path("/sausages").build()}
+        status_code=301, headers={"Location": a_url().with_path("/sausages").build()}
     )
 
     # When
@@ -203,6 +287,15 @@ def test_response_matcher_builder():
         .and_content(b"content")
         .and_json(has_entries(a="b"))
         .and_headers(has_entries(key="value"))
+        .and_cookies(has_entries(name="value"))
+        .and_elapsed(between(timedelta(seconds=1), timedelta(minutes=1)))
+        .and_history(
+            contains_exactly(
+                is_response().with_url(is_url().with_path("/path1")),
+                is_response().with_url(is_url().with_path("/path2")),
+            )
+        )
+        .and_url(is_url().with_path("/path0"))
     )
     mismatcher = is_response().with_body("kale").and_status_code(404)
 
@@ -218,7 +311,12 @@ def test_response_matcher_builder():
             "body: 'sausages' "
             "content: <b'content'> "
             "json: a dictionary containing {'a': 'b'} "
-            "headers: a dictionary containing {'key': 'value'}"
+            "headers: a dictionary containing {'key': 'value'} "
+            "cookies: a dictionary containing {'name': 'value'} "
+            "elapsed: (a value greater than or equal to <0:00:01> and a value less than or equal to <0:01:00>) "
+            "history: a sequence containing "
+            "[response with url: URL with path: '/path1', response with url: URL with path: '/path2'] "
+            "url: URL with path: '/path0'"
         ),
     )
     assert_that(

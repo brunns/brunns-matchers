@@ -13,7 +13,7 @@ from brunns.matchers.html import (
     tag_has_string,
 )
 from brunns.matchers.matcher import mismatches_with
-from brunns.matchers.url import to_host, with_path
+from brunns.matchers.url import is_url, to_host
 from bs4 import BeautifulSoup
 from hamcrest import (
     all_of,
@@ -344,10 +344,10 @@ def test_has_row_with_link():
     soup = BeautifulSoup(HTML, "html.parser")
     table = soup.table
     should_match = has_row(
-        index_matches=3, cells_match=has_item(has_link(href=with_path("/thebar")))
+        index_matches=3, cells_match=has_item(has_link(href=is_url().with_path("/thebar")))
     )
     should_not_match_1 = has_row(
-        index_matches=3, cells_match=has_item(has_link(href=with_path("/cup-of-tea")))
+        index_matches=3, cells_match=has_item(has_link(href=is_url().with_path("/cup-of-tea")))
     )
 
     # Then
@@ -359,7 +359,7 @@ def test_has_row_with_link():
         has_string(
             "table with row cells matching a sequence containing HTML with tag matching "
             "tag with name matching 'a' "
-            "attributes matching (a dictionary containing ['href': URL with path '/thebar'] and ANYTHING) "
+            "attributes matching (a dictionary containing ['href': URL with path: '/thebar'] and ANYTHING) "
             "index matching <3>"
         ),
     )

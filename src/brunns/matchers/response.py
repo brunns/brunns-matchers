@@ -107,19 +107,16 @@ class ResponseMatcher(BaseMatcher[Response]):
 
     def describe_to(self, description: Description) -> None:
         description.append_text("response with")
-        self._optional_description(description)
-
-    def _optional_description(self, description: Description):
-        self._append_matcher_descrption(description, self.status_code, "status_code")
-        self._append_matcher_descrption(description, self.body, "body")
-        self._append_matcher_descrption(description, self.content, "content")
-        self._append_matcher_descrption(description, self.json, "json")
-        self._append_matcher_descrption(description, self.headers, "headers")
-        self._append_matcher_descrption(description, self.cookies, "cookies")
-        self._append_matcher_descrption(description, self.elapsed, "elapsed")
+        self._append_matcher_description(description, self.status_code, "status_code")
+        self._append_matcher_description(description, self.body, "body")
+        self._append_matcher_description(description, self.content, "content")
+        self._append_matcher_description(description, self.json, "json")
+        self._append_matcher_description(description, self.headers, "headers")
+        self._append_matcher_description(description, self.cookies, "cookies")
+        self._append_matcher_description(description, self.elapsed, "elapsed")
 
     @staticmethod
-    def _append_matcher_descrption(description: Description, matcher: Matcher, text: str) -> None:
+    def _append_matcher_description(description: Description, matcher: Matcher, text: str) -> None:
         if not isinstance(matcher, IsAnything):
             description.append_text(" {0}: ".format(text)).append_description_of(matcher)
 
@@ -152,10 +149,9 @@ class ResponseMatcher(BaseMatcher[Response]):
         actual_value: Any,
         mismatch_description: Description,
     ) -> None:
-        if field_matcher is not ANYTHING:
-            mismatch_description.append_text(" {0}: ".format(field_name)).append_description_of(
-                actual_value
-            )
+        if field_matcher is not ANYTHING and not field_matcher.matches(actual_value):
+            mismatch_description.append_text(" {0}: ".format(field_name))
+            field_matcher.describe_mismatch(actual_value, mismatch_description)
 
     def with_status_code(self, status_code: Union[int, Matcher[int]]):
         self.status_code = wrap_matcher(status_code)

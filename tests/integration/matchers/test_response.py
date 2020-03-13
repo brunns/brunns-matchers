@@ -28,7 +28,7 @@ def test_response_status_code():
     assert_that(actual, not_(response_with(status_code=201)))
     assert_that(
         response_with(status_code=201),
-        mismatches_with(actual, contains_string("was response with status code: <345>")),
+        mismatches_with(actual, contains_string("was response with status code: was <345>")),
     )
 
 

@@ -31,7 +31,9 @@ def test_response_matcher_status_code():
     assert_that(response_with(status_code=200), has_string("response with status_code: <200>"))
     assert_that(
         response_with(status_code=201),
-        mismatches_with(stub_response, contains_string("was response with status code: <200>"),),
+        mismatches_with(
+            stub_response, contains_string("was response with status code: was <200>"),
+        ),
     )
 
 
@@ -47,7 +49,7 @@ def test_response_matcher_body():
     assert_that(response_with(body="chips"), has_string("response with body: 'chips'"))
     assert_that(
         response_with(body="chips"),
-        mismatches_with(stub_response, contains_string("was response with body: 'sausages'"),),
+        mismatches_with(stub_response, contains_string("was response with body: was 'sausages'")),
     )
 
 
@@ -66,7 +68,9 @@ def test_response_matcher_content():
     )
     assert_that(
         response_with(content=b"chips"),
-        mismatches_with(stub_response, contains_string("was response with content: <b'content'>"),),
+        mismatches_with(
+            stub_response, contains_string("was response with content: was <b'content'>"),
+        ),
     )
 
 
@@ -84,7 +88,9 @@ def test_response_matcher_json():
     )
     assert_that(
         response_with(json=[1, 2, 4]),
-        mismatches_with(stub_response, contains_string("was response with json: <{'a': 'b'}>"),),
+        mismatches_with(
+            stub_response, contains_string("was response with json: was <{'a': 'b'}>"),
+        ),
     )
 
 
@@ -103,7 +109,9 @@ def test_response_matcher_headers():
     )
     assert_that(
         response_with(headers={"key": "nope"}),
-        mismatches_with(response, contains_string("was response with headers: <{'key': 'value'}"),),
+        mismatches_with(
+            response, contains_string("was response with headers: was <{'key': 'value'}"),
+        ),
     )
 
 
@@ -122,7 +130,9 @@ def test_response_matcher_cookies():
     )
     assert_that(
         is_response().with_cookies({"name": "nope"}),
-        mismatches_with(response, contains_string("was response with cookies: <{'name': 'value'}")),
+        mismatches_with(
+            response, contains_string("was response with cookies: was <{'name': 'value'}")
+        ),
     )
 
 
@@ -141,7 +151,7 @@ def test_response_matcher_elapsed():
     )
     assert_that(
         is_response().with_elapsed(timedelta(seconds=60)),
-        mismatches_with(response, contains_string("was response with elapsed: <0:00:01>")),
+        mismatches_with(response, contains_string("was response with elapsed: was <0:00:01>")),
     )
 
 
@@ -161,7 +171,7 @@ def test_response_matcher_invalid_json():
     assert_that(stub_response, not_(response_with(json=[1, 2, 4])))
     assert_that(
         response_with(json=[1, 2, 4]),
-        mismatches_with(stub_response, contains_string("was response with json: <None>"),),
+        mismatches_with(stub_response, contains_string("was response with json: was <None>")),
     )
 
 
@@ -178,7 +188,7 @@ def test_redirect_to():
     assert_that(stub_response, not_(redirects_to(url_with_path("/bacon"))))
     assert_that(
         redirects_to(url_with_path("/sausages")),
-        has_string("redirects to URL with path '/sausages'"),
+        has_string("redirects to URL with path: '/sausages'"),
     )
 
 
@@ -212,5 +222,8 @@ def test_response_matcher_builder():
     )
     assert_that(
         mismatcher,
-        mismatches_with(stub_response, contains_string("was response with status code: <200>"),),
+        mismatches_with(
+            stub_response,
+            contains_string("was response with status code: was <200> body: was 'sausages'"),
+        ),
     )

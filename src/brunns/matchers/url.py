@@ -1,11 +1,12 @@
 # encoding=utf-8
 import logging
-from typing import Mapping, Union
+from typing import Any, Mapping, Union
 
 from deprecated import deprecated
 from furl import furl
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
+from hamcrest.core.core.isanything import IsAnything
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
@@ -14,44 +15,9 @@ logger = logging.getLogger(__name__)
 ANYTHING = anything()
 
 
-def url_with_host(matcher: Union[str, Matcher]):
+def is_url() -> "UrlWith":
     """TODO"""
-    return UrlWith(host=matcher)
-
-
-def url_with_path(matcher: Union[str, Matcher]):
-    """TODO"""
-    return UrlWith(path=matcher)
-
-
-def url_with_query(matcher: Union[Mapping[str, str], Matcher]):
-    """TODO"""
-    return UrlWith(query=matcher)
-
-
-def url_with_fragment(matcher: Union[str, Matcher]):
-    """TODO"""
-    return UrlWith(fragment=matcher)
-
-
-@deprecated(version="2.2.0", reason="Use url_with_host()")
-def to_host(matcher: Union[str, Matcher]):  # pragma: no cover
-    return url_with_host(matcher)
-
-
-@deprecated(version="2.2.0", reason="Use url_with_path()")
-def with_path(matcher: Union[str, Matcher]):  # pragma: no cover
-    return url_with_path(matcher)
-
-
-@deprecated(version="2.2.0", reason="Use url_with_query()")
-def with_query(matcher: Union[Mapping[str, str], Matcher]):  # pragma: no cover
-    return url_with_query(matcher)
-
-
-@deprecated(version="2.2.0", reason="Use url_with_fragment()")
-def with_fragment(matcher: Union[str, Matcher]):  # pragma: no cover
-    return url_with_fragment(matcher)
+    return UrlWith()
 
 
 class UrlWith(BaseMatcher[Union[furl, str]]):
@@ -81,26 +47,109 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
 
     def describe_to(self, description: Description) -> None:
         description.append_text("URL with")
-        if self.host != ANYTHING:
-            description.append_text(" host ").append_description_of(self.host)
-        if self.path != ANYTHING:
-            description.append_text(" path ").append_description_of(self.path)
-        if self.query != ANYTHING:
-            description.append_text(" query ").append_description_of(self.query)
-        if self.fragment != ANYTHING:
-            description.append_text(" fragment ").append_description_of(self.fragment)
+        self._append_matcher_description(description, self.host, "host")
+        self._append_matcher_description(description, self.path, "path")
+        self._append_matcher_description(description, self.query, "query")
+        self._append_matcher_description(description, self.fragment, "fragment")
+
+    @staticmethod
+    def _append_matcher_description(description: Description, matcher: Matcher, text: str) -> None:
+        if not isinstance(matcher, IsAnything):
+            description.append_text(" {0}: ".format(text)).append_description_of(matcher)
 
     def describe_mismatch(self, url: Union[furl, str], mismatch_description: Description) -> None:
         url = url if isinstance(url, furl) else furl(url)
-        if self.host != ANYTHING and not self.host.matches(url.host):
-            mismatch_description.append_text("host ")
-            self.host.describe_mismatch(url.host, mismatch_description)
-        if self.path != ANYTHING and not self.path.matches(url.path):
-            mismatch_description.append_text("path ")
-            self.host.describe_mismatch(url.path, mismatch_description)
-        if self.query != ANYTHING and not self.query.matches(url.query.params):
-            mismatch_description.append_text("query ")
-            self.query.describe_mismatch(url.query.params, mismatch_description)
-        if self.fragment != ANYTHING and not self.fragment.matches(url.fragment):
-            mismatch_description.append_text("fragment ")
-            self.host.describe_mismatch(url.fragment, mismatch_description)
+        mismatch_description.append_text("was URL with")
+        self._describe_field_mismatch(self.host, "host", url.host, mismatch_description)
+        self._describe_field_mismatch(self.path, "path", url.path, mismatch_description)
+        self._describe_field_mismatch(self.query, "query", url.query.params, mismatch_description)
+        self._describe_field_mismatch(self.fragment, "fragment", url.fragment, mismatch_description)
+
+    @staticmethod
+    def _describe_field_mismatch(
+        field_matcher: Matcher[Any],
+        field_name: str,
+        actual_value: Any,
+        mismatch_description: Description,
+    ) -> None:
+        if field_matcher is not ANYTHING and not field_matcher.matches(actual_value):
+            mismatch_description.append_text(" {0}: ".format(field_name))
+            field_matcher.describe_mismatch(actual_value, mismatch_description)
+
+    def with_host(self, host: Union[str, Matcher[str]]):
+        self.host = wrap_matcher(host)
+        return self
+
+    def and_host(self, host: Union[str, Matcher[str]]):
+        return self.with_host(host)
+
+    def with_path(self, path: Union[str, Matcher[str]]):
+        self.path = wrap_matcher(path)
+        return self
+
+    def and_path(self, path: Union[str, Matcher[str]]):
+        return self.with_path(path)
+
+    def with_query(
+        self,
+        query: Union[
+            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+        ],
+    ):
+        self.query = wrap_matcher(query)
+        return self
+
+    def and_query(
+        self,
+        query: Union[
+            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+        ],
+    ):
+        return self.with_query(query)
+
+    def with_fragment(self, fragment: Union[str, Matcher[str]]):
+        self.fragment = wrap_matcher(fragment)
+        return self
+
+    def and_fragment(self, fragment: Union[str, Matcher[str]]):
+        return self.with_fragment(fragment)
+
+
+@deprecated(version="2.3.0", reason="Use builder style is_url()")
+def url_with_host(matcher: Union[str, Matcher]):  # pragma: no cover
+    return UrlWith(host=matcher)
+
+
+@deprecated(version="2.3.0", reason="Use builder style is_url()")
+def url_with_path(matcher: Union[str, Matcher]):  # pragma: no cover
+    return UrlWith(path=matcher)
+
+
+@deprecated(version="2.3.0", reason="Use builder style is_url()")
+def url_with_query(matcher: Union[Mapping[str, str], Matcher]):  # pragma: no cover
+    return UrlWith(query=matcher)
+
+
+@deprecated(version="2.3.0", reason="Use builder style is_url()")
+def url_with_fragment(matcher: Union[str, Matcher]):  # pragma: no cover
+    return UrlWith(fragment=matcher)
+
+
+@deprecated(version="2.2.0", reason="Use builder style is_url()")
+def to_host(matcher: Union[str, Matcher]):  # pragma: no cover
+    return url_with_host(matcher)
+
+
+@deprecated(version="2.2.0", reason="Use builder style is_url()")
+def with_path(matcher: Union[str, Matcher]):  # pragma: no cover
+    return url_with_path(matcher)
+
+
+@deprecated(version="2.2.0", reason="Use builder style is_url()")
+def with_query(matcher: Union[Mapping[str, str], Matcher]):  # pragma: no cover
+    return url_with_query(matcher)
+
+
+@deprecated(version="2.2.0", reason="Use builder style is_url()")
+def with_fragment(matcher: Union[str, Matcher]):  # pragma: no cover
+    return url_with_fragment(matcher)

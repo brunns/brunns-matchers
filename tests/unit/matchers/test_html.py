@@ -13,13 +13,13 @@ from brunns.matchers.html import (
     tag_has_string,
 )
 from brunns.matchers.matcher import mismatches_with
-from brunns.matchers.url import is_url, to_host
+from brunns.matchers.url import is_url
 from bs4 import BeautifulSoup
 from hamcrest import (
     all_of,
     anything,
     assert_that,
-    contains,
+    contains_exactly,
     contains_string,
     has_entries,
     has_item,
@@ -177,8 +177,12 @@ def test_table_has_row_cells():
     # Given
     soup = BeautifulSoup(HTML, "html.parser")
     table = soup.table
-    should_match = has_row(cells_match=contains(tag_has_string("foo"), tag_has_string("bar")))
-    should_not_match = has_row(cells_match=contains(tag_has_string("egg"), tag_has_string("chips")))
+    should_match = has_row(
+        cells_match=contains_exactly(tag_has_string("foo"), tag_has_string("bar"))
+    )
+    should_not_match = has_row(
+        cells_match=contains_exactly(tag_has_string("egg"), tag_has_string("chips"))
+    )
 
     # Then
     assert_that(table, should_match)
@@ -200,22 +204,22 @@ def test_has_row():
     should_match = has_row(
         index_matches=2,
         row_matches=has_class("bazz"),
-        cells_match=contains(tag_has_string("fizz"), tag_has_string("buzz")),
+        cells_match=contains_exactly(tag_has_string("fizz"), tag_has_string("buzz")),
     )
     should_not_match_1 = has_row(
         index_matches=2,
         row_matches=has_class("bazz"),
-        cells_match=contains(tag_has_string("egg"), tag_has_string("chips")),
+        cells_match=contains_exactly(tag_has_string("egg"), tag_has_string("chips")),
     )
     should_not_match_2 = has_row(
         index_matches=3,
         row_matches=has_class("bazz"),
-        cells_match=contains(tag_has_string("fizz"), tag_has_string("buzz")),
+        cells_match=contains_exactly(tag_has_string("fizz"), tag_has_string("buzz")),
     )
     should_not_match_3 = has_row(
         index_matches=2,
         row_matches=has_class("eden"),
-        cells_match=contains(tag_has_string("fizz"), tag_has_string("buzz")),
+        cells_match=contains_exactly(tag_has_string("fizz"), tag_has_string("buzz")),
     )
 
     # Then
@@ -253,8 +257,12 @@ def test_table_has_header_row():
     # Given
     soup = BeautifulSoup(HTML, "html.parser")
     table = soup.table
-    should_match = has_header_row(contains(tag_has_string("apples"), tag_has_string("oranges")))
-    should_not_match = has_header_row(contains(tag_has_string("foo"), tag_has_string("bar")))
+    should_match = has_header_row(
+        contains_exactly(tag_has_string("apples"), tag_has_string("oranges"))
+    )
+    should_not_match = has_header_row(
+        contains_exactly(tag_has_string("foo"), tag_has_string("bar"))
+    )
 
     # Then
     assert_that(table, should_match)
@@ -270,8 +278,12 @@ def test_table_has_header_row():
 
 
 def test_html_has_table():
-    should_match = has_table(has_row(contains(tag_has_string("foo"), tag_has_string("bar"))))
-    should_not_match = has_table(has_row(contains(tag_has_string("egg"), tag_has_string("chips"))))
+    should_match = has_table(
+        has_row(contains_exactly(tag_has_string("foo"), tag_has_string("bar")))
+    )
+    should_not_match = has_table(
+        has_row(contains_exactly(tag_has_string("egg"), tag_has_string("chips")))
+    )
 
     assert_that(HTML, should_match)
     assert_that(HTML, not_(should_not_match))
@@ -332,8 +344,8 @@ def test_has_attributes():
 
 def test_has_link():
     # Given
-    should_match = has_link(href=to_host("brunni.ng"))
-    should_not_match_1 = has_link(href=to_host("example.com"))
+    should_match = has_link(href=is_url().with_host("brunni.ng"))
+    should_not_match_1 = has_link(href=is_url().with_host("example.com"))
 
     assert_that(HTML, should_match)
     assert_that(HTML, not_(should_not_match_1))

@@ -6,7 +6,7 @@ from brunns.matchers.matcher import mismatches_with
 from hamcrest import (
     all_of,
     assert_that,
-    contains,
+    contains_exactly,
     contains_inanyorder,
     contains_string,
     has_item,
@@ -50,14 +50,17 @@ def test_has_rows(db):
         db,
         not_(
             has_table_with_rows(
-                "bacon", contains(has_properties(kind="smoked"), has_properties(kind="unsmoked"))
+                "bacon",
+                contains_exactly(has_properties(kind="smoked"), has_properties(kind="unsmoked")),
             )
         ),
     )
     assert_that(
         has_table_with_rows(
             "sausages",
-            contains(has_properties(kind="cumberland"), has_properties(kind="lincolnshire")),
+            contains_exactly(
+                has_properties(kind="cumberland"), has_properties(kind="lincolnshire")
+            ),
         ),
         has_string(
             matches_regexp(
@@ -79,7 +82,8 @@ def test_has_rows(db):
     )
     assert_that(
         has_table_with_rows(
-            "bacon", contains(has_properties(kind="smoked"), has_properties(kind="unsmoked"))
+            "bacon",
+            contains_exactly(has_properties(kind="smoked"), has_properties(kind="unsmoked")),
         ),
         mismatches_with(
             db,

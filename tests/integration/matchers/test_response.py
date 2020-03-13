@@ -7,7 +7,7 @@ import requests
 from brunns.matchers.bytestring import contains_bytestring
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.object import between
-from brunns.matchers.response import is_response, response_with
+from brunns.matchers.response import is_response
 from brunns.utils.network import internet_connection
 from hamcrest import assert_that, contains_string, has_entries, has_key, not_
 
@@ -24,10 +24,10 @@ def test_response_status_code():
     actual = requests.get("https://httpbin.org/status/345")
 
     # Then
-    assert_that(actual, response_with(status_code=345))
-    assert_that(actual, not_(response_with(status_code=201)))
+    assert_that(actual, is_response().with_status_code(345))
+    assert_that(actual, not_(is_response().with_status_code(201)))
     assert_that(
-        response_with(status_code=201),
+        is_response().with_status_code(201),
         mismatches_with(actual, contains_string("was response with status code: was <345>")),
     )
 
@@ -40,8 +40,8 @@ def test_response_json():
     actual = requests.get("https://httpbin.org/json")
 
     # Then
-    assert_that(actual, response_with(json=has_key("slideshow")))
-    assert_that(actual, not_(response_with(json=has_key("shitshow"))))
+    assert_that(actual, is_response().with_json(has_key("slideshow")))
+    assert_that(actual, not_(is_response().with_json(has_key("shitshow"))))
 
 
 @pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")

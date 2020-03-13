@@ -3,7 +3,7 @@ import json
 
 from brunns.matchers.data import json_matching
 from brunns.matchers.matcher import mismatches_with
-from hamcrest import assert_that, contains, has_string, matches_regexp, not_
+from hamcrest import assert_that, contains_exactly, has_string, matches_regexp, not_
 
 
 def test_json_matching():
@@ -14,7 +14,7 @@ def test_json_matching():
 
     # Then
     assert_that(j, json_matching([1, 2, 3]))
-    assert_that(j, json_matching(contains(1, 2, 3)))
+    assert_that(j, json_matching(contains_exactly(1, 2, 3)))
     assert_that(j, not_(json_matching([1, 2, 5])))
     assert_that(json_matching([1, 2, 3]), has_string("JSON structure matching <[1, 2, 3]>"))
     assert_that(

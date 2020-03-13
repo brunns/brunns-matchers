@@ -4,8 +4,8 @@ from unittest import mock
 
 from brunns.builder.internet import UrlBuilder  # type: ignore
 from brunns.matchers.matcher import mismatches_with
-from brunns.matchers.response import is_response, redirects_to, response_with
-from brunns.matchers.url import url_with_path
+from brunns.matchers.response import is_response, redirects_to
+from brunns.matchers.url import is_url
 from hamcrest import assert_that, contains_string, has_entries, has_string, not_
 
 MOCK_RESPONSE = mock.MagicMock(
@@ -26,11 +26,11 @@ def test_response_matcher_status_code():
     # When
 
     # Then
-    assert_that(stub_response, response_with(status_code=200))
-    assert_that(stub_response, not_(response_with(status_code=201)))
-    assert_that(response_with(status_code=200), has_string("response with status_code: <200>"))
+    assert_that(stub_response, is_response().with_status_code(200))
+    assert_that(stub_response, not_(is_response().with_status_code(201)))
+    assert_that(is_response().with_status_code(200), has_string("response with status_code: <200>"))
     assert_that(
-        response_with(status_code=201),
+        is_response().with_status_code(201),
         mismatches_with(
             stub_response, contains_string("was response with status code: was <200>"),
         ),
@@ -44,11 +44,11 @@ def test_response_matcher_body():
     # When
 
     # Then
-    assert_that(stub_response, response_with(body="sausages"))
-    assert_that(stub_response, not_(response_with(body="chips")))
-    assert_that(response_with(body="chips"), has_string("response with body: 'chips'"))
+    assert_that(stub_response, is_response().with_body("sausages"))
+    assert_that(stub_response, not_(is_response().with_body("chips")))
+    assert_that(is_response().with_body("chips"), has_string("response with body: 'chips'"))
     assert_that(
-        response_with(body="chips"),
+        is_response().with_body("chips"),
         mismatches_with(stub_response, contains_string("was response with body: was 'sausages'")),
     )
 
@@ -60,14 +60,14 @@ def test_response_matcher_content():
     # When
 
     # Then
-    assert_that(stub_response, response_with(content=b"content"))
-    assert_that(stub_response, not_(response_with(content=b"chips")))
+    assert_that(stub_response, is_response().with_content(b"content"))
+    assert_that(stub_response, not_(is_response().with_content(b"chips")))
     assert_that(
-        str(response_with(content=b"content")),
+        str(is_response().with_content(b"content")),
         contains_string("response with content: <b'content'>"),
     )
     assert_that(
-        response_with(content=b"chips"),
+        is_response().with_content(b"chips"),
         mismatches_with(
             stub_response, contains_string("was response with content: was <b'content'>"),
         ),
@@ -81,13 +81,14 @@ def test_response_matcher_json():
     # When
 
     # Then
-    assert_that(stub_response, response_with(json={"a": "b"}))
-    assert_that(stub_response, not_(response_with(json={"a": "c"})))
+    assert_that(stub_response, is_response().with_json({"a": "b"}))
+    assert_that(stub_response, not_(is_response().with_json({"a": "c"})))
     assert_that(
-        str(response_with(json={"a": "b"})), contains_string("response with json: <{'a': 'b'}>"),
+        str(is_response().with_json({"a": "b"})),
+        contains_string("response with json: <{'a': 'b'}>"),
     )
     assert_that(
-        response_with(json=[1, 2, 4]),
+        is_response().with_json([1, 2, 4]),
         mismatches_with(
             stub_response, contains_string("was response with json: was <{'a': 'b'}>"),
         ),
@@ -101,14 +102,14 @@ def test_response_matcher_headers():
     # When
 
     # Then
-    assert_that(response, response_with(headers={"key": "value"}))
-    assert_that(response, not_(response_with(headers={"key": "nope"})))
+    assert_that(response, is_response().with_headers({"key": "value"}))
+    assert_that(response, not_(is_response().with_headers({"key": "nope"})))
     assert_that(
-        str(response_with(headers={"key": "value"})),
+        str(is_response().with_headers({"key": "value"})),
         contains_string("response with headers: <{'key': 'value'}"),
     )
     assert_that(
-        response_with(headers={"key": "nope"}),
+        is_response().with_headers({"key": "nope"}),
         mismatches_with(
             response, contains_string("was response with headers: was <{'key': 'value'}"),
         ),
@@ -168,9 +169,9 @@ def test_response_matcher_invalid_json():
     # When
 
     # Then
-    assert_that(stub_response, not_(response_with(json=[1, 2, 4])))
+    assert_that(stub_response, not_(is_response().with_json([1, 2, 4])))
     assert_that(
-        response_with(json=[1, 2, 4]),
+        is_response().with_json([1, 2, 4]),
         mismatches_with(stub_response, contains_string("was response with json: was <None>")),
     )
 
@@ -184,10 +185,10 @@ def test_redirect_to():
     # When
 
     # Then
-    assert_that(stub_response, redirects_to(url_with_path("/sausages")))
-    assert_that(stub_response, not_(redirects_to(url_with_path("/bacon"))))
+    assert_that(stub_response, redirects_to(is_url().with_path("/sausages")))
+    assert_that(stub_response, not_(redirects_to(is_url().with_path("/bacon"))))
     assert_that(
-        redirects_to(url_with_path("/sausages")),
+        redirects_to(is_url().with_path("/sausages")),
         has_string("redirects to URL with path: '/sausages'"),
     )
 

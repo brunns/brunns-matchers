@@ -20,32 +20,9 @@ ANYTHING = anything()
 def is_response() -> "ResponseMatcher":
     """Matches :requests.models.Response:.
 
-
+    TODO
     """
     return ResponseMatcher()
-
-
-@deprecated(version="2.3.0", reason="Use builder style is_response()")
-def response_with(
-    status_code: Union[int, Matcher[int]] = ANYTHING,
-    body: Union[str, Matcher[str]] = ANYTHING,
-    content: Union[bytes, Matcher[bytes]] = ANYTHING,
-    json: Union[JsonStructure, Matcher[JsonStructure]] = ANYTHING,
-    headers: Union[
-        Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
-    ] = ANYTHING,
-) -> "ResponseMatcher":  # pragma: no cover
-    """Matches :requests.models.Response:.
-
-    :param status_code: Expected status code
-    :param body: Expected body
-    :param content: Expected content
-    :param json: Expected json
-    :param headers: Expected headers
-    """
-    return ResponseMatcher(
-        status_code=status_code, body=body, content=content, json=json, headers=headers
-    )
 
 
 class ResponseMatcher(BaseMatcher[Response]):
@@ -232,4 +209,19 @@ def redirects_to(url_matcher: Union[str, Matcher]) -> Matcher[Response]:
         is_response()
         .with_status_code(between(300, 399))
         .and_headers(has_entry("Location", url_matcher)),
+    )
+
+
+@deprecated(version="2.3.0", reason="Use builder style is_response()")
+def response_with(
+    status_code: Union[int, Matcher[int]] = ANYTHING,
+    body: Union[str, Matcher[str]] = ANYTHING,
+    content: Union[bytes, Matcher[bytes]] = ANYTHING,
+    json: Union[JsonStructure, Matcher[JsonStructure]] = ANYTHING,
+    headers: Union[
+        Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+    ] = ANYTHING,
+) -> "ResponseMatcher":  # pragma: no cover
+    return ResponseMatcher(
+        status_code=status_code, body=body, content=content, json=json, headers=headers
     )

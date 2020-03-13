@@ -7,7 +7,7 @@ from brunns.matchers.bytestring import contains_bytestring
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.response import is_response, response_with
 from brunns.utils.network import internet_connection
-from hamcrest import assert_that, contains_string, has_key, not_
+from hamcrest import assert_that, contains_string, has_entries, has_key, not_
 
 logger = logging.getLogger(__name__)
 
@@ -53,8 +53,18 @@ def test_response_content():
 
     # Then
     assert_that(actual, is_response().with_status_code(200))
-
     assert_that(
         actual, is_response().with_status_code(200).and_content(contains_bytestring(b"foo"))
     )
     assert_that(actual, not_(is_response().with_content(b"seems unlikely")))
+
+
+@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
+def test_response_cookies():
+    # Given
+
+    # When
+    actual = requests.get("https://httpbin.org/cookies/set?foo=bar", allow_redirects=False)
+
+    # Then
+    assert_that(actual, is_response().with_status_code(302).and_cookies(has_entries(foo="bar")))

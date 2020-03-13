@@ -13,6 +13,7 @@ MOCK_RESPONSE = mock.MagicMock(
     content=b"content",
     json=mock.MagicMock(return_value={"a": "b"}),
     headers={"key": "value"},
+    cookies={"name": "value"},
 )
 
 
@@ -101,6 +102,25 @@ def test_response_matcher_headers():
     assert_that(
         response_with(headers={"key": "nope"}),
         mismatches_with(response, contains_string("was response with headers: <{'key': 'value'}"),),
+    )
+
+
+def test_response_matcher_cookies():
+    # Given
+    response = MOCK_RESPONSE
+
+    # When
+
+    # Then
+    assert_that(response, is_response().with_cookies({"name": "value"}))
+    assert_that(response, not_(is_response().with_cookies({"name": "nope"})))
+    assert_that(
+        str(is_response().with_cookies({"name": "value"})),
+        contains_string("response with cookies: <{'name': 'value'}"),
+    )
+    assert_that(
+        is_response().with_cookies({"name": "nope"}),
+        mismatches_with(response, contains_string("was response with cookies: <{'name': 'value'}")),
     )
 
 

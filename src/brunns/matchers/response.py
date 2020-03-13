@@ -33,7 +33,7 @@ def response_with(
     headers: Union[
         Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
     ] = ANYTHING,
-) -> "ResponseMatcher":
+) -> "ResponseMatcher":  # pragma: no cover
     """Matches :requests.models.Response:.
 
     :param status_code: Expected status code
@@ -54,6 +54,7 @@ class ResponseMatcher(BaseMatcher[Response]):
     :param content: Expected content
     :param json: Expected json
     :param headers: Expected headers
+    :param cookies: Expected cookies
     """
 
     def __init__(
@@ -65,6 +66,9 @@ class ResponseMatcher(BaseMatcher[Response]):
         headers: Union[
             Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
         ] = ANYTHING,
+        cookies: Union[
+            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+        ] = ANYTHING,
     ) -> None:
         super(ResponseMatcher, self).__init__()
         self.status_code = wrap_matcher(status_code)  # type: Matcher[int]
@@ -73,6 +77,9 @@ class ResponseMatcher(BaseMatcher[Response]):
         self.json = wrap_matcher(json)  # type: Matcher[JsonStructure]
         self.headers = wrap_matcher(
             headers
+        )  # type: Matcher[Mapping[str, Union[str, Matcher[str]]]]
+        self.cookies = wrap_matcher(
+            cookies
         )  # type: Matcher[Mapping[str, Union[str, Matcher[str]]]]
 
     def _matches(self, response: Response) -> bool:
@@ -83,6 +90,7 @@ class ResponseMatcher(BaseMatcher[Response]):
             and self.content.matches(response.content)
             and self.json.matches(response_json)
             and self.headers.matches(response.headers)
+            and self.cookies.matches(response.cookies)
         )
 
     @staticmethod
@@ -102,6 +110,7 @@ class ResponseMatcher(BaseMatcher[Response]):
         self._append_matcher_descrption(description, self.content, "content")
         self._append_matcher_descrption(description, self.json, "json")
         self._append_matcher_descrption(description, self.headers, "headers")
+        self._append_matcher_descrption(description, self.cookies, "cookies")
 
     @staticmethod
     def _append_matcher_descrption(description: Description, matcher: Matcher, text: str) -> None:
@@ -122,6 +131,9 @@ class ResponseMatcher(BaseMatcher[Response]):
         )
         self._describe_field_mismatch(
             self.headers, "headers", response.headers, mismatch_description
+        )
+        self._describe_field_mismatch(
+            self.cookies, "cookies", response.cookies, mismatch_description
         )
 
     @staticmethod
@@ -181,15 +193,31 @@ class ResponseMatcher(BaseMatcher[Response]):
     ):
         return self.with_headers(headers)
 
+    def with_cookies(
+        self,
+        cookies: Union[
+            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+        ],
+    ):
+        self.cookies = wrap_matcher(cookies)
+        return self
+
+    def and_cookies(
+        self,
+        cookies: Union[
+            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+        ],
+    ):
+        return self.with_cookies(cookies)
+
 
 def redirects_to(url_matcher: Union[str, Matcher]) -> Matcher[Response]:
     """Is a response a redirect to a URL matching the suplplied matcher? Matches :requests.models.Response:.
     :param url_matcher: Expected URL.
     """
-    description = str(
-        StringDescription().append_text("redirects to ").append_description_of(url_matcher)
+    return described_as(
+        str(StringDescription().append_text("redirects to ").append_description_of(url_matcher)),
+        is_response()
+        .with_status_code(between(300, 399))
+        .and_headers(has_entry("Location", url_matcher)),
     )
-    matcher = response_with(
-        status_code=between(300, 399), headers=has_entry("Location", url_matcher)
-    )
-    return described_as(description, matcher)

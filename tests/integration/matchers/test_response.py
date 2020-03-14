@@ -104,3 +104,15 @@ def test_response_history():
         .and_url(is_url().with_path("/cookies"))
         .and_history(contains_exactly(is_response().with_url(is_url().with_path("/cookies/set")))),
     )
+
+
+@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
+def test_response_encoding():
+    # Given
+
+    # When
+    actual = requests.get("https://api.github.com/events")
+
+    # Then
+    assert_that(actual, is_response().with_encoding("utf-8"))
+    assert_that(actual, not_(is_response().with_encoding("ISO-8859-1")))

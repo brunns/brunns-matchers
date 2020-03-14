@@ -36,6 +36,8 @@ class ResponseMatcher(BaseMatcher[Response]):
     :param cookies: Expected cookies
     :param elapsed: Expected elapsed time
     :param history: Expected history
+    :param url: Expected url
+    :param encoding: Expected encoding
     """
 
     def __init__(
@@ -56,6 +58,7 @@ class ResponseMatcher(BaseMatcher[Response]):
             Matcher[Sequence[Union[Response, Matcher[Response]]]],
         ] = ANYTHING,
         url: Union[furl, str, Matcher[Union[furl, str]]] = ANYTHING,
+        encoding: Union[str, Matcher[str]] = ANYTHING,
     ) -> None:
         super(ResponseMatcher, self).__init__()
         self.status_code = wrap_matcher(status_code)  # type: Matcher[int]
@@ -71,6 +74,7 @@ class ResponseMatcher(BaseMatcher[Response]):
         self.elapsed = wrap_matcher(elapsed)
         self.history = wrap_matcher(history)
         self.url = wrap_matcher(url)
+        self.encoding = wrap_matcher(encoding)
 
     def _matches(self, response: Response) -> bool:
         response_json = self._get_response_json(response)
@@ -84,6 +88,7 @@ class ResponseMatcher(BaseMatcher[Response]):
             and self.elapsed.matches(response.elapsed)
             and self.history.matches(response.history)
             and self.url.matches(response.url)
+            and self.encoding.matches(response.encoding)
         )
 
     @staticmethod
@@ -104,6 +109,7 @@ class ResponseMatcher(BaseMatcher[Response]):
         self._append_matcher_description(description, self.elapsed, "elapsed")
         self._append_matcher_description(description, self.history, "history")
         self._append_matcher_description(description, self.url, "url")
+        self._append_matcher_description(description, self.encoding, "encoding")
 
     @staticmethod
     def _append_matcher_description(description: Description, matcher: Matcher, text: str) -> None:
@@ -135,6 +141,9 @@ class ResponseMatcher(BaseMatcher[Response]):
             self.history, "history", response.history, mismatch_description
         )
         self._describe_field_mismatch(self.url, "url", response.url, mismatch_description)
+        self._describe_field_mismatch(
+            self.encoding, "encoding", response.encoding, mismatch_description
+        )
 
     @staticmethod
     def _describe_field_mismatch(
@@ -241,6 +250,13 @@ class ResponseMatcher(BaseMatcher[Response]):
 
     def and_url(self, url: Union[furl, str, Matcher[Union[furl, str]]]):
         return self.with_url(url)
+
+    def with_encoding(self, encoding: Union[str, Matcher[str]]):
+        self.encoding = wrap_matcher(encoding)
+        return self
+
+    def and_encoding(self, encoding: Union[str, Matcher[str]]):
+        return self.with_encoding(encoding)
 
 
 def redirects_to(url_matcher: Union[str, Matcher]) -> Matcher[Response]:

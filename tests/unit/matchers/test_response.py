@@ -22,6 +22,7 @@ MOCK_RESPONSE = mock.MagicMock(
         mock.MagicMock(url=a_url().with_path("/path2").build()),
     ],
     url=a_url().with_path("/path0").build(),
+    encoding="utf-8",
 )
 
 
@@ -240,7 +241,20 @@ def test_response_matcher_url():
     )
 
 
-# TODO encoding
+def test_response_matcher_encoding():
+    # Given
+    stub_response = MOCK_RESPONSE
+
+    # When
+
+    # Then
+    assert_that(stub_response, is_response().with_encoding("utf-8"))
+    assert_that(stub_response, not_(is_response().with_encoding("ISO-8859-1")))
+    assert_that(is_response().with_encoding("utf-8"), has_string("response with encoding: 'utf-8'"))
+    assert_that(
+        is_response().with_encoding("ISO-8859-1"),
+        mismatches_with(stub_response, contains_string("was response with encoding: was 'utf-8'"),),
+    )
 
 
 def test_response_matcher_invalid_json():
@@ -296,6 +310,7 @@ def test_response_matcher_builder():
             )
         )
         .and_url(is_url().with_path("/path0"))
+        .and_encoding("utf-8")
     )
     mismatcher = is_response().with_body("kale").and_status_code(404)
 
@@ -307,7 +322,8 @@ def test_response_matcher_builder():
     assert_that(
         matcher,
         has_string(
-            "response with status_code: <200> "
+            "response with "
+            "status_code: <200> "
             "body: 'sausages' "
             "content: <b'content'> "
             "json: a dictionary containing {'a': 'b'} "
@@ -316,7 +332,8 @@ def test_response_matcher_builder():
             "elapsed: (a value greater than or equal to <0:00:01> and a value less than or equal to <0:01:00>) "
             "history: a sequence containing "
             "[response with url: URL with path: '/path1', response with url: URL with path: '/path2'] "
-            "url: URL with path: '/path0'"
+            "url: URL with path: '/path0' "
+            "encoding: 'utf-8'"
         ),
     )
     assert_that(

@@ -1,7 +1,7 @@
 # encoding=utf-8
 from brunns.builder.email import EmailMessageBuilder
 from brunns.matchers.matcher import mismatches_with
-from brunns.matchers.smtp import email_with
+from brunns.matchers.smtp import is_email
 from hamcrest import assert_that, has_string, not_
 
 
@@ -19,20 +19,30 @@ def test_email_matcher():
     # When
 
     # Then
-    assert_that(message, email_with(to_name="simon"))
-    assert_that(message, not_(email_with(to_name="Banana")))
+    assert_that(message, is_email().with_to_name("simon"))
     assert_that(
-        email_with(body_text="Foobar"),
+        message, not_(is_email().with_to_address("banana@example.com").and_to_name("Banana"))
+    )
+    assert_that(
+        is_email()
+        .with_to_name("Jenny")
+        .and_to_address("jenny@example.com")
+        .and_from_name("Fred")
+        .and_from_address("fred@example.com")
+        .and_subject("Foo")
+        .and_body_text("Bar"),
         has_string(
-            "email with to_name ANYTHING to_address ANYTHING from_name ANYTHING from_address ANYTHING "
-            "subject ANYTHING body_text 'Foobar'"
+            "email with to_name: 'Jenny' "
+            "to_address: 'jenny@example.com' "
+            "from_name: 'Fred' "
+            "from_address: 'fred@example.com' "
+            "subject: 'Foo' "
+            "body_text: 'Bar'"
         ),
     )
     assert_that(
-        email_with(to_name="Banana"),
+        is_email().with_to_address("banana@example.com").and_to_name("Banana"),
         mismatches_with(
-            message,
-            "was to_name 'simon' to_address 'simon@brunni.ng' from_name 'fred' from_address 'fred@beardy.dev' "
-            "subject 'chips' body_text 'bananas'",
+            message, "was email with to_name: was 'simon' to_address: was 'simon@brunni.ng'",
         ),
     )

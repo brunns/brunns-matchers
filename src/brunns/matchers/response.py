@@ -1,14 +1,14 @@
 # encoding=utf-8
 from datetime import timedelta
-from typing import Any, Mapping, Optional, Sequence, Union
+from typing import Mapping, Optional, Sequence, Union
 
 from brunns.matchers.data import JsonStructure
 from brunns.matchers.object import between
+from brunns.matchers.utils import append_matcher_description, describe_field_mismatch
 from deprecated import deprecated
 from furl import furl
 from hamcrest import anything, described_as, has_entry
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.core.isanything import IsAnything
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
@@ -100,61 +100,33 @@ class ResponseMatcher(BaseMatcher[Response]):
 
     def describe_to(self, description: Description) -> None:
         description.append_text("response with")
-        self._append_matcher_description(description, self.status_code, "status_code")
-        self._append_matcher_description(description, self.body, "body")
-        self._append_matcher_description(description, self.content, "content")
-        self._append_matcher_description(description, self.json, "json")
-        self._append_matcher_description(description, self.headers, "headers")
-        self._append_matcher_description(description, self.cookies, "cookies")
-        self._append_matcher_description(description, self.elapsed, "elapsed")
-        self._append_matcher_description(description, self.history, "history")
-        self._append_matcher_description(description, self.url, "url")
-        self._append_matcher_description(description, self.encoding, "encoding")
-
-    @staticmethod
-    def _append_matcher_description(description: Description, matcher: Matcher, text: str) -> None:
-        if not isinstance(matcher, IsAnything):
-            description.append_text(" {0}: ".format(text)).append_description_of(matcher)
+        append_matcher_description(self.status_code, "status_code", description)
+        append_matcher_description(self.body, "body", description)
+        append_matcher_description(self.content, "content", description)
+        append_matcher_description(self.json, "json", description)
+        append_matcher_description(self.headers, "headers", description)
+        append_matcher_description(self.cookies, "cookies", description)
+        append_matcher_description(self.elapsed, "elapsed", description)
+        append_matcher_description(self.history, "history", description)
+        append_matcher_description(self.url, "url", description)
+        append_matcher_description(self.encoding, "encoding", description)
 
     def describe_mismatch(self, response: Response, mismatch_description: Description) -> None:
         mismatch_description.append_text("was response with")
-        self._describe_field_mismatch(
+        describe_field_mismatch(
             self.status_code, "status code", response.status_code, mismatch_description
         )
-        self._describe_field_mismatch(self.body, "body", response.text, mismatch_description)
-        self._describe_field_mismatch(
-            self.content, "content", response.content, mismatch_description
-        )
-        self._describe_field_mismatch(
+        describe_field_mismatch(self.body, "body", response.text, mismatch_description)
+        describe_field_mismatch(self.content, "content", response.content, mismatch_description)
+        describe_field_mismatch(
             self.json, "json", self._get_response_json(response), mismatch_description
         )
-        self._describe_field_mismatch(
-            self.headers, "headers", response.headers, mismatch_description
-        )
-        self._describe_field_mismatch(
-            self.cookies, "cookies", response.cookies, mismatch_description
-        )
-        self._describe_field_mismatch(
-            self.elapsed, "elapsed", response.elapsed, mismatch_description
-        )
-        self._describe_field_mismatch(
-            self.history, "history", response.history, mismatch_description
-        )
-        self._describe_field_mismatch(self.url, "url", response.url, mismatch_description)
-        self._describe_field_mismatch(
-            self.encoding, "encoding", response.encoding, mismatch_description
-        )
-
-    @staticmethod
-    def _describe_field_mismatch(
-        field_matcher: Matcher[Any],
-        field_name: str,
-        actual_value: Any,
-        mismatch_description: Description,
-    ) -> None:
-        if field_matcher is not ANYTHING and not field_matcher.matches(actual_value):
-            mismatch_description.append_text(" {0}: ".format(field_name))
-            field_matcher.describe_mismatch(actual_value, mismatch_description)
+        describe_field_mismatch(self.headers, "headers", response.headers, mismatch_description)
+        describe_field_mismatch(self.cookies, "cookies", response.cookies, mismatch_description)
+        describe_field_mismatch(self.elapsed, "elapsed", response.elapsed, mismatch_description)
+        describe_field_mismatch(self.history, "history", response.history, mismatch_description)
+        describe_field_mismatch(self.url, "url", response.url, mismatch_description)
+        describe_field_mismatch(self.encoding, "encoding", response.encoding, mismatch_description)
 
     def with_status_code(self, status_code: Union[int, Matcher[int]]):
         self.status_code = wrap_matcher(status_code)

@@ -1,12 +1,12 @@
 # encoding=utf-8
 import logging
-from typing import Any, Mapping, Union
+from typing import Mapping, Union
 
+from brunns.matchers.utils import append_matcher_description, describe_field_mismatch
 from deprecated import deprecated
 from furl import furl
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.core.isanything import IsAnything
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
@@ -47,34 +47,18 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
 
     def describe_to(self, description: Description) -> None:
         description.append_text("URL with")
-        self._append_matcher_description(description, self.host, "host")
-        self._append_matcher_description(description, self.path, "path")
-        self._append_matcher_description(description, self.query, "query")
-        self._append_matcher_description(description, self.fragment, "fragment")
-
-    @staticmethod
-    def _append_matcher_description(description: Description, matcher: Matcher, text: str) -> None:
-        if not isinstance(matcher, IsAnything):
-            description.append_text(" {0}: ".format(text)).append_description_of(matcher)
+        append_matcher_description(self.host, "host", description)
+        append_matcher_description(self.path, "path", description)
+        append_matcher_description(self.query, "query", description)
+        append_matcher_description(self.fragment, "fragment", description)
 
     def describe_mismatch(self, url: Union[furl, str], mismatch_description: Description) -> None:
         url = url if isinstance(url, furl) else furl(url)
         mismatch_description.append_text("was URL with")
-        self._describe_field_mismatch(self.host, "host", url.host, mismatch_description)
-        self._describe_field_mismatch(self.path, "path", url.path, mismatch_description)
-        self._describe_field_mismatch(self.query, "query", url.query.params, mismatch_description)
-        self._describe_field_mismatch(self.fragment, "fragment", url.fragment, mismatch_description)
-
-    @staticmethod
-    def _describe_field_mismatch(
-        field_matcher: Matcher[Any],
-        field_name: str,
-        actual_value: Any,
-        mismatch_description: Description,
-    ) -> None:
-        if field_matcher is not ANYTHING and not field_matcher.matches(actual_value):
-            mismatch_description.append_text(" {0}: ".format(field_name))
-            field_matcher.describe_mismatch(actual_value, mismatch_description)
+        describe_field_mismatch(self.host, "host", url.host, mismatch_description)
+        describe_field_mismatch(self.path, "path", url.path, mismatch_description)
+        describe_field_mismatch(self.query, "query", url.query.params, mismatch_description)
+        describe_field_mismatch(self.fragment, "fragment", url.fragment, mismatch_description)
 
     def with_host(self, host: Union[str, Matcher[str]]):
         self.host = wrap_matcher(host)

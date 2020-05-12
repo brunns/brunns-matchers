@@ -21,7 +21,7 @@ except IOError:
 setup(
     name="brunns-matchers",
     zip_safe=False,
-    version="2.3.0",
+    version="2.4.0",
     description="Custom PyHamcrest matchers",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -49,7 +49,7 @@ setup(
     python_requires=">=3.5",
     install_requires=[
         "furl~=2.0",
-        "pyhamcrest>=1.9,<3.0",
+        "pyhamcrest~=2.0",
         "pytest>=4.0,<6.0",
         "beautifulsoup4~=4.0",
         "brunns-row~=2.0",

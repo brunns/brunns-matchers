@@ -12,6 +12,7 @@ from brunns.matchers.object import (
     has_repr,
     true,
 )
+from brunns.utils.bunch import ReprFromDict
 from hamcrest import assert_that, contains_string, has_string, not_
 
 
@@ -30,12 +31,12 @@ def test_has_repr():
 
 def test_identical_properties():
     # Given
-    class SomeClass(object):
+    class SomeClass(ReprFromDict):
         def __init__(self, a, b):
             self.a = a
             self.b = b
 
-    class OtherClass(object):
+    class OtherClass(ReprFromDict):
         def __init__(self, a, b):
             self.a = a
             self._b = b
@@ -44,7 +45,7 @@ def test_identical_properties():
         def b(self):
             return self._b
 
-    class YetAnotherClass(object):
+    class YetAnotherClass(ReprFromDict):
         def __init__(self, a, b):
             self.a = a
             self.b = b
@@ -58,9 +59,50 @@ def test_identical_properties():
     assert_that(a, not_(has_identical_properties_to(c)))
     assert_that(
         has_identical_properties_to(a),
-        has_string("object with identical properties to object {0}".format(a)),
+        has_string("object with identical properties to object <{0}>".format(a)),
     )
-    assert_that(has_identical_properties_to(a), mismatches_with(c, "was {0}".format(c)))
+    assert_that(has_identical_properties_to(a), mismatches_with(c, "was <{0}>".format(c)))
+
+
+def test_identical_properties_ignoring_some():
+    # Given
+    class SomeClass(ReprFromDict):
+        def __init__(self, a, b):
+            self.a = a
+            self.b = b
+
+    class OtherClass(ReprFromDict):
+        def __init__(self, a, b):
+            self.a = a
+            self._b = b
+
+        @property
+        def b(self):
+            return self._b
+
+    class YetAnotherClass(ReprFromDict):
+        def __init__(self, a, b):
+            self.a = a
+            self.b = b
+
+    a = SomeClass(1, 9)
+    b = OtherClass(1, 10)
+    c = YetAnotherClass(1, 11)
+
+    # Then
+    assert_that(a, has_identical_properties_to(b, ignoring={"b"}))
+    assert_that(a, not_(has_identical_properties_to(c, ignoring={"a"})))
+    assert_that(
+        has_identical_properties_to(a, ignoring=["b", "c"]),
+        has_string(
+            "object with identical properties to object <{0}> ignoring properties named {{'b', 'c'}}".format(
+                a
+            )
+        ),
+    )
+    assert_that(
+        has_identical_properties_to(a, ignoring={"a"}), mismatches_with(c, "was <{0}>".format(c))
+    )
 
 
 def test_nested_identical_properties():

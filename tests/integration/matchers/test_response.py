@@ -111,7 +111,7 @@ def test_response_encoding():
     # Given
 
     # When
-    actual = requests.get("https://api.github.com/events")
+    actual = requests.get("https://httpbin.org/encoding/utf8")
 
     # Then
     assert_that(actual, is_response().with_encoding("utf-8"))

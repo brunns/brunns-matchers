@@ -10,7 +10,7 @@ from hamcrest.core.matcher import Matcher
 
 try:
     from typing import Protocol  # type: ignore
-except ImportError:
+except ImportError:  # pragma: no cover
     from typing_extensions import Protocol  # type: ignore
 
 

@@ -1,6 +1,7 @@
 # encoding=utf-8
-from brunns.matchers.matcher import matches, mismatches, mismatches_with
 from hamcrest import assert_that, contains_string, has_string
+
+from brunns.matchers.matcher import matches, mismatches, mismatches_with
 
 
 def test_matcher_mismatches_with():

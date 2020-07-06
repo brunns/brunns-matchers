@@ -1,9 +1,10 @@
 # encoding=utf-8
 from unittest import mock
 
+from hamcrest import assert_that, contains_string, has_string, not_
+
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.mock import call_has_arg, call_has_args, has_call
-from hamcrest import assert_that, contains_string, has_string, not_
 
 
 def test_call_has_positional_arg():

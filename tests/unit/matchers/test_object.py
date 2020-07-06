@@ -2,6 +2,8 @@
 import datetime
 from pathlib import Path
 
+from hamcrest import assert_that, contains_string, has_string, not_
+
 from brunns.builder.internet import UrlBuilder
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.object import (
@@ -13,7 +15,6 @@ from brunns.matchers.object import (
     true,
 )
 from brunns.utils.bunch import ReprFromDict
-from hamcrest import assert_that, contains_string, has_string, not_
 
 
 def test_has_repr():

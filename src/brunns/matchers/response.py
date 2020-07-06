@@ -2,9 +2,6 @@
 from datetime import timedelta
 from typing import Mapping, Optional, Sequence, Union
 
-from brunns.matchers.data import JsonStructure
-from brunns.matchers.object import between
-from brunns.matchers.utils import append_matcher_description, describe_field_mismatch
 from deprecated import deprecated
 from furl import furl
 from hamcrest import anything, described_as, has_entry
@@ -14,6 +11,10 @@ from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 from hamcrest.core.string_description import StringDescription
 from requests import Response
+
+from brunns.matchers.data import JsonStructure
+from brunns.matchers.object import between
+from brunns.matchers.utils import append_matcher_description, describe_field_mismatch
 
 ANYTHING = anything()
 

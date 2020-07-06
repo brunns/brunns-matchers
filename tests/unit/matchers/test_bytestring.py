@@ -1,9 +1,10 @@
 # encoding=utf-8
 import logging
 
+from hamcrest import assert_that, has_string, not_
+
 from brunns.matchers.bytestring import contains_bytestring
 from brunns.matchers.matcher import mismatches_with
-from hamcrest import assert_that, has_string, not_
 
 logger = logging.getLogger(__name__)
 

@@ -4,13 +4,14 @@ from datetime import timedelta
 
 import pytest
 import requests
+from hamcrest import assert_that, contains_exactly, contains_string, has_entries, has_key, not_
+
 from brunns.matchers.bytestring import contains_bytestring
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.object import between
 from brunns.matchers.response import is_response
 from brunns.matchers.url import is_url
 from brunns.utils.network import internet_connection
-from hamcrest import assert_that, contains_exactly, contains_string, has_entries, has_key, not_
 
 logger = logging.getLogger(__name__)
 

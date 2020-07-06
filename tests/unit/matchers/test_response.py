@@ -2,12 +2,13 @@
 from datetime import timedelta
 from unittest import mock
 
+from hamcrest import assert_that, contains_exactly, contains_string, has_entries, has_string, not_
+
 from brunns.builder.internet import UrlBuilder as a_url  # type: ignore
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.object import between
 from brunns.matchers.response import is_response, redirects_to
 from brunns.matchers.url import is_url
-from hamcrest import assert_that, contains_exactly, contains_string, has_entries, has_string, not_
 
 MOCK_RESPONSE = mock.MagicMock(
     status_code=200,

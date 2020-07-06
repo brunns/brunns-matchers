@@ -1,8 +1,9 @@
 import datetime
 
+from hamcrest import assert_that, has_string, not_
+
 from brunns.matchers.datetime import HasWeekday, is_weekday
 from brunns.matchers.matcher import mismatches_with
-from hamcrest import assert_that, has_string, not_
 
 
 def test_HasWeekday():

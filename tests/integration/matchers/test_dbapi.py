@@ -1,8 +1,6 @@
 # encoding=utf-8
 import logging
 
-from brunns.matchers.dbapi import given_select_returns_rows_matching, has_table, has_table_with_rows
-from brunns.matchers.matcher import mismatches_with
 from hamcrest import (
     all_of,
     assert_that,
@@ -16,6 +14,9 @@ from hamcrest import (
     matches_regexp,
     not_,
 )
+
+from brunns.matchers.dbapi import given_select_returns_rows_matching, has_table, has_table_with_rows
+from brunns.matchers.matcher import mismatches_with
 
 logger = logging.getLogger(__name__)
 

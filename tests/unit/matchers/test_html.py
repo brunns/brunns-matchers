@@ -1,4 +1,19 @@
 # encoding=utf-8
+from bs4 import BeautifulSoup
+from hamcrest import (
+    all_of,
+    anything,
+    assert_that,
+    contains_exactly,
+    contains_string,
+    has_entries,
+    has_item,
+    has_string,
+    matches_regexp,
+    not_,
+    starts_with,
+)
+
 from brunns.matchers.html import (
     has_attributes,
     has_class,
@@ -14,20 +29,6 @@ from brunns.matchers.html import (
 )
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.url import is_url
-from bs4 import BeautifulSoup
-from hamcrest import (
-    all_of,
-    anything,
-    assert_that,
-    contains_exactly,
-    contains_string,
-    has_entries,
-    has_item,
-    has_string,
-    matches_regexp,
-    not_,
-    starts_with,
-)
 
 HTML = """\
 <html>

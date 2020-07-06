@@ -2,7 +2,6 @@
 import logging
 from typing import Mapping, Union
 
-from brunns.matchers.utils import append_matcher_description, describe_field_mismatch
 from deprecated import deprecated
 from furl import furl
 from hamcrest import anything
@@ -10,6 +9,8 @@ from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
+
+from brunns.matchers.utils import append_matcher_description, describe_field_mismatch
 
 logger = logging.getLogger(__name__)
 ANYTHING = anything()

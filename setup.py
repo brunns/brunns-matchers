@@ -50,7 +50,7 @@ setup(
     install_requires=[
         "furl~=2.0",
         "pyhamcrest~=2.0",
-        "pytest>=4.0,<6.0",
+        "pytest>=4.0,<7.0",
         "beautifulsoup4~=4.0",
         "brunns-row~=2.0",
         "requests~=2.0",

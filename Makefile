@@ -4,7 +4,7 @@ default: help
 .PHONY: help
 
 test: ## Run tests
-	tox -e py35,py38
+	tox -e py36,py38
 
 coverage: ## Test coverage report
 	tox -e coverage
@@ -45,7 +45,7 @@ precommit: test lint coverage mypy docs ## Pre-commit targets
 	@ python -m this
 
 recreate: ## Recreate tox environments
-	tox --recreate --notest -e py35,py36,py37,py38,py39,format,flake8,bandit,safety,piprot,mypy
+	tox --recreate --notest -e py36,py37,py38,py39,format,flake8,bandit,safety,piprot,mypy
 
 clean: ## Clean generated files
 	find . -name '*.pyc' -delete

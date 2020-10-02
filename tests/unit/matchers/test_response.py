@@ -40,7 +40,8 @@ def test_response_matcher_status_code():
     assert_that(
         is_response().with_status_code(201),
         mismatches_with(
-            stub_response, contains_string("was response with status code: was <200>"),
+            stub_response,
+            contains_string("was response with status code: was <200>"),
         ),
     )
 
@@ -77,7 +78,8 @@ def test_response_matcher_content():
     assert_that(
         is_response().with_content(b"chips"),
         mismatches_with(
-            stub_response, contains_string("was response with content: was <b'content'>"),
+            stub_response,
+            contains_string("was response with content: was <b'content'>"),
         ),
     )
 
@@ -98,7 +100,8 @@ def test_response_matcher_json():
     assert_that(
         is_response().with_json([1, 2, 4]),
         mismatches_with(
-            stub_response, contains_string("was response with json: was <{'a': 'b'}>"),
+            stub_response,
+            contains_string("was response with json: was <{'a': 'b'}>"),
         ),
     )
 
@@ -119,7 +122,8 @@ def test_response_matcher_headers():
     assert_that(
         is_response().with_headers({"key": "nope"}),
         mismatches_with(
-            response, contains_string("was response with headers: was <{'key': 'value'}"),
+            response,
+            contains_string("was response with headers: was <{'key': 'value'}"),
         ),
     )
 
@@ -254,7 +258,10 @@ def test_response_matcher_encoding():
     assert_that(is_response().with_encoding("utf-8"), has_string("response with encoding: 'utf-8'"))
     assert_that(
         is_response().with_encoding("ISO-8859-1"),
-        mismatches_with(stub_response, contains_string("was response with encoding: was 'utf-8'"),),
+        mismatches_with(
+            stub_response,
+            contains_string("was response with encoding: was 'utf-8'"),
+        ),
     )
 
 

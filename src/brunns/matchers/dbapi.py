@@ -76,7 +76,7 @@ class SelectReturnsRowsMatching(BaseMatcher[Connection]):
 
 def has_table(table: str) -> Matcher:
     """TODO"""
-    select = "SELECT * FROM {0};".format(table)  # nosec
+    select = f"SELECT * FROM {table};"  # nosec
     return described_as(
         "DB connection has table named %0",
         given_select_returns_rows_matching(select, anything()),
@@ -86,7 +86,7 @@ def has_table(table: str) -> Matcher:
 
 def has_table_with_rows(table: str, row_matcher: Matcher) -> Matcher:
     """TODO"""
-    select = "SELECT * FROM {0};".format(table)  # nosec
+    select = f"SELECT * FROM {table};"  # nosec
     return described_as(
         "DB connection with table %0 with rows matching %1",
         given_select_returns_rows_matching(select, row_matcher),

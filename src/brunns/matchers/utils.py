@@ -13,7 +13,7 @@ def append_matcher_description(
     field_matcher: Matcher[Any], field_name: str, description: Description
 ) -> None:
     if not isinstance(field_matcher, IsAnything):
-        description.append_text(" {0}: ".format(field_name)).append_description_of(field_matcher)
+        description.append_text(f" {field_name}: ").append_description_of(field_matcher)
 
 
 def describe_field_mismatch(
@@ -23,5 +23,5 @@ def describe_field_mismatch(
     mismatch_description: Description,
 ) -> None:
     if not isinstance(field_matcher, IsAnything) and not field_matcher.matches(actual_value):
-        mismatch_description.append_text(" {0}: ".format(field_name))
+        mismatch_description.append_text(f" {field_name}: ")
         field_matcher.describe_mismatch(actual_value, mismatch_description)

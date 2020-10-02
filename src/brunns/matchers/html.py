@@ -138,7 +138,7 @@ class TableHasRow(BaseMatcher[Tag]):
         return row.find_all("th" if self.header_row else "td")
 
     def describe_to(self, description: Description) -> None:
-        description.append_text("table with {0}row".format("header " if self.header_row else ""))
+        description.append_text(f"table with {'header ' if self.header_row else ''}row")
         if self.cells_matcher != ANYTHING:
             description.append_text(" cells matching ")
             self.cells_matcher.describe_to(description)

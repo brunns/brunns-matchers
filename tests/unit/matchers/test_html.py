@@ -195,7 +195,7 @@ def test_table_has_row_cells():
             "cells matching a sequence containing [tag with string matching 'foo', tag with string matching 'bar']"
         ),
     )
-    assert_that(should_not_match, mismatches_with(table, starts_with("was {0}".format(table))))
+    assert_that(should_not_match, mismatches_with(table, starts_with(f"was {table}")))
 
 
 def test_has_row():
@@ -246,7 +246,7 @@ def test_has_row():
         mismatches_with(
             table,
             all_of(
-                starts_with("was {0}".format(table)),
+                starts_with(f"was {table}"),
                 contains_string("found rows:"),
                 contains_string("<tr><td>baz</td><td>qux</td></tr>"),
             ),
@@ -275,7 +275,7 @@ def test_table_has_header_row():
             "[tag with string matching 'apples', tag with string matching 'oranges']"
         ),
     )
-    assert_that(should_not_match, mismatches_with(table, starts_with("was {0}".format(table))))
+    assert_that(should_not_match, mismatches_with(table, starts_with(f"was {table}")))
 
 
 def test_html_has_table():
@@ -288,8 +288,8 @@ def test_html_has_table():
 
     assert_that(HTML, should_match)
     assert_that(HTML, not_(should_not_match))
-    assert_that(should_match, has_string("row matching {0}".format(should_match.table_matcher)))
-    assert_that(should_not_match, mismatches_with(HTML, "was {0}".format(repr(HTML))))
+    assert_that(should_match, has_string(f"row matching {should_match.table_matcher}"))
+    assert_that(should_not_match, mismatches_with(HTML, f"was {repr(HTML)}"))
 
 
 def test_html_without_table():

@@ -60,9 +60,9 @@ def test_identical_properties():
     assert_that(a, not_(has_identical_properties_to(c)))
     assert_that(
         has_identical_properties_to(a),
-        has_string("object with identical properties to object <{0}>".format(a)),
+        has_string(f"object with identical properties to object <{a}>"),
     )
-    assert_that(has_identical_properties_to(a), mismatches_with(c, "was <{0}>".format(c)))
+    assert_that(has_identical_properties_to(a), mismatches_with(c, f"was <{c}>"))
 
 
 def test_identical_properties_ignoring_some():
@@ -96,14 +96,10 @@ def test_identical_properties_ignoring_some():
     assert_that(
         has_identical_properties_to(a, ignoring=["b", "c"]),
         has_string(
-            "object with identical properties to object <{0}> ignoring properties named {{'b', 'c'}}".format(
-                a
-            )
+            f"object with identical properties to object <{a}> ignoring properties named {{'b', 'c'}}"
         ),
     )
-    assert_that(
-        has_identical_properties_to(a, ignoring={"a"}), mismatches_with(c, "was <{0}>".format(c))
-    )
+    assert_that(has_identical_properties_to(a, ignoring={"a"}), mismatches_with(c, f"was <{c}>"))
 
 
 def test_nested_identical_properties():
@@ -130,9 +126,9 @@ def test_nested_identical_properties():
     assert_that(a, not_(has_identical_properties_to(c)))
     assert_that(
         has_identical_properties_to(a),
-        has_string("object with identical properties to object {0}".format(a)),
+        has_string(f"object with identical properties to object {a}"),
     )
-    assert_that(has_identical_properties_to(a), mismatches_with(c, "was {0}".format(c)))
+    assert_that(has_identical_properties_to(a), mismatches_with(c, f"was {c}"))
 
 
 def test_equal_vars():

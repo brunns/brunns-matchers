@@ -44,6 +44,6 @@ def test_email_matcher():
     assert_that(
         is_email().with_to_address("banana@example.com").and_to_name("Banana"),
         mismatches_with(
-            message, "was email with to_name: was 'simon' to_address: was 'simon@brunni.ng'",
+            message, "was email with to_name: was 'simon' to_address: was 'simon@brunni.ng'"
         ),
     )

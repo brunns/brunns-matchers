@@ -42,12 +42,12 @@ class EmailWith(BaseMatcher[str]):
         subject: Union[str, Matcher[str]] = ANYTHING,
         body_text: Union[str, Matcher[str]] = ANYTHING,
     ) -> None:
-        self.to_name = wrap_matcher(to_name)  # type: Matcher[str]
-        self.to_address = wrap_matcher(to_address)  # type: Matcher[str]
-        self.from_name = wrap_matcher(from_name)  # type: Matcher[str]
-        self.from_address = wrap_matcher(from_address)  # type: Matcher[str]
-        self.subject = wrap_matcher(subject)  # type: Matcher[str]
-        self.body_text = wrap_matcher(body_text)  # type: Matcher[str]
+        self.to_name: Matcher[str] = wrap_matcher(to_name)
+        self.to_address: Matcher[str] = wrap_matcher(to_address)
+        self.from_name: Matcher[str] = wrap_matcher(from_name)
+        self.from_address: Matcher[str] = wrap_matcher(from_address)
+        self.subject: Matcher[str] = wrap_matcher(subject)
+        self.body_text: Matcher[str] = wrap_matcher(body_text)
 
     def _matches(self, actual_email: str) -> bool:
         email = self._parse_email(actual_email)

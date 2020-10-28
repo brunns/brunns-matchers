@@ -15,7 +15,7 @@ class MismatchesWith(BaseMatcher[Matcher]):
     def __init__(self, value_not_to_match: Any, expected_message: Union[str, Matcher[str]]) -> None:
         super(MismatchesWith, self).__init__()
         self.value_not_to_match = value_not_to_match
-        self.expected_message = wrap_matcher(expected_message)  # type: Matcher[str]
+        self.expected_message: Matcher[str] = wrap_matcher(expected_message)
 
     def _matches(self, matcher_under_test: Matcher[Any]) -> bool:
         actual = StringDescription()

@@ -62,16 +62,12 @@ class ResponseMatcher(BaseMatcher[Response]):
         encoding: Union[str, Matcher[str]] = ANYTHING,
     ) -> None:
         super(ResponseMatcher, self).__init__()
-        self.status_code = wrap_matcher(status_code)  # type: Matcher[int]
-        self.body = wrap_matcher(body)  # type: Matcher[str]
-        self.content = wrap_matcher(content)  # type: Matcher[bytes]
-        self.json = wrap_matcher(json)  # type: Matcher[JsonStructure]
-        self.headers = wrap_matcher(
-            headers
-        )  # type: Matcher[Mapping[str, Union[str, Matcher[str]]]]
-        self.cookies = wrap_matcher(
-            cookies
-        )  # type: Matcher[Mapping[str, Union[str, Matcher[str]]]]
+        self.status_code: Matcher[int] = wrap_matcher(status_code)
+        self.body: Matcher[str] = wrap_matcher(body)
+        self.content: Matcher[bytes] = wrap_matcher(content)
+        self.json: Matcher[JsonStructure] = wrap_matcher(json)
+        self.headers: Matcher[Mapping[str, Union[str, Matcher[str]]]] = wrap_matcher(headers)
+        self.cookies: Matcher[Mapping[str, Union[str, Matcher[str]]]] = wrap_matcher(cookies)
         self.elapsed = wrap_matcher(elapsed)
         self.history = wrap_matcher(history)
         self.url = wrap_matcher(url)

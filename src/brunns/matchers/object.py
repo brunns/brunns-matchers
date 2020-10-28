@@ -29,7 +29,7 @@ class HasRepr(BaseMatcher[Any]):
     """object with repr() matching"""
 
     def __init__(self, expected: Union[str, Matcher[str]]) -> None:
-        self.expected = wrap_matcher(expected)  # type: Matcher[str]
+        self.expected: Matcher[str] = wrap_matcher(expected)
 
     def _matches(self, actual: Any) -> bool:
         return self.expected.matches(repr(actual))

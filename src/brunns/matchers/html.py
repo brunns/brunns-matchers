@@ -20,14 +20,14 @@ class HtmlWithTag(BaseMatcher[str]):
     ) -> None:
         self.name = name
         self.id_ = id_
-        self.tag_matcher = (
+        self.tag_matcher: Matcher[Tag] = (
             tag_matcher
             if isinstance(tag_matcher, Matcher)
             else tag_has_string(cast(str, tag_matcher))
-        )  # type: Matcher[Tag]
+        )
 
     def _matches(self, actual: str) -> bool:
-        found_tags = self.findall(actual)  # type: Sequence[Tag]
+        found_tags: Sequence[Tag] = self.findall(actual)
         return has_item(self.tag_matcher).matches(found_tags)
 
     def findall(self, actual: str) -> Sequence[Tag]:
@@ -62,12 +62,10 @@ class TagWith(BaseMatcher[Tag]):
             Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
         ] = ANYTHING,
     ) -> None:
-        self.name = wrap_matcher(name)  # type: Matcher[str]
-        self.string = wrap_matcher(string)  # type: Matcher[str]
-        self.clazz = wrap_matcher(clazz)  # type: Matcher[str]
-        self.attributes = wrap_matcher(
-            attributes
-        )  # type: Matcher[Mapping[str, Union[str, Matcher[str]]]]
+        self.name: Matcher[str] = wrap_matcher(name)
+        self.string: Matcher[str] = wrap_matcher(string)
+        self.clazz: Matcher[str] = wrap_matcher(clazz)
+        self.attributes: Matcher[Mapping[str, Union[str, Matcher[str]]]] = wrap_matcher(attributes)
 
     def _matches(self, tag: Tag) -> bool:
         # TODO - remove type ignore when https://github.com/python/mypy/issues/3283 is resolved.
@@ -95,7 +93,7 @@ class HtmlHasTable(BaseMatcher[str]):
         self, table_matcher: Matcher[Tag], id_: Union[str, Matcher[str]] = ANYTHING
     ) -> None:
         self.table_matcher = table_matcher
-        self.id_ = wrap_matcher(id_)  # type: Matcher[str]
+        self.id_: Matcher[str] = wrap_matcher(id_)
 
     def _matches(self, html: str) -> bool:
         # TODO - remove type ignore when https://github.com/python/mypy/issues/3283 is resolved.
@@ -119,11 +117,11 @@ class TableHasRow(BaseMatcher[Tag]):
         self.row_matcher = row_matcher
         self.cells_matcher = cells_matcher
         self.header_row = header_row
-        self.index_matcher = wrap_matcher(index_matcher)  # type: Matcher[int]
+        self.index_matcher: Matcher[int] = wrap_matcher(index_matcher)
 
     def _matches(self, table: Tag) -> bool:
         # TODO - remove type ignore when https://github.com/python/mypy/issues/3283 is resolved.
-        rows = table.find_all("tr")  # type: Sequence[Tag]
+        rows: Sequence[Tag] = table.find_all("tr")
         rows_and_cells = [(row, self._row_cells(row)) for row in rows if self._row_cells(row)]
         indexed_rows_and_cells = [
             (index, row, cells) for index, (row, cells) in enumerate(rows_and_cells)

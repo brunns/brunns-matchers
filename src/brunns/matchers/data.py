@@ -18,7 +18,7 @@ class JsonMatching(BaseMatcher[str]):
     """
 
     def __init__(self, matcher: Union[JsonStructure, Matcher[JsonStructure]]) -> None:
-        self.matcher = wrap_matcher(matcher)  # type: Matcher[JsonStructure]
+        self.matcher: Matcher[JsonStructure] = wrap_matcher(matcher)
 
     def describe_to(self, description: Description) -> None:
         description.append_text("JSON structure matching ").append_description_of(self.matcher)

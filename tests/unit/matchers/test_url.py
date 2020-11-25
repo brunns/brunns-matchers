@@ -1,14 +1,14 @@
 # encoding=utf-8
 import logging
 
-from hamcrest import assert_that, has_entries, has_string, not_
+from hamcrest import assert_that, contains_exactly, empty, has_entries, has_string, not_
 
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.url import is_url
 
 logger = logging.getLogger(__name__)
 
-URL = "https://username:password@brunni.ng:1234/path?key1=value1&key2=value2#fragment"
+URL = "https://username:password@brunni.ng:1234/path1/path2/path3?key1=value1&key2=value2#fragment"
 
 
 def test_url_with_scheme():
@@ -67,14 +67,33 @@ def test_url_with_port():
 
 
 def test_url_with_path():
-    should_match = is_url().with_path("/path")
+    should_match = is_url().with_path("/path1/path2/path3")
     should_not_match = is_url().with_path("/banana")
 
     assert_that(URL, should_match)
     assert_that(URL, not_(should_not_match))
 
-    assert_that(should_match, has_string("URL with path: '/path'"))
-    assert_that(should_not_match, mismatches_with(URL, "was URL with path: was </path>"))
+    assert_that(should_match, has_string("URL with path: '/path1/path2/path3'"))
+    assert_that(
+        should_not_match, mismatches_with(URL, "was URL with path: was </path1/path2/path3>")
+    )
+
+
+def test_url_with_path_segments():
+    should_match = is_url().with_path_segments(contains_exactly("path1", "path2", "path3"))
+    should_not_match = is_url().with_path_segments(empty())
+
+    assert_that(URL, should_match)
+    assert_that(URL, not_(should_not_match))
+
+    assert_that(
+        should_match,
+        has_string("URL with path segments: a sequence containing ['path1', 'path2', 'path3']"),
+    )
+    assert_that(
+        should_not_match,
+        mismatches_with(URL, "was URL with path segments: was <['path1', 'path2', 'path3']>"),
+    )
 
 
 def test_url_with_query():
@@ -116,7 +135,8 @@ def test_url_matcher_builder():
         .and_password("password")
         .and_host("brunni.ng")
         .and_port(1234)
-        .and_path("/path")
+        .and_path("/path1/path2/path3")
+        .and_path_segments(contains_exactly("path1", "path2", "path3"))
         .and_query(has_entries(key1="value1", key2="value2"))
         .and_fragment("fragment")
     )
@@ -134,12 +154,13 @@ def test_url_matcher_builder():
             "password: 'password' "
             "host: 'brunni.ng' "
             "port: <1234> "
-            "path: '/path' "
+            "path: '/path1/path2/path3' "
+            "path segments: a sequence containing ['path1', 'path2', 'path3'] "
             "query: a dictionary containing {'key1': 'value1', 'key2': 'value2'} "
             "fragment: 'fragment'"
         ),
     )
     assert_that(
         should_not_match,
-        mismatches_with(URL, "was URL with host: was 'brunni.ng' path: was </path>"),
+        mismatches_with(URL, "was URL with host: was 'brunni.ng' path: was </path1/path2/path3>"),
     )

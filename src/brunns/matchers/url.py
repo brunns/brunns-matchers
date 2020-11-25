@@ -1,6 +1,6 @@
 # encoding=utf-8
 import logging
-from typing import Mapping, Union
+from typing import Mapping, Sequence, Union
 
 from deprecated import deprecated
 from furl import furl
@@ -38,6 +38,7 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
         self.host = wrap_matcher(host)
         self.port: Matcher[int] = ANYTHING
         self.path = wrap_matcher(path)
+        self.path_segments: Matcher[Sequence[str]] = ANYTHING
         self.query = wrap_matcher(query)
         self.fragment = wrap_matcher(fragment)
 
@@ -50,6 +51,7 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
             and self.host.matches(url.host)
             and self.port.matches(url.port)
             and self.path.matches(url.path)
+            and self.path_segments.matches(url.path.segments)
             and self.query.matches(url.query.params)
             and self.fragment.matches(url.fragment)
         )
@@ -62,6 +64,7 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
         append_matcher_description(self.host, "host", description)
         append_matcher_description(self.port, "port", description)
         append_matcher_description(self.path, "path", description)
+        append_matcher_description(self.path_segments, "path segments", description)
         append_matcher_description(self.query, "query", description)
         append_matcher_description(self.fragment, "fragment", description)
 
@@ -74,6 +77,9 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
         describe_field_mismatch(self.host, "host", url.host, mismatch_description)
         describe_field_mismatch(self.port, "port", url.port, mismatch_description)
         describe_field_mismatch(self.path, "path", url.path, mismatch_description)
+        describe_field_mismatch(
+            self.path_segments, "path segments", url.path.segments, mismatch_description
+        )
         describe_field_mismatch(self.query, "query", url.query.params, mismatch_description)
         describe_field_mismatch(self.fragment, "fragment", url.fragment, mismatch_description)
 
@@ -118,6 +124,13 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
 
     def and_path(self, path: Union[str, Matcher[str]]):
         return self.with_path(path)
+
+    def with_path_segments(self, path_segments: Union[Sequence[str], Matcher[Sequence[str]]]):
+        self.path_segments = wrap_matcher(path_segments)
+        return self
+
+    def and_path_segments(self, path_segments: Union[Sequence[str], Matcher[Sequence[str]]]):
+        return self.with_path_segments(path_segments)
 
     def with_query(
         self,

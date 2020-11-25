@@ -32,7 +32,11 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
         fragment: Union[str, Matcher[str]] = ANYTHING,
     ) -> None:
         super(UrlWith, self).__init__()
+        self.scheme: Matcher[str] = ANYTHING
+        self.username: Matcher[str] = ANYTHING
+        self.password: Matcher[str] = ANYTHING
         self.host = wrap_matcher(host)
+        self.port: Matcher[int] = ANYTHING
         self.path = wrap_matcher(path)
         self.query = wrap_matcher(query)
         self.fragment = wrap_matcher(fragment)
@@ -40,7 +44,11 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
     def _matches(self, url: Union[furl, str]) -> bool:
         url = url if isinstance(url, furl) else furl(url)
         return (
-            self.host.matches(url.host)
+            self.scheme.matches(url.scheme)
+            and self.username.matches(url.username)
+            and self.password.matches(url.password)
+            and self.host.matches(url.host)
+            and self.port.matches(url.port)
             and self.path.matches(url.path)
             and self.query.matches(url.query.params)
             and self.fragment.matches(url.fragment)
@@ -48,7 +56,11 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
 
     def describe_to(self, description: Description) -> None:
         description.append_text("URL with")
+        append_matcher_description(self.scheme, "scheme", description)
+        append_matcher_description(self.username, "username", description)
+        append_matcher_description(self.password, "password", description)
         append_matcher_description(self.host, "host", description)
+        append_matcher_description(self.port, "port", description)
         append_matcher_description(self.path, "path", description)
         append_matcher_description(self.query, "query", description)
         append_matcher_description(self.fragment, "fragment", description)
@@ -56,10 +68,35 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
     def describe_mismatch(self, url: Union[furl, str], mismatch_description: Description) -> None:
         url = url if isinstance(url, furl) else furl(url)
         mismatch_description.append_text("was URL with")
+        describe_field_mismatch(self.scheme, "scheme", url.scheme, mismatch_description)
+        describe_field_mismatch(self.username, "username", url.username, mismatch_description)
+        describe_field_mismatch(self.password, "password", url.password, mismatch_description)
         describe_field_mismatch(self.host, "host", url.host, mismatch_description)
+        describe_field_mismatch(self.port, "port", url.port, mismatch_description)
         describe_field_mismatch(self.path, "path", url.path, mismatch_description)
         describe_field_mismatch(self.query, "query", url.query.params, mismatch_description)
         describe_field_mismatch(self.fragment, "fragment", url.fragment, mismatch_description)
+
+    def with_scheme(self, scheme: Union[str, Matcher[str]]):
+        self.scheme = wrap_matcher(scheme)
+        return self
+
+    def and_scheme(self, scheme: Union[str, Matcher[str]]):
+        return self.with_scheme(scheme)
+
+    def with_username(self, username: Union[str, Matcher[str]]):
+        self.username = wrap_matcher(username)
+        return self
+
+    def and_username(self, username: Union[str, Matcher[str]]):
+        return self.with_username(username)
+
+    def with_password(self, password: Union[str, Matcher[str]]):
+        self.password = wrap_matcher(password)
+        return self
+
+    def and_password(self, password: Union[str, Matcher[str]]):
+        return self.with_password(password)
 
     def with_host(self, host: Union[str, Matcher[str]]):
         self.host = wrap_matcher(host)
@@ -67,6 +104,13 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
 
     def and_host(self, host: Union[str, Matcher[str]]):
         return self.with_host(host)
+
+    def with_port(self, port: Union[int, Matcher[int]]):
+        self.port = wrap_matcher(port)
+        return self
+
+    def and_port(self, port: Union[int, Matcher[int]]):
+        return self.with_port(port)
 
     def with_path(self, path: Union[str, Matcher[str]]):
         self.path = wrap_matcher(path)

@@ -8,7 +8,40 @@ from brunns.matchers.url import is_url
 
 logger = logging.getLogger(__name__)
 
-URL = "http://brunni.ng/path?key1=value1&key2=value2#fragment"
+URL = "https://username:password@brunni.ng:1234/path?key1=value1&key2=value2#fragment"
+
+
+def test_url_with_scheme():
+    should_match = is_url().with_scheme("https")
+    should_not_match = is_url().and_scheme("http")
+
+    assert_that(URL, should_match)
+    assert_that(URL, not_(should_not_match))
+
+    assert_that(should_match, has_string("URL with scheme: 'https'"))
+    assert_that(should_not_match, mismatches_with(URL, "was URL with scheme: was 'https'"))
+
+
+def test_url_with_username():
+    should_match = is_url().with_username("username")
+    should_not_match = is_url().with_username("nope")
+
+    assert_that(URL, should_match)
+    assert_that(URL, not_(should_not_match))
+
+    assert_that(should_match, has_string("URL with username: 'username'"))
+    assert_that(should_not_match, mismatches_with(URL, "was URL with username: was 'username'"))
+
+
+def test_url_with_password():
+    should_match = is_url().with_password("password")
+    should_not_match = is_url().with_password("nope")
+
+    assert_that(URL, should_match)
+    assert_that(URL, not_(should_not_match))
+
+    assert_that(should_match, has_string("URL with password: 'password'"))
+    assert_that(should_not_match, mismatches_with(URL, "was URL with password: was 'password'"))
 
 
 def test_url_with_host():
@@ -20,6 +53,17 @@ def test_url_with_host():
 
     assert_that(should_match, has_string("URL with host: 'brunni.ng'"))
     assert_that(should_not_match, mismatches_with(URL, "was URL with host: was 'brunni.ng'"))
+
+
+def test_url_with_port():
+    should_match = is_url().with_port(1234)
+    should_not_match = is_url().with_port(5678)
+
+    assert_that(URL, should_match)
+    assert_that(URL, not_(should_not_match))
+
+    assert_that(should_match, has_string("URL with port: <1234>"))
+    assert_that(should_not_match, mismatches_with(URL, "was URL with port: was <1234>"))
 
 
 def test_url_with_path():
@@ -60,20 +104,23 @@ def test_url_with_fragment():
     assert_that(should_not_match, mismatches_with(URL, "was URL with fragment: was <fragment>"))
 
 
-# TODO scheme, username, password, port, netloc, origin, path.segments,
-URL = "http://brunni.ng/path?key1=value1&key2=value2#fragment"
+# TODO path.segments
 
 
 def test_url_matcher_builder():
     # Given
     should_match = (
         is_url()
-        .with_host("brunni.ng")
+        .with_scheme("https")
+        .and_username("username")
+        .and_password("password")
+        .and_host("brunni.ng")
+        .and_port(1234)
         .and_path("/path")
         .and_query(has_entries(key1="value1", key2="value2"))
         .and_fragment("fragment")
     )
-    should_not_match = is_url().with_path("hoah!").and_host("example.com")
+    should_not_match = is_url().with_path("woah!").and_host("example.com")
 
     assert_that(URL, should_match)
     assert_that(URL, not_(should_not_match))
@@ -82,7 +129,11 @@ def test_url_matcher_builder():
         should_match,
         has_string(
             "URL with "
+            "scheme: 'https' "
+            "username: 'username' "
+            "password: 'password' "
             "host: 'brunni.ng' "
+            "port: <1234> "
             "path: '/path' "
             "query: a dictionary containing {'key1': 'value1', 'key2': 'value2'} "
             "fragment: 'fragment'"

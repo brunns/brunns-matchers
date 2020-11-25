@@ -14,7 +14,7 @@ from brunns.matchers.object import (
     has_repr,
     true,
 )
-from brunns.utils.bunch import ReprFromDict
+from tests.utils.bunch import ReprFromDict
 
 
 def test_has_repr():

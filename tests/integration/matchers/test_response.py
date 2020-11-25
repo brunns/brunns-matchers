@@ -11,7 +11,7 @@ from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.object import between
 from brunns.matchers.response import is_response
 from brunns.matchers.url import is_url
-from brunns.utils.network import internet_connection
+from tests.utils.network import internet_connection
 
 logger = logging.getLogger(__name__)
 

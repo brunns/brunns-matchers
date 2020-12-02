@@ -8,14 +8,14 @@ from brunns.matchers.smtp import is_email
 
 def test_email_matcher():
     # Given
-    message = EmailMessageBuilder(
-        to_name="simon",
-        to_email_address="simon@brunni.ng",
-        from_name="fred",
-        from_email_address="fred@beardy.dev",
-        subject="chips",
-        body_text="bananas",
-    ).as_string()
+    message = (
+        EmailMessageBuilder()
+        .with_to("simon@brunni.ng", "simon")
+        .and_from("fred@beardy.dev", "fred")
+        .and_subject("chips")
+        .and_body_text("bananas")
+        .as_string()
+    )
 
     # When
 

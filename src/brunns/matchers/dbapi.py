@@ -43,7 +43,7 @@ class SelectReturnsRowsMatching(BaseMatcher[Connection]):
         try:
             rows = self._get_rows(conn, self.select)
             return self.row_matcher.matches(rows)
-        except Exception:
+        except Exception:  # noqa: B902
             return False
 
     @staticmethod
@@ -63,7 +63,7 @@ class SelectReturnsRowsMatching(BaseMatcher[Connection]):
         try:
             rows = self._get_rows(conn, self.select)
             self.row_matcher.describe_mismatch(rows, mismatch_description)
-        except Exception as e:
+        except Exception as e:  # noqa: B902
             mismatch_description.append_text("SQL statement ").append_description_of(
                 self.select
             ).append_text(" gives ").append_description_of(type(e).__name__).append_text(

@@ -115,3 +115,10 @@ package-lock.json
 
 # Mac cruft
 .DS_Store
+
+# pydeps
+*.svg
+
+# mutation tests
+.mutmut-cache
+html/

@@ -68,38 +68,38 @@ def test_identical_properties():
 def test_identical_properties_ignoring_some():
     # Given
     class SomeClass(ReprFromDict):
-        def __init__(self, a, b):
-            self.a = a
-            self.b = b
+        def __init__(self, aa, bb):
+            self.aa = aa
+            self.bb = bb
 
     class OtherClass(ReprFromDict):
-        def __init__(self, a, b):
-            self.a = a
-            self._b = b
+        def __init__(self, aa, bb):
+            self.aa = aa
+            self._bb = bb
 
         @property
-        def b(self):
-            return self._b
+        def bb(self):
+            return self._bb
 
     class YetAnotherClass(ReprFromDict):
-        def __init__(self, a, b):
-            self.a = a
-            self.b = b
+        def __init__(self, aa, bb):
+            self.aa = aa
+            self.bb = bb
 
     a = SomeClass(1, 9)
     b = OtherClass(1, 10)
     c = YetAnotherClass(1, 11)
 
     # Then
-    assert_that(a, has_identical_properties_to(b, ignoring={"b"}))
-    assert_that(a, not_(has_identical_properties_to(c, ignoring={"a"})))
+    assert_that(a, has_identical_properties_to(b, ignoring={"bb"}))
+    assert_that(a, not_(has_identical_properties_to(c, ignoring={"aa"})))
     assert_that(
-        has_identical_properties_to(a, ignoring=["b", "c"]),
+        has_identical_properties_to(a, ignoring=["bb", "cc"]),
         has_string(
-            f"object with identical properties to object <{a}> ignoring properties named {{'b', 'c'}}"
+            f"object with identical properties to object <{a}> ignoring properties named {{'bb', 'cc'}}"
         ),
     )
-    assert_that(has_identical_properties_to(a, ignoring={"a"}), mismatches_with(c, f"was <{c}>"))
+    assert_that(has_identical_properties_to(a, ignoring={"aa"}), mismatches_with(c, f"was <{c}>"))
 
 
 def test_nested_identical_properties():

@@ -5,7 +5,7 @@ from unittest import mock
 from brunns.builder.internet import UrlBuilder as a_url  # type: ignore
 from hamcrest import assert_that, contains_exactly, contains_string, has_entries, has_string, not_
 
-from brunns.matchers.matcher import mismatches_with
+from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.object import between
 from brunns.matchers.response import is_response, redirects_to
 from brunns.matchers.url import is_url
@@ -41,6 +41,10 @@ def test_response_matcher_status_code():
         is_response().with_status_code(201),
         mismatches_with(stub_response, contains_string("was response with status code: was <200>")),
     )
+    assert_that(
+        is_response().with_status_code(200),
+        matches_with(stub_response, "was response with status code: was <200>"),
+    )
 
 
 def test_response_matcher_body():
@@ -56,6 +60,10 @@ def test_response_matcher_body():
     assert_that(
         is_response().with_body("chips"),
         mismatches_with(stub_response, contains_string("was response with body: was 'sausages'")),
+    )
+    assert_that(
+        is_response().with_body("sausages"),
+        matches_with(stub_response, contains_string("was response with body: was 'sausages'")),
     )
 
 
@@ -78,6 +86,10 @@ def test_response_matcher_content():
             stub_response, contains_string("was response with content: was <b'content'>")
         ),
     )
+    assert_that(
+        is_response().with_content(b"content"),
+        matches_with(stub_response, contains_string("was response with content: was <b'content'>")),
+    )
 
 
 def test_response_matcher_json():
@@ -96,6 +108,10 @@ def test_response_matcher_json():
     assert_that(
         is_response().with_json([1, 2, 4]),
         mismatches_with(stub_response, contains_string("was response with json: was <{'a': 'b'}>")),
+    )
+    assert_that(
+        is_response().with_json({"a": "b"}),
+        matches_with(stub_response, contains_string("was response with json: was <{'a': 'b'}>")),
     )
 
 
@@ -118,6 +134,10 @@ def test_response_matcher_headers():
             response, contains_string("was response with headers: was <{'key': 'value'}")
         ),
     )
+    assert_that(
+        is_response().with_headers({"key": "value"}),
+        matches_with(response, contains_string("was response with headers: was <{'key': 'value'}")),
+    )
 
 
 def test_response_matcher_cookies():
@@ -139,6 +159,12 @@ def test_response_matcher_cookies():
             response, contains_string("was response with cookies: was <{'name': 'value'}")
         ),
     )
+    assert_that(
+        is_response().with_cookies({"name": "value"}),
+        matches_with(
+            response, contains_string("was response with cookies: was <{'name': 'value'}")
+        ),
+    )
 
 
 def test_response_matcher_elapsed():
@@ -157,6 +183,10 @@ def test_response_matcher_elapsed():
     assert_that(
         is_response().with_elapsed(timedelta(seconds=60)),
         mismatches_with(response, contains_string("was response with elapsed: was <0:00:01>")),
+    )
+    assert_that(
+        is_response().with_elapsed(timedelta(seconds=1)),
+        matches_with(response, contains_string("was response with elapsed: was <0:00:01>")),
     )
 
 
@@ -215,6 +245,21 @@ def test_response_matcher_history_and_url():
             ),
         ),
     )
+    # # TODO Wait for describe_match on URL matcher.
+    # assert_that(
+    #     is_response().with_history(
+    #         contains_exactly(
+    #             is_response().with_url(is_url().with_path("/path1")),
+    #             is_response().with_url(is_url().with_path("/path2")),
+    #         )
+    #     ),
+    #     matches_with(
+    #         response,
+    #         contains_string(
+    #             "was response with history: item 1: was response with url: was URL with path: was </path2>"
+    #         ),
+    #     ),
+    # )
 
 
 def test_response_matcher_url():
@@ -236,6 +281,13 @@ def test_response_matcher_url():
             response, contains_string("was response with url: was URL with path: was </path0>")
         ),
     )
+    # # TODO Wait for describe_match on URL matcher.
+    # assert_that(
+    #     is_response().with_url(is_url().with_path("/path0")),
+    #     matches_with(
+    #         response, contains_string("was response with url: was URL with path: was </path0>")
+    #     ),
+    # )
 
 
 def test_response_matcher_encoding():
@@ -251,6 +303,10 @@ def test_response_matcher_encoding():
     assert_that(
         is_response().with_encoding("ISO-8859-1"),
         mismatches_with(stub_response, contains_string("was response with encoding: was 'utf-8'")),
+    )
+    assert_that(
+        is_response().with_encoding("utf-8"),
+        matches_with(stub_response, contains_string("was response with encoding: was 'utf-8'")),
     )
 
 
@@ -336,6 +392,13 @@ def test_response_matcher_builder():
     assert_that(
         mismatcher,
         mismatches_with(
+            stub_response,
+            contains_string("was response with status code: was <200> body: was 'sausages'"),
+        ),
+    )
+    assert_that(
+        matcher,
+        matches_with(
             stub_response,
             contains_string("was response with status code: was <200> body: was 'sausages'"),
         ),

@@ -14,7 +14,11 @@ from requests import Response
 
 from brunns.matchers.data import JsonStructure
 from brunns.matchers.object import between
-from brunns.matchers.utils import append_matcher_description, describe_field_mismatch
+from brunns.matchers.utils import (
+    append_matcher_description,
+    describe_field_match,
+    describe_field_mismatch,
+)
 
 ANYTHING = anything()
 
@@ -124,6 +128,23 @@ class ResponseMatcher(BaseMatcher[Response]):
         describe_field_mismatch(self.history, "history", response.history, mismatch_description)
         describe_field_mismatch(self.url, "url", response.url, mismatch_description)
         describe_field_mismatch(self.encoding, "encoding", response.encoding, mismatch_description)
+
+    def describe_match(self, response: Response, match_description: Description) -> None:
+        match_description.append_text("was response with")
+        describe_field_match(
+            self.status_code, "status code", response.status_code, match_description
+        )
+        describe_field_match(self.body, "body", response.text, match_description)
+        describe_field_match(self.content, "content", response.content, match_description)
+        describe_field_match(
+            self.json, "json", self._get_response_json(response), match_description
+        )
+        describe_field_match(self.headers, "headers", response.headers, match_description)
+        describe_field_match(self.cookies, "cookies", response.cookies, match_description)
+        describe_field_match(self.elapsed, "elapsed", response.elapsed, match_description)
+        describe_field_match(self.history, "history", response.history, match_description)
+        describe_field_match(self.url, "url", response.url, match_description)
+        describe_field_match(self.encoding, "encoding", response.encoding, match_description)
 
     def with_status_code(self, status_code: Union[int, Matcher[int]]):
         self.status_code = wrap_matcher(status_code)

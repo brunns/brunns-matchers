@@ -25,3 +25,14 @@ def describe_field_mismatch(
     if not isinstance(field_matcher, IsAnything) and not field_matcher.matches(actual_value):
         mismatch_description.append_text(f" {field_name}: ")
         field_matcher.describe_mismatch(actual_value, mismatch_description)
+
+
+def describe_field_match(
+    field_matcher: Matcher[Any],
+    field_name: str,
+    actual_value: Any,
+    match_description: Description,
+) -> None:
+    if not isinstance(field_matcher, IsAnything) and field_matcher.matches(actual_value):
+        match_description.append_text(f" {field_name}: ")
+        field_matcher.describe_match(actual_value, match_description)

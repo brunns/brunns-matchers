@@ -10,7 +10,11 @@ from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 
-from brunns.matchers.utils import append_matcher_description, describe_field_mismatch
+from brunns.matchers.utils import (
+    append_matcher_description,
+    describe_field_match,
+    describe_field_mismatch,
+)
 
 logger = logging.getLogger(__name__)
 ANYTHING = anything()
@@ -43,7 +47,7 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
         self.fragment = wrap_matcher(fragment)
 
     def _matches(self, url: Union[furl, str]) -> bool:
-        url = url if isinstance(url, furl) else furl(url)
+        url = furl(url)
         return (
             self.scheme.matches(url.scheme)
             and self.username.matches(url.username)
@@ -69,7 +73,7 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
         append_matcher_description(self.fragment, "fragment", description)
 
     def describe_mismatch(self, url: Union[furl, str], mismatch_description: Description) -> None:
-        url = url if isinstance(url, furl) else furl(url)
+        url = furl(url)
         mismatch_description.append_text("was URL with")
         describe_field_mismatch(self.scheme, "scheme", url.scheme, mismatch_description)
         describe_field_mismatch(self.username, "username", url.username, mismatch_description)
@@ -82,6 +86,21 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
         )
         describe_field_mismatch(self.query, "query", url.query.params, mismatch_description)
         describe_field_mismatch(self.fragment, "fragment", url.fragment, mismatch_description)
+
+    def describe_match(self, url: Union[furl, str], match_description: Description) -> None:
+        url = furl(url)
+        match_description.append_text("was URL with")
+        describe_field_match(self.scheme, "scheme", url.scheme, match_description)
+        describe_field_match(self.username, "username", url.username, match_description)
+        describe_field_match(self.password, "password", url.password, match_description)
+        describe_field_match(self.host, "host", url.host, match_description)
+        describe_field_match(self.port, "port", url.port, match_description)
+        describe_field_match(self.path, "path", url.path, match_description)
+        describe_field_match(
+            self.path_segments, "path segments", url.path.segments, match_description
+        )
+        describe_field_match(self.query, "query", url.query.params, match_description)
+        describe_field_match(self.fragment, "fragment", url.fragment, match_description)
 
     def with_scheme(self, scheme: Union[str, Matcher[str]]):
         self.scheme = wrap_matcher(scheme)

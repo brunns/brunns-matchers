@@ -3,7 +3,7 @@ import logging
 
 from hamcrest import assert_that, contains_exactly, empty, has_entries, has_string, not_
 
-from brunns.matchers.matcher import mismatches_with
+from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.url import is_url
 
 logger = logging.getLogger(__name__)
@@ -20,6 +20,7 @@ def test_url_with_scheme():
 
     assert_that(should_match, has_string("URL with scheme: 'https'"))
     assert_that(should_not_match, mismatches_with(URL, "was URL with scheme: was 'https'"))
+    assert_that(should_match, matches_with(URL, "was URL with scheme: was 'https'"))
 
 
 def test_url_with_username():
@@ -31,6 +32,7 @@ def test_url_with_username():
 
     assert_that(should_match, has_string("URL with username: 'username'"))
     assert_that(should_not_match, mismatches_with(URL, "was URL with username: was 'username'"))
+    assert_that(should_match, matches_with(URL, "was URL with username: was 'username'"))
 
 
 def test_url_with_password():
@@ -42,6 +44,7 @@ def test_url_with_password():
 
     assert_that(should_match, has_string("URL with password: 'password'"))
     assert_that(should_not_match, mismatches_with(URL, "was URL with password: was 'password'"))
+    assert_that(should_match, matches_with(URL, "was URL with password: was 'password'"))
 
 
 def test_url_with_host():
@@ -52,6 +55,7 @@ def test_url_with_host():
     assert_that(URL, not_(should_not_match))
 
     assert_that(should_match, has_string("URL with host: 'brunni.ng'"))
+    assert_that(should_not_match, mismatches_with(URL, "was URL with host: was 'brunni.ng'"))
     assert_that(should_not_match, mismatches_with(URL, "was URL with host: was 'brunni.ng'"))
 
 
@@ -64,6 +68,7 @@ def test_url_with_port():
 
     assert_that(should_match, has_string("URL with port: <1234>"))
     assert_that(should_not_match, mismatches_with(URL, "was URL with port: was <1234>"))
+    assert_that(should_match, matches_with(URL, "was URL with port: was <1234>"))
 
 
 def test_url_with_path():
@@ -77,6 +82,7 @@ def test_url_with_path():
     assert_that(
         should_not_match, mismatches_with(URL, "was URL with path: was </path1/path2/path3>")
     )
+    assert_that(should_match, matches_with(URL, "was URL with path: was </path1/path2/path3>"))
 
 
 def test_url_with_path_segments():
@@ -94,6 +100,10 @@ def test_url_with_path_segments():
         should_not_match,
         mismatches_with(URL, "was URL with path segments: was <['path1', 'path2', 'path3']>"),
     )
+    assert_that(
+        should_match,
+        matches_with(URL, "was URL with path segments: was <['path1', 'path2', 'path3']>"),
+    )
 
 
 def test_url_with_query():
@@ -110,6 +120,10 @@ def test_url_with_query():
     assert_that(
         should_not_match, mismatches_with(URL, "was URL with query: value for 'key2' was 'value2'")
     )
+    assert_that(
+        should_match,
+        matches_with(URL, "was URL with query: was <{'key1': 'value1', 'key2': 'value2'}>"),
+    )
 
 
 def test_url_with_fragment():
@@ -121,6 +135,7 @@ def test_url_with_fragment():
 
     assert_that(should_match, has_string("URL with fragment: 'fragment'"))
     assert_that(should_not_match, mismatches_with(URL, "was URL with fragment: was <fragment>"))
+    assert_that(should_match, matches_with(URL, "was URL with fragment: was <fragment>"))
 
 
 # TODO path.segments
@@ -163,4 +178,19 @@ def test_url_matcher_builder():
     assert_that(
         should_not_match,
         mismatches_with(URL, "was URL with host: was 'brunni.ng' path: was </path1/path2/path3>"),
+    )
+    assert_that(
+        should_match,
+        matches_with(
+            URL,
+            "was URL with scheme: was 'https' "
+            "username: was 'username' "
+            "password: was 'password' "
+            "host: was 'brunni.ng' "
+            "port: was <1234> "
+            "path: was </path1/path2/path3> "
+            "path segments: was <['path1', 'path2', 'path3']> "
+            "query: was <{'key1': 'value1', 'key2': 'value2'}> "
+            "fragment: was <fragment>",
+        ),
     )

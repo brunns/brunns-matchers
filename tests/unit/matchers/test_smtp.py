@@ -2,7 +2,7 @@
 from brunns.builder.email import EmailMessageBuilder
 from hamcrest import assert_that, has_string, not_
 
-from brunns.matchers.matcher import mismatches_with
+from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.smtp import is_email
 
 
@@ -44,6 +44,12 @@ def test_email_matcher():
     assert_that(
         is_email().with_to_address("banana@example.com").and_to_name("Banana"),
         mismatches_with(
+            message, "was email with to_name: was 'simon' to_address: was 'simon@brunni.ng'"
+        ),
+    )
+    assert_that(
+        is_email().with_to_address("simon@brunni.ng").and_to_name("simon"),
+        matches_with(
             message, "was email with to_name: was 'simon' to_address: was 'simon@brunni.ng'"
         ),
     )

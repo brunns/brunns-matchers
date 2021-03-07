@@ -10,7 +10,11 @@ from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 
-from brunns.matchers.utils import append_matcher_description, describe_field_mismatch
+from brunns.matchers.utils import (
+    append_matcher_description,
+    describe_field_match,
+    describe_field_mismatch,
+)
 
 ANYTHING = anything()
 
@@ -102,6 +106,18 @@ class EmailWith(BaseMatcher[str]):
         )
         describe_field_mismatch(self.subject, "subject", email.subject, mismatch_description)
         describe_field_mismatch(self.body_text, "body", email.body_text, mismatch_description)
+
+    def describe_match(self, actual_email: str, match_description: Description) -> None:
+        email = self._parse_email(actual_email)
+        match_description.append_text("was email with")
+        describe_field_match(self.to_name, "to_name", email.to_name, match_description)
+        describe_field_match(self.to_address, "to_address", email.to_address, match_description)
+        describe_field_match(self.from_name, "from_name", email.from_name, match_description)
+        describe_field_match(
+            self.from_address, "from_address", email.from_address, match_description
+        )
+        describe_field_match(self.subject, "subject", email.subject, match_description)
+        describe_field_match(self.body_text, "body", email.body_text, match_description)
 
     def with_to_name(self, to_name: Union[str, Matcher[str]]):
         self.to_name = wrap_matcher(to_name)

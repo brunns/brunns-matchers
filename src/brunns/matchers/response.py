@@ -63,7 +63,7 @@ class ResponseMatcher(BaseMatcher[Response]):
             Matcher[Sequence[Union[Response, Matcher[Response]]]],
         ] = ANYTHING,
         url: Union[furl, str, Matcher[Union[furl, str]]] = ANYTHING,
-        encoding: Union[str, Matcher[str]] = ANYTHING,
+        encoding: Union[Optional[str], Matcher[Optional[str]]] = ANYTHING,
     ) -> None:
         super(ResponseMatcher, self).__init__()
         self.status_code: Matcher[int] = wrap_matcher(status_code)
@@ -241,11 +241,11 @@ class ResponseMatcher(BaseMatcher[Response]):
     def and_url(self, url: Union[furl, str, Matcher[Union[furl, str]]]):
         return self.with_url(url)
 
-    def with_encoding(self, encoding: Union[str, Matcher[str]]):
+    def with_encoding(self, encoding: Union[Optional[str], Matcher[Optional[str]]]):
         self.encoding = wrap_matcher(encoding)
         return self
 
-    def and_encoding(self, encoding: Union[str, Matcher[str]]):
+    def and_encoding(self, encoding: Union[Optional[str], Matcher[Optional[str]]]):
         return self.with_encoding(encoding)
 
 

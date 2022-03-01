@@ -64,7 +64,8 @@ precommit: test lint coverage mypy docs ## Pre-commit targets
 
 .PHONY: recreate
 recreate: ## Recreate tox environments
-	tox --recreate --notest -e py36,py37,py38,py39,format,flake8,bandit,safety,piprot,mypy
+	tox --recreate --notest -p
+	tox --recreate --notest -e coverage,format,check-format,flake8,pylint,bandit,safety,piprot,mypy,docs -p
 
 .PHONY: clean
 clean: ## Clean generated files

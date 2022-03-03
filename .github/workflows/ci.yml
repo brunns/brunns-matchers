@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '0 14 * * THU'  # Every Thursday afternoon
+    - cron: '0 15 * * THU'  # Every Thursday afternoon
 
 jobs:
   test:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python: ['3.9']
+        python: ['3.10']
         os: ['ubuntu-latest']
 
     steps:
@@ -31,10 +31,17 @@ jobs:
     name: 'Test Python versions'
     needs: test
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
-        python: ['3.8', '3.7', '3.6', 'pypy-3.6', '3.10.0-alpha - 3.10.0']
+        python: ['3.9', '3.8', '3.7', '3.6', 'pypy-3.7']
         os: ['ubuntu-latest']
+        experimental: [false]
+        include:
+          - python: '3.11.0-alpha - 3.11.0'
+            experimental: true
+            os: 'ubuntu-latest'
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v2
@@ -54,7 +61,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python: ['3.9']
+        python: ['3.10']
         os: ['windows-latest', 'macos-latest']
 
     steps:
@@ -75,7 +82,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python: ['3.9']
+        python: ['3.10']
         os: ['ubuntu-latest']
 
     steps:
@@ -90,12 +97,12 @@ jobs:
         run: tox -e coverage
 
   lint-etc:
-    name: 'Linting etc.'
+    name: 'Linting and docs'
     needs: test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python: [ '3.9' ]
+        python: [ '3.10' ]
         os: [ 'ubuntu-latest' ]
 
     steps:

@@ -1,6 +1,7 @@
 # encoding=utf-8
 import collections
 import inspect
+from contextlib import suppress
 from itertools import zip_longest
 from typing import Any, Iterable, Mapping, Optional, Union
 
@@ -69,7 +70,7 @@ class HasIdenticalPropertiesTo(BaseMatcher[Any]):
 
 def equal_vars(left: Any, right: Any, ignoring: Optional[Iterable[str]] = None) -> bool:
     """Test if two objects are equal using public vars() and properties if available, with == otherwise."""
-    try:
+    with suppress(TypeError):
         left_vars = _vars_and_properties(left, ignoring=ignoring)
         right_vars = _vars_and_properties(right, ignoring=ignoring)
         if left_vars:
@@ -77,8 +78,6 @@ def equal_vars(left: Any, right: Any, ignoring: Optional[Iterable[str]] = None) 
                 equal_vars(right_vars[key], value, ignoring=ignoring)
                 for key, value in left_vars.items()
             )
-    except TypeError:
-        pass
     return _equal_vars_for_non_objects(left, right)
 
 
@@ -96,8 +95,7 @@ def _equal_vars_for_non_objects(left: Any, right: Any) -> bool:
         return left.keys() == right.keys() and all(
             equal_vars(right[key], value) for key, value in left.items()
         )
-    else:
-        return left == right
+    return left == right
 
 
 def _vars_and_properties(obj: Any, ignoring: Optional[Iterable[str]] = None) -> Mapping[str, Any]:

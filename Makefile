@@ -56,7 +56,7 @@ piprot: ## Check for outdated dependencies
 mutmut: clean ## Run mutation tests
 	tox -e mutmut run
 	tox -e mutmut html
-	open open html/index.html
+	open html/index.html
 
 .PHONY: docs
 docs:  ## Generate documentation

@@ -39,9 +39,10 @@ Requires [tox](https://tox.readthedocs.io). Run `make precommit` tells you if yo
 Requires [hub](https://hub.github.com/), [setuptools](https://setuptools.readthedocs.io), [wheel](https://pypi.org/project/wheel/) and [twine](https://twine.readthedocs.io). To release `n.n.n`:
 
 ```sh
-version="n.n.n"
-make precommit && git commit -am"Release $version" && git push # If not already all pushed, which it should be.
-hub release create $version -m"Release $version"
+version="n.n.n" # Needs to match new version number in setup.py.
+git checkout -b "release-$version"
+make precommit && git commit -am"Release $version" && git push --set-upstream origin "release-$version" # If not already all pushed, which it should be.
+hub release create "V$version" -t"release-$version" -m"Version $version"
 python setup.py sdist bdist_wheel
 twine upload dist/*$version*
 git checkout master

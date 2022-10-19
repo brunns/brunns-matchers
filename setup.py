@@ -21,7 +21,7 @@ except IOError:
 setup(
     name="brunns-matchers",
     zip_safe=False,
-    version="2.5.1",
+    version="2.6.0",
     description="Custom PyHamcrest matchers",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -43,6 +43,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Software Development :: Testing",
     ],

@@ -47,7 +47,7 @@ setup(
         "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Software Development :: Testing",
     ],
-    python_requires=">=3.7 ",
+    python_requires=">=3.7",
     install_requires=[
         "beautifulsoup4>=4.0",
         "brunns-row>=2.0",

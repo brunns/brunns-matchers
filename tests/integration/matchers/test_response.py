@@ -2,7 +2,6 @@
 import logging
 from datetime import timedelta
 
-import pytest
 import requests
 from hamcrest import assert_that, contains_exactly, contains_string, has_entries, has_key, not_
 
@@ -18,12 +17,11 @@ logger = logging.getLogger(__name__)
 INTERNET_CONNECTED = internet_connection()
 
 
-@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
-def test_response_status_code():
+def test_response_status_code(httpbin):
     # Given
 
     # When
-    actual = requests.get("https://httpbin.org/status/345")
+    actual = requests.get(httpbin / "status/345")
 
     # Then
     assert_that(actual, is_response().with_status_code(345))
@@ -34,25 +32,24 @@ def test_response_status_code():
     )
 
 
-@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
-def test_response_json():
+def test_response_json(httpbin):
     # Given
 
     # When
-    actual = requests.get("https://httpbin.org/json")
+    actual = requests.get(httpbin / "json")
 
     # Then
     assert_that(actual, is_response().with_json(has_key("slideshow")))
     assert_that(actual, not_(is_response().with_json(has_key("shitshow"))))
 
 
-@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
-def test_response_content():
+def test_response_content(httpbin):
     # Given
 
     # When
     actual = requests.get(
-        "https://httpbin.org/anything?foo=bar", headers={"X-Clacks-Overhead": "Sir Terry Pratchett"}
+        (httpbin / "anything").set(args={"foo": "bar"}),
+        headers={"X-Clacks-Overhead": "Sir Terry Pratchett"},
     )
 
     # Then
@@ -63,23 +60,21 @@ def test_response_content():
     assert_that(actual, not_(is_response().with_content(b"seems unlikely")))
 
 
-@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
-def test_response_cookies():
+def test_response_cookies(httpbin):
     # Given
 
     # When
-    actual = requests.get("https://httpbin.org/cookies/set?foo=bar", allow_redirects=False)
+    actual = requests.get((httpbin / "cookies/set").set(args={"foo": "bar"}), allow_redirects=False)
 
     # Then
     assert_that(actual, is_response().with_status_code(302).and_cookies(has_entries(foo="bar")))
 
 
-@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
-def test_response_elapsed():
+def test_response_elapsed(httpbin):
     # Given
 
     # When
-    actual = requests.get("https://httpbin.org/delay/0.5")
+    actual = requests.get(httpbin / "delay/0.5")
 
     # Then
     assert_that(
@@ -90,12 +85,11 @@ def test_response_elapsed():
     )
 
 
-@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
-def test_response_history():
+def test_response_history(httpbin):
     # Given
 
     # When
-    actual = requests.get("https://httpbin.org/cookies/set?foo=bar")
+    actual = requests.get((httpbin / "cookies/set").set(args={"foo": "bar"}))
 
     # Then
     assert_that(
@@ -107,12 +101,11 @@ def test_response_history():
     )
 
 
-@pytest.mark.skipif(not INTERNET_CONNECTED, reason="No internet connection.")
-def test_response_encoding():
+def test_response_encoding(httpbin):
     # Given
 
     # When
-    actual = requests.get("https://httpbin.org/encoding/utf8")
+    actual = requests.get(httpbin / "encoding/utf8")
 
     # Then
     assert_that(actual, is_response().with_encoding("utf-8"))

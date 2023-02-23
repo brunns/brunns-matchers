@@ -59,6 +59,7 @@ jobs:
       matrix:
         python: ['3.11']
         os: ['windows-latest', 'macos-latest']
+        experimental: [true]
 
     steps:
       - uses: actions/checkout@v2
@@ -68,6 +69,14 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install Tox and any other packages
         run: pip install tox~=3.0
+      - name: Install and Start Colima
+        run: |
+          if [[ "${{ matrix.os }}" == *"macos"* ]]
+          then
+            brew install docker docker-compose
+            colima start
+          fi
+        shell: bash
       - name: Run Tests
         # Run tox using the version of Python in `PATH`
         run: tox -e py

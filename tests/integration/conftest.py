@@ -4,7 +4,7 @@ import sqlite3
 import sys
 
 import pytest
-from furl import furl
+from imurl import URL
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +27,9 @@ def db():
 
 
 @pytest.fixture(scope="session")
-def httpbin(docker_ip, docker_services) -> furl:
+def httpbin(docker_ip, docker_services) -> URL:
     if not sys.platform.startswith("win"):
         docker_services.start("httpbin")
         port = docker_services.wait_for_service("httpbin", 80)
-        return furl(f"http://{docker_ip}:{port}")
-    return furl("https://httpbin.org")
+        return URL(f"http://{docker_ip}:{port}")
+    return URL("https://httpbin.org")

@@ -34,7 +34,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
-        python: ['3.10', '3.9', '3.8', '3.7', 'pypy-3.7']
+        python: ['3.10', '3.9', '3.8', 'pypy-3.8']
         os: ['ubuntu-latest']
         experimental: [false]
       fail-fast: false

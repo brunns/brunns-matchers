@@ -53,6 +53,7 @@ setup(
         "brunns-row>=2.0",
         "Deprecated>=1.2",
         "furl>=2.0",
+        "imurl>=0.2",
         "pyhamcrest>=2.0",
         "requests>=2.0",
         "typing-extensions>=3.7 ; python_version<'3.8'",

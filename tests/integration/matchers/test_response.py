@@ -21,7 +21,7 @@ def test_response_status_code(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "status/345")
+    actual = requests.get(httpbin.replace(path="/status/345"))
 
     # Then
     assert_that(actual, is_response().with_status_code(345))
@@ -36,7 +36,7 @@ def test_response_json(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "json")
+    actual = requests.get(httpbin.replace(path="/json"))
 
     # Then
     assert_that(actual, is_response().with_json(has_key("slideshow")))
@@ -48,7 +48,7 @@ def test_response_content(httpbin):
 
     # When
     actual = requests.get(
-        (httpbin / "anything").set(args={"foo": "bar"}),
+        httpbin.replace(path="/anything").set_query("foo", "bar"),
         headers={"X-Clacks-Overhead": "Sir Terry Pratchett"},
     )
 
@@ -64,7 +64,9 @@ def test_response_cookies(httpbin):
     # Given
 
     # When
-    actual = requests.get((httpbin / "cookies/set").set(args={"foo": "bar"}), allow_redirects=False)
+    actual = requests.get(
+        httpbin.replace(path="/cookies/set").set_query("foo", "bar"), allow_redirects=False
+    )
 
     # Then
     assert_that(actual, is_response().with_status_code(302).and_cookies(has_entries(foo="bar")))
@@ -74,7 +76,7 @@ def test_response_elapsed(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "delay/0.5")
+    actual = requests.get(httpbin.replace(path="/delay/0.5"))
 
     # Then
     assert_that(
@@ -89,7 +91,7 @@ def test_response_history(httpbin):
     # Given
 
     # When
-    actual = requests.get((httpbin / "cookies/set").set(args={"foo": "bar"}))
+    actual = requests.get(httpbin.replace(path="/cookies/set").set_query("foo", "bar"))
 
     # Then
     assert_that(
@@ -105,7 +107,7 @@ def test_response_encoding(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "encoding/utf8")
+    actual = requests.get(httpbin.replace(path="/encoding/utf8"))
 
     # Then
     assert_that(actual, is_response().with_encoding("utf-8"))

@@ -1,7 +1,9 @@
 # encoding=utf-8
 import logging
+import platform
 from datetime import timedelta
 
+import pytest
 import requests
 from hamcrest import assert_that, contains_exactly, contains_string, has_entries, has_key, not_
 
@@ -17,6 +19,7 @@ logger = logging.getLogger(__name__)
 INTERNET_CONNECTED = internet_connection()
 
 
+@pytest.mark.flaky(reruns=5, reruns_delay=10, condition=platform.system() == "Windows")
 def test_response_status_code(httpbin):
     # Given
 
@@ -32,6 +35,7 @@ def test_response_status_code(httpbin):
     )
 
 
+@pytest.mark.flaky(reruns=5, reruns_delay=10, condition=platform.system() == "Windows")
 def test_response_json(httpbin):
     # Given
 
@@ -43,6 +47,7 @@ def test_response_json(httpbin):
     assert_that(actual, not_(is_response().with_json(has_key("shitshow"))))
 
 
+@pytest.mark.flaky(reruns=5, reruns_delay=10, condition=platform.system() == "Windows")
 def test_response_content(httpbin):
     # Given
 
@@ -60,6 +65,7 @@ def test_response_content(httpbin):
     assert_that(actual, not_(is_response().with_content(b"seems unlikely")))
 
 
+@pytest.mark.flaky(reruns=5, reruns_delay=10, condition=platform.system() == "Windows")
 def test_response_cookies(httpbin):
     # Given
 
@@ -72,6 +78,7 @@ def test_response_cookies(httpbin):
     assert_that(actual, is_response().with_status_code(302).and_cookies(has_entries(foo="bar")))
 
 
+@pytest.mark.flaky(reruns=5, reruns_delay=10, condition=platform.system() == "Windows")
 def test_response_elapsed(httpbin):
     # Given
 
@@ -87,6 +94,7 @@ def test_response_elapsed(httpbin):
     )
 
 
+@pytest.mark.flaky(reruns=5, reruns_delay=10, condition=platform.system() == "Windows")
 def test_response_history(httpbin):
     # Given
 
@@ -103,6 +111,7 @@ def test_response_history(httpbin):
     )
 
 
+@pytest.mark.flaky(reruns=5, reruns_delay=10, condition=platform.system() == "Windows")
 def test_response_encoding(httpbin):
     # Given
 

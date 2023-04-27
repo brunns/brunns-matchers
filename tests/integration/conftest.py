@@ -1,7 +1,7 @@
 # encoding=utf-8
 import logging
+import platform
 import sqlite3
-import sys
 
 import pytest
 from imurl import URL
@@ -28,7 +28,7 @@ def db():
 
 @pytest.fixture(scope="session")
 def httpbin(docker_ip, docker_services) -> URL:
-    if not sys.platform.startswith("win"):
+    if platform.system() != "Windows":
         docker_services.start("httpbin")
         port = docker_services.wait_for_service("httpbin", 80)
         return URL(f"http://{docker_ip}:{port}")

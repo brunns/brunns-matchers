@@ -57,5 +57,6 @@ setup(
         "pyhamcrest>=2.0",
         "requests>=2.0",
         "typing-extensions>=3.7 ; python_version<'3.8'",
+        "Werkzeug>=2.0",
     ],
 )

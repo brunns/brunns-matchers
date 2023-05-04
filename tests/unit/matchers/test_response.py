@@ -36,7 +36,7 @@ def test_response_matcher_status_code():
     # Then
     assert_that(stub_response, is_response().with_status_code(200))
     assert_that(stub_response, not_(is_response().with_status_code(201)))
-    assert_that(is_response().with_status_code(200), has_string("response with status_code: <200>"))
+    assert_that(is_response().with_status_code(200), has_string("response with status code: <200>"))
     assert_that(
         is_response().with_status_code(201),
         mismatches_with(stub_response, contains_string("was response with status code: was <200>")),
@@ -360,7 +360,7 @@ def test_response_matcher_builder():
         matcher,
         has_string(
             "response with "
-            "status_code: <200> "
+            "status code: <200> "
             "body: 'sausages' "
             "content: <b'content'> "
             "json: a dictionary containing {'a': 'b'} "

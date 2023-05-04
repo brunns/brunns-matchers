@@ -101,7 +101,7 @@ class ResponseMatcher(BaseMatcher[Response]):
 
     def describe_to(self, description: Description) -> None:
         description.append_text("response with")
-        append_matcher_description(self.status_code, "status_code", description)
+        append_matcher_description(self.status_code, "status code", description)
         append_matcher_description(self.body, "body", description)
         append_matcher_description(self.content, "content", description)
         append_matcher_description(self.json, "json", description)

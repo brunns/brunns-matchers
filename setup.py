@@ -49,14 +49,18 @@ setup(
     ],
     python_requires=">=3.7",
     install_requires=[
-        "beautifulsoup4>=4.0",
-        "brunns-row>=2.0",
-        "Deprecated>=1.2",
-        "furl>=2.0",
-        "imurl>=0.2",
         "pyhamcrest>=2.0",
-        "requests>=2.0,<2.30",
+        "Deprecated>=1.2",
         "typing-extensions>=3.7 ; python_version<'3.8'",
-        "Werkzeug>=2.0",
+        "brunns-row>=2.0",
+        "beautifulsoup4>=4.0",
     ],
+    extras_require={
+        "optional": [
+            "furl>=2.0",
+            "imurl>=0.2",
+            "requests>=2.0,<2.30",
+            "Werkzeug>=2.0",
+        ],
+    },
 )

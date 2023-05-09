@@ -59,7 +59,7 @@ setup(
         "optional": [
             "furl>=2.0",
             "imurl>=0.2",
-            "requests>=2.0,<2.30",
+            "requests>=2.0",
             "Werkzeug>=2.0",
         ],
     },

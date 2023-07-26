@@ -20,6 +20,7 @@ from brunns.matchers.html import (
     has_header_row,
     has_id,
     has_id_tag,
+    has_image,
     has_link,
     has_named_tag,
     has_row,
@@ -41,6 +42,7 @@ HTML = """\
         <h2>what is &mdash; this</h2>
         <a id="a-link" class="link-me-baby" href="https://brunni.ng">A link</a>
         <div id="fish" class="banana grapes"><p>Some text.</p></div>
+        <img src="https://brunni.ng/some.png"/>
         <table id="squid" action="/">
             <thead>
                 <tr><th>apples</th><th>oranges</th></tr>
@@ -374,5 +376,23 @@ def test_has_row_with_link():
             "tag with name matching 'a' "
             "attributes matching (a dictionary containing ['href': URL with path: '/thebar'] and ANYTHING) "
             "index matching <3>"
+        ),
+    )
+
+
+def test_has_has_image():
+    # Given
+    should_match = has_image(src="https://brunni.ng/some.png")
+    should_not_match = has_image(src=is_url().with_host("example.com"))
+
+    assert_that(HTML, should_match)
+    assert_that(HTML, not_(should_not_match))
+    assert_that(
+        should_match,
+        has_string(
+            contains_string(
+                "tag with name matching 'img' "
+                "attributes matching (a dictionary containing ['src': 'https://brunni.ng/some.png']"
+            )
         ),
     )

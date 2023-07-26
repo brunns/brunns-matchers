@@ -219,3 +219,13 @@ def has_link(
     href_matcher = has_entry("href", href) if href != ANYTHING else ANYTHING
     id_matcher = has_entry("id", id_) if id_ != ANYTHING else ANYTHING
     return HtmlWithTag(TagWith(name="a", clazz=clazz, attributes=all_of(href_matcher, id_matcher)))
+
+
+def has_image(
+    id_: Union[str, Matcher[str]] = ANYTHING,
+    clazz: Union[str, Matcher[str]] = ANYTHING,
+    src: Union[str, Matcher[str]] = ANYTHING,
+) -> HtmlWithTag:
+    src_matcher = has_entry("src", src) if src != ANYTHING else ANYTHING
+    id_matcher = has_entry("id", id_) if id_ != ANYTHING else ANYTHING
+    return HtmlWithTag(TagWith(name="img", clazz=clazz, attributes=all_of(src_matcher, id_matcher)))

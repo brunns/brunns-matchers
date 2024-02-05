@@ -97,8 +97,7 @@ class HtmlHasTable(BaseMatcher[str]):
 
     def _matches(self, html: str) -> bool:
         # TODO - remove type ignore when https://github.com/python/mypy/issues/3283 is resolved.
-        soup = BeautifulSoup(html, "html.parser")
-        tables = soup.find_all("table")
+        tables = BeautifulSoup(html, "html.parser").find_all("table")
         return contains_exactly(all_of(self.id_, self.table_matcher)).matches(tables)  # type: ignore
 
     def describe_to(self, description: Description) -> None:

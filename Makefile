@@ -8,7 +8,7 @@ colima:
 
 .PHONY: test
 test: colima ## Run tests
-	tox -e py38,py311
+	tox -e py38,py312
 
 .PHONY: coverage
 coverage: colima ## Test coverage report
@@ -85,11 +85,11 @@ clean: ## Clean generated files
 
 .PHONY: repl
 repl: ## Python REPL
-	tox -e py311 -- python
+	tox -e py312 -- python
 
 .PHONY: outdated
 outdated: ## List outdated dependancies
-	tox -e py311 -- pip list -o
+	tox -e py312 -- pip list -o
 
 .PHONY: help
 help: ## Show this help

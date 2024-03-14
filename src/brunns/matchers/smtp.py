@@ -1,7 +1,8 @@
 # encoding=utf-8
 import email
 import re
-from typing import Match, NamedTuple, Union, cast
+from dataclasses import dataclass
+from typing import Match, Union, cast
 
 from deprecated import deprecated
 from hamcrest import anything
@@ -18,17 +19,15 @@ from brunns.matchers.utils import (
 
 ANYTHING = anything()
 
-Email = NamedTuple(
-    "Email",
-    [
-        ("to_name", str),
-        ("to_address", str),
-        ("from_name", str),
-        ("from_address", str),
-        ("subject", str),
-        ("body_text", str),
-    ],
-)
+
+@dataclass
+class Email:
+    to_name: str
+    to_address: str
+    from_name: str
+    from_address: str
+    subject: str
+    body_text: str
 
 
 def is_email():
@@ -74,7 +73,7 @@ class EmailWith(BaseMatcher[str]):
             Match, re.match("(.*) <(.*)>", parsed["From"])
         ).groups()
         actual_subject = parsed["Subject"]
-        actual_body_text = parsed.get_payload()
+        actual_body_text = cast(str, parsed.get_payload())
         return Email(
             to_name=actual_to_name,
             to_address=actual_to_address,

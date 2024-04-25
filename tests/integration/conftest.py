@@ -1,12 +1,16 @@
 # encoding=utf-8
 import logging
+import os
 import platform
 import sqlite3
 
 import pytest
-from imurl import URL
+from yarl import URL
 
 logger = logging.getLogger(__name__)
+LOCAL = os.getenv("GITHUB_ACTIONS") != "true"
+LINUX = platform.system() == "Linux"
+HTTPBIN_CONTAINERISED = LINUX or LOCAL
 
 
 @pytest.fixture(scope="session")
@@ -28,7 +32,7 @@ def db():
 
 @pytest.fixture(scope="session")
 def httpbin(docker_ip, docker_services) -> URL:
-    if platform.system() != "Windows":
+    if HTTPBIN_CONTAINERISED:
         docker_services.start("httpbin")
         port = docker_services.wait_for_service("httpbin", 80)
         return URL(f"http://{docker_ip}:{port}")

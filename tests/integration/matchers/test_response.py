@@ -1,5 +1,6 @@
 # encoding=utf-8
 import logging
+import os
 import platform
 from datetime import timedelta
 
@@ -17,14 +18,17 @@ from tests.utils.network import internet_connection
 logger = logging.getLogger(__name__)
 
 INTERNET_CONNECTED = internet_connection()
+LOCAL = os.getenv("GITHUB_ACTIONS") != "true"
+LINUX = platform.system() == "Linux"
+HTTPBIN_CONTAINERISED = LINUX or LOCAL
 
 
-@pytest.mark.xfail(platform.system() == "Windows", reason="Public httpbin horribly flaky.")
+@pytest.mark.xfail(not HTTPBIN_CONTAINERISED, reason="Public httpbin horribly flaky.")
 def test_response_status_code(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin.replace(path="/status/345"))
+    actual = requests.get(httpbin / "status/345")
 
     # Then
     assert_that(actual, is_response().with_status_code(345))
@@ -35,26 +39,25 @@ def test_response_status_code(httpbin):
     )
 
 
-@pytest.mark.xfail(platform.system() == "Windows", reason="Public httpbin horribly flaky.")
+@pytest.mark.xfail(not HTTPBIN_CONTAINERISED, reason="Public httpbin horribly flaky.")
 def test_response_json(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin.replace(path="/json"))
+    actual = requests.get(httpbin / "json")
 
     # Then
     assert_that(actual, is_response().with_json(has_key("slideshow")))
     assert_that(actual, not_(is_response().with_json(has_key("shitshow"))))
 
 
-@pytest.mark.xfail(platform.system() == "Windows", reason="Public httpbin horribly flaky.")
+@pytest.mark.xfail(not HTTPBIN_CONTAINERISED, reason="Public httpbin horribly flaky.")
 def test_response_content(httpbin):
     # Given
 
     # When
     actual = requests.get(
-        httpbin.replace(path="/anything").set_query("foo", "bar"),
-        headers={"X-Clacks-Overhead": "Sir Terry Pratchett"},
+        httpbin / "anything" % {"foo": "bar"}, headers={"X-Clacks-Overhead": "Sir Terry Pratchett"}
     )
 
     # Then
@@ -65,25 +68,23 @@ def test_response_content(httpbin):
     assert_that(actual, not_(is_response().with_content(b"seems unlikely")))
 
 
-@pytest.mark.xfail(platform.system() == "Windows", reason="Public httpbin horribly flaky.")
+@pytest.mark.xfail(not HTTPBIN_CONTAINERISED, reason="Public httpbin horribly flaky.")
 def test_response_cookies(httpbin):
     # Given
 
     # When
-    actual = requests.get(
-        httpbin.replace(path="/cookies/set").set_query("foo", "bar"), allow_redirects=False
-    )
+    actual = requests.get(httpbin / "cookies/set" % {"foo": "bar"}, allow_redirects=False)
 
     # Then
     assert_that(actual, is_response().with_status_code(302).and_cookies(has_entries(foo="bar")))
 
 
-@pytest.mark.xfail(platform.system() == "Windows", reason="Public httpbin horribly flaky.")
+@pytest.mark.xfail(not HTTPBIN_CONTAINERISED, reason="Public httpbin horribly flaky.")
 def test_response_elapsed(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin.replace(path="/delay/0.5"))
+    actual = requests.get(httpbin / "delay/0.5")
 
     # Then
     assert_that(
@@ -94,12 +95,12 @@ def test_response_elapsed(httpbin):
     )
 
 
-@pytest.mark.xfail(platform.system() == "Windows", reason="Public httpbin horribly flaky.")
+@pytest.mark.xfail(not HTTPBIN_CONTAINERISED, reason="Public httpbin horribly flaky.")
 def test_response_history(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin.replace(path="/cookies/set").set_query("foo", "bar"))
+    actual = requests.get(httpbin / "cookies/set" % {"foo": "bar"})
 
     # Then
     assert_that(
@@ -111,12 +112,12 @@ def test_response_history(httpbin):
     )
 
 
-@pytest.mark.xfail(platform.system() == "Windows", reason="Public httpbin horribly flaky.")
+@pytest.mark.xfail(not HTTPBIN_CONTAINERISED, reason="Public httpbin horribly flaky.")
 def test_response_encoding(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin.replace(path="/encoding/utf8"))
+    actual = requests.get(httpbin / "encoding/utf8")
 
     # Then
     assert_that(actual, is_response().with_encoding("utf-8"))

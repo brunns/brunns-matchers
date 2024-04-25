@@ -58,7 +58,7 @@ setup(
     extras_require={
         "optional": [
             "furl>=2.0",
-            "imurl>=0.2",
+            "yarl>=1.9",
             "requests>=2.0",
             "Werkzeug>=2.0",
         ],

@@ -36,10 +36,6 @@ pylint:
 mypy:
 	tox -e mypy
 
-.PHONY: safety
-safety:
-	tox -e safety
-
 .PHONY: check-format
 check-format:
 	tox -e check-format

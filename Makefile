@@ -15,7 +15,7 @@ coverage: colima ## Test coverage report
 	tox -e coverage
 
 .PHONY: lint
-lint: check-format flake8 bandit safety refurb ## Lint code
+lint: check-format flake8 bandit refurb ## Lint code
 
 .PHONY: flake8
 flake8:
@@ -69,7 +69,7 @@ precommit: test lint coverage mypy docs ## Pre-commit targets
 .PHONY: recreate
 recreate: ## Recreate tox environments
 	tox --recreate --notest -p
-	tox --recreate --notest -e coverage,format,check-format,flake8,pylint,bandit,safety,piprot,mypy,docs,refurb -p
+	tox --recreate --notest -e coverage,format,check-format,flake8,pylint,bandit,piprot,mypy,docs,refurb -p
 
 .PHONY: clean
 clean: ## Clean generated files

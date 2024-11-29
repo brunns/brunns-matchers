@@ -13,6 +13,7 @@ MOCK_RESPONSE = mock.MagicMock(
     text="sausages",
     json={"a": "b"},
     headers={"key": "value"},
+    mimetype="text/xml",
 )
 
 
@@ -57,6 +58,31 @@ def test_response_matcher_text():
     assert_that(
         is_werkzeug_response().with_text("sausages"),
         matches_with(stub_response, contains_string("was response with text: was 'sausages'")),
+    )
+
+
+def test_response_matcher_mimetype():
+    # Given
+    stub_response = MOCK_RESPONSE
+
+    # When
+
+    # Then
+    assert_that(stub_response, is_werkzeug_response().with_mimetype("text/xml"))
+    assert_that(stub_response, not_(is_werkzeug_response().with_mimetype("text/json")))
+    assert_that(
+        is_werkzeug_response().with_mimetype("text/json"),
+        has_string("response with mimetype: 'text/json'"),
+    )
+    assert_that(
+        is_werkzeug_response().with_mimetype("text/json"),
+        mismatches_with(
+            stub_response, contains_string("was response with mimetype: was 'text/xml'")
+        ),
+    )
+    assert_that(
+        is_werkzeug_response().with_mimetype("text/xml"),
+        matches_with(stub_response, contains_string("was response with mimetype: was 'text/xml'")),
     )
 
 
@@ -132,6 +158,7 @@ def test_response_matcher_builder():
         is_werkzeug_response()
         .with_status_code(200)
         .and_text("sausages")
+        .and_mimetype("text/xml")
         .and_json(has_entries(a="b"))
         .and_headers(has_entries(key="value"))
     )
@@ -148,6 +175,7 @@ def test_response_matcher_builder():
             "response with "
             "status code: <200> "
             "text: 'sausages' "
+            "mimetype: 'text/xml' "
             "json: a dictionary containing {'a': 'b'} "
             "headers: a dictionary containing {'key': 'value'}"
         ),

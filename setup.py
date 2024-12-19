@@ -21,7 +21,7 @@ except OSError:
 setup(
     name="brunns-matchers",
     zip_safe=False,
-    version="2.8.0",
+    version="2.9.0",
     description="Custom PyHamcrest matchers",
     long_description=long_description,
     long_description_content_type="text/markdown",

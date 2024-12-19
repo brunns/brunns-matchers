@@ -1,7 +1,7 @@
-# encoding=utf-8
-from typing import Mapping, Optional, Sequence, Tuple, Union, cast
+from collections.abc import Mapping, Sequence
+from typing import Optional, Union, cast
 
-from bs4 import BeautifulSoup, Tag  # type: ignore
+from bs4 import BeautifulSoup, Tag  # type: ignore[attr-defined]
 from hamcrest import all_of, anything, contains_exactly, has_entry, has_item
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
@@ -9,9 +9,7 @@ from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 
 ANYTHING = anything()
-ATTR_MATCHER = Union[
-    Matcher[Mapping[str, Union[str, Matcher[str]]]], Mapping[str, Union[str, Matcher[str]]]
-]
+ATTR_MATCHER = Union[Matcher[Mapping[str, Union[str, Matcher[str]]]], Mapping[str, Union[str, Matcher[str]]]]
 
 
 class HtmlWithTag(BaseMatcher[str]):
@@ -24,9 +22,7 @@ class HtmlWithTag(BaseMatcher[str]):
         self.name = name
         self.id_ = id_
         self.tag_matcher: Matcher[Tag] = (
-            tag_matcher
-            if isinstance(tag_matcher, Matcher)
-            else tag_has_string(cast(str, tag_matcher))
+            tag_matcher if isinstance(tag_matcher, Matcher) else tag_has_string(cast(str, tag_matcher))
         )
 
     def _matches(self, actual: str) -> bool:
@@ -62,7 +58,8 @@ class TagWith(BaseMatcher[Tag]):
         string: Union[str, Matcher[str]] = ANYTHING,
         clazz: Union[str, Matcher[str]] = ANYTHING,
         attributes: Union[
-            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+            Mapping[str, Union[str, Matcher[str]]],
+            Matcher[Mapping[str, Union[str, Matcher[str]]]],
         ] = ANYTHING,
     ) -> None:
         self.name: Matcher[str] = wrap_matcher(name)
@@ -75,7 +72,7 @@ class TagWith(BaseMatcher[Tag]):
         return (
             self.name.matches(tag.name)
             and self.string.matches(tag.string)
-            and (self.clazz == ANYTHING or has_item(self.clazz).matches(tag.get("class", [])))  # type: ignore
+            and (self.clazz == ANYTHING or has_item(self.clazz).matches(tag.get("class", [])))  # type: ignore[arg-type]
             and self.attributes.matches(tag.attrs)
         )
 
@@ -92,16 +89,14 @@ class TagWith(BaseMatcher[Tag]):
 
 
 class HtmlHasTable(BaseMatcher[str]):
-    def __init__(
-        self, table_matcher: Matcher[Tag], id_: Union[str, Matcher[str]] = ANYTHING
-    ) -> None:
+    def __init__(self, table_matcher: Matcher[Tag], id_: Union[str, Matcher[str]] = ANYTHING) -> None:
         self.table_matcher = table_matcher
         self.id_: Matcher[str] = wrap_matcher(id_)
 
     def _matches(self, html: str) -> bool:
         # TODO - remove type ignore when https://github.com/python/mypy/issues/3283 is resolved.
         tables = BeautifulSoup(html, "html.parser").find_all("table")
-        return contains_exactly(all_of(self.id_, self.table_matcher)).matches(tables)  # type: ignore
+        return contains_exactly(all_of(self.id_, self.table_matcher)).matches(tables)  # type: ignore[arg-type]
 
     def describe_to(self, description: Description) -> None:
         description.append_text("row matching ")
@@ -113,8 +108,9 @@ class TableHasRow(BaseMatcher[Tag]):
         self,
         row_matcher: Matcher[Tag] = ANYTHING,
         cells_matcher: Matcher[Sequence[Tag]] = ANYTHING,
-        header_row: bool = False,
         index_matcher: Union[int, Matcher[int]] = ANYTHING,
+        *,
+        header_row: bool = False,
     ) -> None:
         self.row_matcher = row_matcher
         self.cells_matcher = cells_matcher
@@ -125,14 +121,12 @@ class TableHasRow(BaseMatcher[Tag]):
         # TODO - remove type ignore when https://github.com/python/mypy/issues/3283 is resolved.
         rows: Sequence[Tag] = table.find_all("tr")
         rows_and_cells = [(row, self._row_cells(row)) for row in rows if self._row_cells(row)]
-        indexed_rows_and_cells = [
-            (index, row, cells) for index, (row, cells) in enumerate(rows_and_cells)
-        ]
+        indexed_rows_and_cells = [(index, row, cells) for index, (row, cells) in enumerate(rows_and_cells)]
         indexed_row_matcher = cast(
-            Matcher[Tuple[int, Tag, Sequence[Tag]]],
+            Matcher[tuple[int, Tag, Sequence[Tag]]],
             contains_exactly(self.index_matcher, self.row_matcher, self.cells_matcher),
         )
-        return has_item(indexed_row_matcher).matches(indexed_rows_and_cells)  # type: ignore
+        return has_item(indexed_row_matcher).matches(indexed_rows_and_cells)  # type: ignore[arg-type]
 
     def _row_cells(self, row: Tag) -> Sequence[Tag]:
         return row.find_all("th" if self.header_row else "td")
@@ -150,10 +144,8 @@ class TableHasRow(BaseMatcher[Tag]):
             self.index_matcher.describe_to(description)
 
     def describe_mismatch(self, table: Tag, mismatch_description: Description) -> None:
-        super(TableHasRow, self).describe_mismatch(table, mismatch_description)
-        mismatch_description.append_text("\n\nfound rows:\n").append_list(
-            "", "\n", "", table.find_all("tr")
-        )
+        super().describe_mismatch(table, mismatch_description)
+        mismatch_description.append_text("\n\nfound rows:\n").append_list("", "\n", "", table.find_all("tr"))
 
 
 def has_title(title: Union[str, Matcher[str]]) -> HtmlWithTag:
@@ -186,9 +178,7 @@ def has_table(matcher, id_=ANYTHING) -> HtmlHasTable:
     return HtmlHasTable(matcher, id_=id_)
 
 
-def has_row(
-    row_matches=ANYTHING, cells_match=ANYTHING, index_matches=ANYTHING, header_row=False
-) -> TableHasRow:
+def has_row(row_matches=ANYTHING, cells_match=ANYTHING, index_matches=ANYTHING, *, header_row=False) -> TableHasRow:
     return TableHasRow(
         row_matcher=row_matches,
         cells_matcher=cells_match,
@@ -206,9 +196,7 @@ def has_id(id_: Union[str, Matcher[str]]) -> TagWith:
 
 
 def has_attributes(
-    matcher: Union[
-        Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
-    ]
+    matcher: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
 ) -> TagWith:
     return TagWith(attributes=matcher)
 

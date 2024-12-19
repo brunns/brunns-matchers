@@ -1,10 +1,9 @@
-# encoding=utf-8
 from datetime import timedelta
 from unittest import mock
 
-from brunns.builder.internet import UrlBuilder as a_url  # type: ignore
 from hamcrest import assert_that, contains_exactly, contains_string, has_entries, has_string, not_
 
+from brunns.builder.internet import UrlBuilder as a_url  # type: ignore[attr-defined]
 from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.object import between
 from brunns.matchers.response import is_response, redirects_to
@@ -82,9 +81,7 @@ def test_response_matcher_content():
     )
     assert_that(
         is_response().with_content(b"chips"),
-        mismatches_with(
-            stub_response, contains_string("was response with content: was <b'content'>")
-        ),
+        mismatches_with(stub_response, contains_string("was response with content: was <b'content'>")),
     )
     assert_that(
         is_response().with_content(b"content"),
@@ -130,9 +127,7 @@ def test_response_matcher_headers():
     )
     assert_that(
         is_response().with_headers({"key": "nope"}),
-        mismatches_with(
-            response, contains_string("was response with headers: was <{'key': 'value'}")
-        ),
+        mismatches_with(response, contains_string("was response with headers: was <{'key': 'value'}")),
     )
     assert_that(
         is_response().with_headers({"key": "value"}),
@@ -155,15 +150,11 @@ def test_response_matcher_cookies():
     )
     assert_that(
         is_response().with_cookies({"name": "nope"}),
-        mismatches_with(
-            response, contains_string("was response with cookies: was <{'name': 'value'}")
-        ),
+        mismatches_with(response, contains_string("was response with cookies: was <{'name': 'value'}")),
     )
     assert_that(
         is_response().with_cookies({"name": "value"}),
-        matches_with(
-            response, contains_string("was response with cookies: was <{'name': 'value'}")
-        ),
+        matches_with(response, contains_string("was response with cookies: was <{'name': 'value'}")),
     )
 
 
@@ -203,7 +194,7 @@ def test_response_matcher_history_and_url():
             contains_exactly(
                 is_response().with_url(is_url().with_path("/path1")),
                 is_response().with_url(is_url().with_path("/path2")),
-            )
+            ),
         ),
     )
     assert_that(
@@ -213,8 +204,8 @@ def test_response_matcher_history_and_url():
                 contains_exactly(
                     is_response().with_url(is_url().with_path("/path1")),
                     is_response().with_url(is_url().with_path("/path3")),
-                )
-            )
+                ),
+            ),
         ),
     )
     assert_that(
@@ -223,12 +214,12 @@ def test_response_matcher_history_and_url():
                 contains_exactly(
                     is_response().with_url(is_url().with_path("/path1")),
                     is_response().with_url(is_url().with_path("/path2")),
-                )
-            )
+                ),
+            ),
         ),
         contains_string(
             "response with history: a sequence containing "
-            "[response with url: URL with path: '/path1', response with url: URL with path: '/path2']"
+            "[response with url: URL with path: '/path1', response with url: URL with path: '/path2']",
         ),
     )
     assert_that(
@@ -236,12 +227,12 @@ def test_response_matcher_history_and_url():
             contains_exactly(
                 is_response().with_url(is_url().with_path("/path1")),
                 is_response().with_url(is_url().with_path("/path3")),
-            )
+            ),
         ),
         mismatches_with(
             response,
             contains_string(
-                "was response with history: item 1: was response with url: was URL with path: was </path2>"
+                "was response with history: item 1: was response with url: was URL with path: was </path2>",
             ),
         ),
     )
@@ -262,15 +253,11 @@ def test_response_matcher_url():
     )
     assert_that(
         is_response().with_url(is_url().with_path("/nope")),
-        mismatches_with(
-            response, contains_string("was response with url: was URL with path: was </path0>")
-        ),
+        mismatches_with(response, contains_string("was response with url: was URL with path: was </path0>")),
     )
     assert_that(
         is_response().with_url(is_url().with_path("/path0")),
-        matches_with(
-            response, contains_string("was response with url: was URL with path: was </path0>")
-        ),
+        matches_with(response, contains_string("was response with url: was URL with path: was </path0>")),
     )
 
 
@@ -296,9 +283,7 @@ def test_response_matcher_encoding():
 
 def test_response_matcher_invalid_json():
     # Given
-    stub_response = mock.MagicMock(
-        status_code=200, text="body", content=b"content", headers={"key": "value"}
-    )
+    stub_response = mock.MagicMock(status_code=200, text="body", content=b"content", headers={"key": "value"})
     type(stub_response).json = mock.PropertyMock(side_effect=ValueError)
 
     # When
@@ -313,9 +298,7 @@ def test_response_matcher_invalid_json():
 
 def test_redirect_to():
     # Given
-    stub_response = mock.MagicMock(
-        status_code=301, headers={"Location": a_url().with_path("/sausages").build()}
-    )
+    stub_response = mock.MagicMock(status_code=301, headers={"Location": a_url().with_path("/sausages").build()})
 
     # When
 
@@ -344,7 +327,7 @@ def test_response_matcher_builder():
             contains_exactly(
                 is_response().with_url(is_url().with_path("/path1")),
                 is_response().with_url(is_url().with_path("/path2")),
-            )
+            ),
         )
         .and_url(is_url().with_path("/path0"))
         .and_encoding("utf-8")
@@ -370,7 +353,7 @@ def test_response_matcher_builder():
             "history: a sequence containing "
             "[response with url: URL with path: '/path1', response with url: URL with path: '/path2'] "
             "url: URL with path: '/path0' "
-            "encoding: 'utf-8'"
+            "encoding: 'utf-8'",
         ),
     )
     assert_that(

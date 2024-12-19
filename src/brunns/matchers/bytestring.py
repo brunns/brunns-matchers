@@ -1,4 +1,3 @@
-# encoding=utf-8
 import logging
 
 from hamcrest.core.base_matcher import BaseMatcher

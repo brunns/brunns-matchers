@@ -13,8 +13,8 @@ here = os.path.abspath(here)
 
 try:
     readme = os.path.join(here, "README.md")
-    long_description = open(readme, "r").read()
-except IOError:
+    long_description = open(readme).read()
+except OSError:
     logger.warning("README file not found or unreadable.")
     long_description = "See https://github.com/brunns/brunns-matchers/"
 
@@ -51,16 +51,12 @@ setup(
     install_requires=[
         "pyhamcrest>=2.0",
         "Deprecated>=1.2",
-        "typing-extensions>=3.7 ; python_version<'3.8'",
         "brunns-row>=2.0",
         "beautifulsoup4>=4.0",
+        "requests>=2.0",
+        "httpx>=0.28",
+        "yarl>=1.9",
+        "furl>=2.0",
+        "Werkzeug>=2.0",
     ],
-    extras_require={
-        "optional": [
-            "furl>=2.0",
-            "yarl>=1.9",
-            "requests>=2.0",
-            "Werkzeug>=2.0",
-        ],
-    },
 )

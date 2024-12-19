@@ -1,4 +1,3 @@
-# encoding=utf-8
 import logging
 
 from hamcrest import assert_that, contains_exactly, empty, has_entries, has_string, not_
@@ -79,9 +78,7 @@ def test_url_with_path():
     assert_that(URL, not_(should_not_match))
 
     assert_that(should_match, has_string("URL with path: '/path1/path2/path3'"))
-    assert_that(
-        should_not_match, mismatches_with(URL, "was URL with path: was </path1/path2/path3>")
-    )
+    assert_that(should_not_match, mismatches_with(URL, "was URL with path: was </path1/path2/path3>"))
     assert_that(should_match, matches_with(URL, "was URL with path: was </path1/path2/path3>"))
 
 
@@ -117,9 +114,7 @@ def test_url_with_query():
         should_match,
         has_string("URL with query: a dictionary containing {'key1': 'value1', 'key2': 'value2'}"),
     )
-    assert_that(
-        should_not_match, mismatches_with(URL, "was URL with query: value for 'key2' was 'value2'")
-    )
+    assert_that(should_not_match, mismatches_with(URL, "was URL with query: value for 'key2' was 'value2'"))
     assert_that(
         should_match,
         matches_with(URL, "was URL with query: was <{'key1': 'value1', 'key2': 'value2'}>"),
@@ -172,7 +167,7 @@ def test_url_matcher_builder():
             "path: '/path1/path2/path3' "
             "path segments: a sequence containing ['path1', 'path2', 'path3'] "
             "query: a dictionary containing {'key1': 'value1', 'key2': 'value2'} "
-            "fragment: 'fragment'"
+            "fragment: 'fragment'",
         ),
     )
     assert_that(

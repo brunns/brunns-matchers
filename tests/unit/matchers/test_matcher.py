@@ -1,4 +1,3 @@
-# encoding=utf-8
 from hamcrest import assert_that, contains_string, has_string
 
 from brunns.matchers.matcher import matches, matches_with, mismatches, mismatches_with

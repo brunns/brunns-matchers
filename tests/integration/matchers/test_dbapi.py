@@ -1,4 +1,3 @@
-# encoding=utf-8
 import logging
 
 from hamcrest import (
@@ -53,32 +52,28 @@ def test_has_rows(db):
             has_table_with_rows(
                 "bacon",
                 contains_exactly(has_properties(kind="smoked"), has_properties(kind="unsmoked")),
-            )
+            ),
         ),
     )
     assert_that(
         has_table_with_rows(
             "sausages",
-            contains_exactly(
-                has_properties(kind="cumberland"), has_properties(kind="lincolnshire")
-            ),
+            contains_exactly(has_properties(kind="cumberland"), has_properties(kind="lincolnshire")),
         ),
         has_string(
             matches_regexp(
                 r"DB connection with table 'sausages' with rows matching a sequence containing \["
                 r"\(?an object with a property 'kind' matching 'cumberland'\)?, "
                 r"\(?an object with a property 'kind' matching 'lincolnshire'\)?"
-                r"\]"
-            )
+                r"\]",
+            ),
         ),
     )
     assert_that(
         has_table_with_rows("sausages", has_item(has_properties(kind="vegan"))),
         mismatches_with(
             db,
-            all_of(
-                contains_string("was <["), contains_string("RowTuple(kind='vegetarian', rating=0)")
-            ),
+            all_of(contains_string("was <["), contains_string("RowTuple(kind='vegetarian', rating=0)")),
         ),
     )
     assert_that(
@@ -96,31 +91,21 @@ def test_has_rows(db):
 def test_select_returns_rows(db):
     assert_that(
         db,
-        given_select_returns_rows_matching(
-            "SELECT * FROM sausages WHERE rating > 5;", has_length(2)
-        ),
+        given_select_returns_rows_matching("SELECT * FROM sausages WHERE rating > 5;", has_length(2)),
     )
     assert_that(
         db,
-        not_(
-            given_select_returns_rows_matching(
-                "SELECT * FROM sausages WHERE rating > 5;", has_length(99)
-            )
-        ),
+        not_(given_select_returns_rows_matching("SELECT * FROM sausages WHERE rating > 5;", has_length(99))),
     )
     assert_that(
-        given_select_returns_rows_matching(
-            "SELECT * FROM sausages WHERE rating > 5;", has_length(2)
-        ),
+        given_select_returns_rows_matching("SELECT * FROM sausages WHERE rating > 5;", has_length(2)),
         has_string(
             "DB connection for which statement "
             "'SELECT * FROM sausages WHERE rating > 5;' "
-            "returns rows matching an object with length of <2>"
+            "returns rows matching an object with length of <2>",
         ),
     )
     assert_that(
-        given_select_returns_rows_matching(
-            "SELECT * FROM sausages WHERE rating > 5;", has_length(99)
-        ),
+        given_select_returns_rows_matching("SELECT * FROM sausages WHERE rating > 5;", has_length(99)),
         mismatches_with(db, contains_string("with length of <2>")),
     )

@@ -1,4 +1,3 @@
-# encoding=utf-8
 from bs4 import BeautifulSoup
 from hamcrest import (
     all_of,
@@ -68,19 +67,13 @@ def test_has_title():
     assert_that(HTML, has_title(contains_string("usage")))
     assert_that(
         should_match,
-        has_string(
-            matches_regexp(
-                r"HTML with tag name=['<]title['>] matching tag with string matching 'sausages'"
-            )
-        ),
+        has_string(matches_regexp(r"HTML with tag name=['<]title['>] matching tag with string matching 'sausages'")),
     )
     assert_that(
         should_not_match,
         mismatches_with(
             HTML,
-            matches_regexp(
-                r"got HTML with tag name=['<]title['>] values \['<title>sausages</title>'\]"
-            ),
+            matches_regexp(r"got HTML with tag name=['<]title['>] values \['<title>sausages</title>'\]"),
         ),
     )
 
@@ -94,19 +87,13 @@ def test_has_named_tag():
     assert_that(HTML, has_named_tag("h1", tag_has_string(contains_string("hip"))))
     assert_that(
         should_match,
-        has_string(
-            matches_regexp(
-                r"HTML with tag name=['<]h1['>] matching tag with string matching 'chips'"
-            )
-        ),
+        has_string(matches_regexp(r"HTML with tag name=['<]h1['>] matching tag with string matching 'chips'")),
     )
     assert_that(
         should_not_match,
         mismatches_with(
             HTML,
-            matches_regexp(
-                r"got HTML with tag name=['<]h1['>] values \['<h1 class=\"bacon egg\">chips</h1>'\]"
-            ),
+            matches_regexp(r"got HTML with tag name=['<]h1['>] values \['<h1 class=\"bacon egg\">chips</h1>'\]"),
         ),
     )
 
@@ -117,9 +104,7 @@ def test_mdash():
         has_named_tag("h2", "what is this"),
         mismatches_with(
             HTML,
-            matches_regexp(
-                r"got HTML with tag name=['<]h2['>] values \['<h2>what is (\\u2014|—) this</h2>'\]"
-            ),
+            matches_regexp(r"got HTML with tag name=['<]h2['>] values \['<h2>what is (\\u2014|—) this</h2>'\]"),
         ),
     )
 
@@ -136,9 +121,7 @@ def test_has_class():
         has_named_tag("h1", should_not_match),
         mismatches_with(
             HTML,
-            matches_regexp(
-                r"got HTML with tag name=['<]h1['>] values \['<h1 class=\"bacon egg\">chips</h1>'\]"
-            ),
+            matches_regexp(r"got HTML with tag name=['<]h1['>] values \['<h1 class=\"bacon egg\">chips</h1>'\]"),
         ),
     )
 
@@ -154,11 +137,7 @@ def test_has_id_tag():
     assert_that(HTML, not_(should_not_match_2))
     assert_that(
         should_match,
-        has_string(
-            matches_regexp(
-                r"HTML with tag id=['<]fish['>] matching tag with class matching 'banana'"
-            )
-        ),
+        has_string(matches_regexp(r"HTML with tag id=['<]fish['>] matching tag with class matching 'banana'")),
     )
     assert_that(
         should_not_match_1,
@@ -166,7 +145,7 @@ def test_has_id_tag():
             HTML,
             matches_regexp(
                 r"""got HTML with tag id=['<]fish['>] values """
-                r"""\['<div class="banana grapes" id="fish"><p>Some text.</p></div>'\]"""
+                r"""\['<div class="banana grapes" id="fish"><p>Some text.</p></div>'\]""",
             ),
         ),
     )
@@ -180,12 +159,8 @@ def test_table_has_row_cells():
     # Given
     soup = BeautifulSoup(HTML, "html.parser")
     table = soup.table
-    should_match = has_row(
-        cells_match=contains_exactly(tag_has_string("foo"), tag_has_string("bar"))
-    )
-    should_not_match = has_row(
-        cells_match=contains_exactly(tag_has_string("egg"), tag_has_string("chips"))
-    )
+    should_match = has_row(cells_match=contains_exactly(tag_has_string("foo"), tag_has_string("bar")))
+    should_not_match = has_row(cells_match=contains_exactly(tag_has_string("egg"), tag_has_string("chips")))
 
     # Then
     assert_that(table, should_match)
@@ -194,7 +169,7 @@ def test_table_has_row_cells():
         should_match,
         has_string(
             "table with row "
-            "cells matching a sequence containing [tag with string matching 'foo', tag with string matching 'bar']"
+            "cells matching a sequence containing [tag with string matching 'foo', tag with string matching 'bar']",
         ),
     )
     assert_that(should_not_match, mismatches_with(table, starts_with(f"was {table}")))
@@ -236,7 +211,7 @@ def test_has_row():
             "table with row "
             "cells matching a sequence containing [tag with string matching 'fizz', tag with string matching 'buzz'] "
             "row matching tag with class matching 'bazz' "
-            "index matching <2>"
+            "index matching <2>",
         ),
     )
     assert_that(
@@ -260,12 +235,8 @@ def test_table_has_header_row():
     # Given
     soup = BeautifulSoup(HTML, "html.parser")
     table = soup.table
-    should_match = has_header_row(
-        contains_exactly(tag_has_string("apples"), tag_has_string("oranges"))
-    )
-    should_not_match = has_header_row(
-        contains_exactly(tag_has_string("foo"), tag_has_string("bar"))
-    )
+    should_match = has_header_row(contains_exactly(tag_has_string("apples"), tag_has_string("oranges")))
+    should_not_match = has_header_row(contains_exactly(tag_has_string("foo"), tag_has_string("bar")))
 
     # Then
     assert_that(table, should_match)
@@ -274,24 +245,20 @@ def test_table_has_header_row():
         should_match,
         has_string(
             "table with header row cells matching a sequence containing "
-            "[tag with string matching 'apples', tag with string matching 'oranges']"
+            "[tag with string matching 'apples', tag with string matching 'oranges']",
         ),
     )
     assert_that(should_not_match, mismatches_with(table, starts_with(f"was {table}")))
 
 
 def test_html_has_table():
-    should_match = has_table(
-        has_row(contains_exactly(tag_has_string("foo"), tag_has_string("bar")))
-    )
-    should_not_match = has_table(
-        has_row(contains_exactly(tag_has_string("egg"), tag_has_string("chips")))
-    )
+    should_match = has_table(has_row(contains_exactly(tag_has_string("foo"), tag_has_string("bar"))))
+    should_not_match = has_table(has_row(contains_exactly(tag_has_string("egg"), tag_has_string("chips"))))
 
     assert_that(HTML, should_match)
     assert_that(HTML, not_(should_not_match))
     assert_that(should_match, has_string(f"row matching {should_match.table_matcher}"))
-    assert_that(should_not_match, mismatches_with(HTML, f"was {repr(HTML)}"))
+    assert_that(should_not_match, mismatches_with(HTML, f"was {HTML!r}"))
 
 
 def test_html_without_table():
@@ -311,8 +278,7 @@ def test_has_id():
     assert_that(
         should_match,
         has_string(
-            "HTML with tag name='div' matching tag with attributes matching "
-            "a dictionary containing ['id': 'fish']"
+            "HTML with tag name='div' matching tag with attributes matching a dictionary containing ['id': 'fish']",
         ),
     )
     assert_that(
@@ -358,11 +324,10 @@ def test_has_row_with_link():
     # Given
     soup = BeautifulSoup(HTML, "html.parser")
     table = soup.table
-    should_match = has_row(
-        index_matches=3, cells_match=has_item(has_link(href=is_url().with_path("/thebar")))
-    )
+    should_match = has_row(index_matches=3, cells_match=has_item(has_link(href=is_url().with_path("/thebar"))))
     should_not_match_1 = has_row(
-        index_matches=3, cells_match=has_item(has_link(href=is_url().with_path("/cup-of-tea")))
+        index_matches=3,
+        cells_match=has_item(has_link(href=is_url().with_path("/cup-of-tea"))),
     )
 
     # Then
@@ -375,7 +340,7 @@ def test_has_row_with_link():
             "table with row cells matching a sequence containing HTML with tag matching "
             "tag with name matching 'a' "
             "attributes matching (a dictionary containing ['href': URL with path: '/thebar'] and ANYTHING) "
-            "index matching <3>"
+            "index matching <3>",
         ),
     )
 
@@ -392,7 +357,7 @@ def test_has_has_image():
         has_string(
             contains_string(
                 "tag with name matching 'img' "
-                "attributes matching (a dictionary containing ['src': 'https://brunni.ng/some.png']"
-            )
+                "attributes matching (a dictionary containing ['src': 'https://brunni.ng/some.png']",
+            ),
         ),
     )

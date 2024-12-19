@@ -1,9 +1,8 @@
-# encoding=utf-8
 from unittest import mock
 
-from brunns.builder.internet import UrlBuilder as a_url  # type: ignore
 from hamcrest import assert_that, contains_string, has_entries, has_string, not_
 
+from brunns.builder.internet import UrlBuilder as a_url  # type: ignore[attr-defined]
 from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.url import is_url
 from brunns.matchers.werkzeug import is_werkzeug_response, redirects_to
@@ -26,9 +25,7 @@ def test_response_matcher_status_code():
     # Then
     assert_that(stub_response, is_werkzeug_response().with_status_code(200))
     assert_that(stub_response, not_(is_werkzeug_response().with_status_code(201)))
-    assert_that(
-        is_werkzeug_response().with_status_code(200), has_string("response with status code: <200>")
-    )
+    assert_that(is_werkzeug_response().with_status_code(200), has_string("response with status code: <200>"))
     assert_that(
         is_werkzeug_response().with_status_code(201),
         mismatches_with(stub_response, contains_string("was response with status code: was <200>")),
@@ -48,9 +45,7 @@ def test_response_matcher_text():
     # Then
     assert_that(stub_response, is_werkzeug_response().with_text("sausages"))
     assert_that(stub_response, not_(is_werkzeug_response().with_text("chips")))
-    assert_that(
-        is_werkzeug_response().with_text("chips"), has_string("response with text: 'chips'")
-    )
+    assert_that(is_werkzeug_response().with_text("chips"), has_string("response with text: 'chips'"))
     assert_that(
         is_werkzeug_response().with_text("chips"),
         mismatches_with(stub_response, contains_string("was response with text: was 'sausages'")),
@@ -124,9 +119,7 @@ def test_response_matcher_headers():
     )
     assert_that(
         is_werkzeug_response().with_headers({"key": "nope"}),
-        mismatches_with(
-            response, contains_string("was response with headers: was <{'key': 'value'}")
-        ),
+        mismatches_with(response, contains_string("was response with headers: was <{'key': 'value'}")),
     )
     assert_that(
         is_werkzeug_response().with_headers({"key": "value"}),
@@ -136,9 +129,7 @@ def test_response_matcher_headers():
 
 def test_redirect_to():
     # Given
-    stub_response = mock.MagicMock(
-        status_code=301, headers={"Location": a_url().with_path("/sausages").build()}
-    )
+    stub_response = mock.MagicMock(status_code=301, headers={"Location": a_url().with_path("/sausages").build()})
 
     # When
 
@@ -177,7 +168,7 @@ def test_response_matcher_builder():
             "text: 'sausages' "
             "mimetype: 'text/xml' "
             "json: a dictionary containing {'a': 'b'} "
-            "headers: a dictionary containing {'key': 'value'}"
+            "headers: a dictionary containing {'key': 'value'}",
         ),
     )
     assert_that(

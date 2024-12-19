@@ -1,4 +1,3 @@
-# encoding=utf-8
 import json
 from typing import Any, Union
 
@@ -7,7 +6,8 @@ from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 
-# JsonStructure = Union[MutableMapping[str, "JsonStructure"], Iterable["JsonStructure"], str, int, bool, None]
+# JsonStructure = Union[MutableMapping[str, "JsonStructure"],
+# Iterable["JsonStructure"], str, int, bool, None]
 JsonStructure = Any  # TODO Pending a better solution to https://github.com/python/typing/issues/182
 
 

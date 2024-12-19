@@ -15,22 +15,10 @@ coverage: colima ## Test coverage report
 	tox -e coverage
 
 .PHONY: lint
-lint: check-format flake8 bandit refurb ## Lint code
-
-.PHONY: flake8
-flake8:
-	tox -e flake8
-
-.PHONY: bandit
-bandit:
-	tox -e bandit
+lint: check-format ## Lint code
 
 .PHONY: extra-lint
 extra-lint: pylint mypy  ## Extra, optional linting.
-
-.PHONY: pylint
-pylint:
-	tox -e pylint
 
 .PHONY: mypy
 mypy:
@@ -39,10 +27,6 @@ mypy:
 .PHONY: check-format
 check-format:
 	tox -e check-format
-
-.PHONY: refurb
-refurb:
-	tox -e refurb
 
 .PHONY: format
 format: ## Format code

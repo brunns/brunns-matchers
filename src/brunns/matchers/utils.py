@@ -1,4 +1,3 @@
-# encoding=utf-8
 import logging
 from typing import Any
 
@@ -9,9 +8,7 @@ from hamcrest.core.matcher import Matcher
 logger = logging.getLogger(__name__)
 
 
-def append_matcher_description(
-    field_matcher: Matcher[Any], field_name: str, description: Description
-) -> None:
+def append_matcher_description(field_matcher: Matcher[Any], field_name: str, description: Description) -> None:
     if not isinstance(field_matcher, IsAnything):
         description.append_text(f" {field_name}: ").append_description_of(field_matcher)
 

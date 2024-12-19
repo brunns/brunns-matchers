@@ -1,7 +1,9 @@
-# encoding=utf-8
+from collections.abc import Mapping, Sequence
 from datetime import timedelta
-from typing import Mapping, Optional, Sequence, Union
+from typing import Optional, Union
 
+import httpx
+import requests
 from deprecated import deprecated
 from furl import furl
 from hamcrest import anything, described_as, has_entry
@@ -10,7 +12,7 @@ from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 from hamcrest.core.string_description import StringDescription
-from requests import Response
+from yarl import URL
 
 from brunns.matchers.data import JsonStructure
 from brunns.matchers.object import between
@@ -24,15 +26,19 @@ ANYTHING = anything()
 
 
 def is_response() -> "ResponseMatcher":
-    """Matches :requests.models.Response:.
+    """Matches :requests.models.Response: or :httpx.Response:.
 
-    TODO
+    Todo:
+
     """
     return ResponseMatcher()
 
 
-class ResponseMatcher(BaseMatcher[Response]):
-    """Matches :requests.models.Response:.
+ResponseType = Union[requests.Response, httpx.Response]
+
+
+class ResponseMatcher(BaseMatcher[ResponseType]):
+    """Matches :requests.models.Response: or :httpx.Response:.
     :param status_code: Expected status code
     :param body: Expected body
     :param content: Expected content
@@ -52,20 +58,34 @@ class ResponseMatcher(BaseMatcher[Response]):
         content: Union[bytes, Matcher[bytes]] = ANYTHING,
         json: Union[JsonStructure, Matcher[JsonStructure]] = ANYTHING,
         headers: Union[
-            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+            Mapping[str, Union[str, Matcher[str]]],
+            Matcher[Mapping[str, Union[str, Matcher[str]]]],
         ] = ANYTHING,
         cookies: Union[
-            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+            Mapping[str, Union[str, Matcher[str]]],
+            Matcher[Mapping[str, Union[str, Matcher[str]]]],
         ] = ANYTHING,
         elapsed: Union[timedelta, Matcher[timedelta]] = ANYTHING,
         history: Union[
-            Sequence[Union[Response, Matcher[Response]]],
-            Matcher[Sequence[Union[Response, Matcher[Response]]]],
+            Sequence[
+                Union[
+                    ResponseType,
+                    Matcher[ResponseType],
+                ]
+            ],
+            Matcher[
+                Sequence[
+                    Union[
+                        ResponseType,
+                        Matcher[ResponseType],
+                    ]
+                ]
+            ],
         ] = ANYTHING,
         url: Union[furl, str, Matcher[Union[furl, str]]] = ANYTHING,
         encoding: Union[Optional[str], Matcher[Optional[str]]] = ANYTHING,
     ) -> None:
-        super(ResponseMatcher, self).__init__()
+        super().__init__()
         self.status_code: Matcher[int] = wrap_matcher(status_code)
         self.body: Matcher[str] = wrap_matcher(body)
         self.content: Matcher[bytes] = wrap_matcher(content)
@@ -77,7 +97,7 @@ class ResponseMatcher(BaseMatcher[Response]):
         self.url = wrap_matcher(url)
         self.encoding = wrap_matcher(encoding)
 
-    def _matches(self, response: Response) -> bool:
+    def _matches(self, response: ResponseType) -> bool:
         response_json = self._get_response_json(response)
         return (
             self.status_code.matches(response.status_code)
@@ -93,7 +113,7 @@ class ResponseMatcher(BaseMatcher[Response]):
         )
 
     @staticmethod
-    def _get_response_json(response: Response) -> Optional[str]:
+    def _get_response_json(response: ResponseType) -> Optional[str]:
         try:
             return response.json()
         except ValueError:
@@ -112,16 +132,12 @@ class ResponseMatcher(BaseMatcher[Response]):
         append_matcher_description(self.url, "url", description)
         append_matcher_description(self.encoding, "encoding", description)
 
-    def describe_mismatch(self, response: Response, mismatch_description: Description) -> None:
+    def describe_mismatch(self, response: ResponseType, mismatch_description: Description) -> None:
         mismatch_description.append_text("was response with")
-        describe_field_mismatch(
-            self.status_code, "status code", response.status_code, mismatch_description
-        )
+        describe_field_mismatch(self.status_code, "status code", response.status_code, mismatch_description)
         describe_field_mismatch(self.body, "body", response.text, mismatch_description)
         describe_field_mismatch(self.content, "content", response.content, mismatch_description)
-        describe_field_mismatch(
-            self.json, "json", self._get_response_json(response), mismatch_description
-        )
+        describe_field_mismatch(self.json, "json", self._get_response_json(response), mismatch_description)
         describe_field_mismatch(self.headers, "headers", response.headers, mismatch_description)
         describe_field_mismatch(self.cookies, "cookies", response.cookies, mismatch_description)
         describe_field_mismatch(self.elapsed, "elapsed", response.elapsed, mismatch_description)
@@ -129,16 +145,12 @@ class ResponseMatcher(BaseMatcher[Response]):
         describe_field_mismatch(self.url, "url", response.url, mismatch_description)
         describe_field_mismatch(self.encoding, "encoding", response.encoding, mismatch_description)
 
-    def describe_match(self, response: Response, match_description: Description) -> None:
+    def describe_match(self, response: ResponseType, match_description: Description) -> None:
         match_description.append_text("was response with")
-        describe_field_match(
-            self.status_code, "status code", response.status_code, match_description
-        )
+        describe_field_match(self.status_code, "status code", response.status_code, match_description)
         describe_field_match(self.body, "body", response.text, match_description)
         describe_field_match(self.content, "content", response.content, match_description)
-        describe_field_match(
-            self.json, "json", self._get_response_json(response), match_description
-        )
+        describe_field_match(self.json, "json", self._get_response_json(response), match_description)
         describe_field_match(self.headers, "headers", response.headers, match_description)
         describe_field_match(self.cookies, "cookies", response.cookies, match_description)
         describe_field_match(self.elapsed, "elapsed", response.elapsed, match_description)
@@ -176,35 +188,27 @@ class ResponseMatcher(BaseMatcher[Response]):
 
     def with_headers(
         self,
-        headers: Union[
-            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
-        ],
+        headers: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
     ):
         self.headers = wrap_matcher(headers)
         return self
 
     def and_headers(
         self,
-        headers: Union[
-            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
-        ],
+        headers: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
     ):
         return self.with_headers(headers)
 
     def with_cookies(
         self,
-        cookies: Union[
-            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
-        ],
+        cookies: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
     ):
         self.cookies = wrap_matcher(cookies)
         return self
 
     def and_cookies(
         self,
-        cookies: Union[
-            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
-        ],
+        cookies: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
     ):
         return self.with_cookies(cookies)
 
@@ -218,8 +222,20 @@ class ResponseMatcher(BaseMatcher[Response]):
     def with_history(
         self,
         history: Union[
-            Sequence[Union[Response, Matcher[Response]]],
-            Matcher[Sequence[Union[Response, Matcher[Response]]]],
+            Sequence[
+                Union[
+                    ResponseType,
+                    Matcher[ResponseType],
+                ]
+            ],
+            Matcher[
+                Sequence[
+                    Union[
+                        ResponseType,
+                        Matcher[ResponseType],
+                    ]
+                ]
+            ],
         ],
     ):
         self.history = wrap_matcher(history)
@@ -228,8 +244,8 @@ class ResponseMatcher(BaseMatcher[Response]):
     def and_history(
         self,
         history: Union[
-            Sequence[Union[Response, Matcher[Response]]],
-            Matcher[Sequence[Union[Response, Matcher[Response]]]],
+            Sequence[Union[ResponseType, Matcher[ResponseType]]],
+            Matcher[Sequence[Union[ResponseType, Matcher[ResponseType]]]],
         ],
     ):
         return self.with_history(history)
@@ -249,15 +265,14 @@ class ResponseMatcher(BaseMatcher[Response]):
         return self.with_encoding(encoding)
 
 
-def redirects_to(url_matcher: Union[str, Matcher]) -> Matcher[Response]:
-    """Is a response a redirect to a URL matching the suplplied matcher? Matches :requests.models.Response:.
+def redirects_to(url_matcher: Union[str, Matcher[str], URL, Matcher[URL]]) -> Matcher[ResponseType]:
+    """Is a response a redirect to a URL matching the supplied matcher? Matches :requests.models.Response: or
+    :httpx.Response:.
     :param url_matcher: Expected URL.
     """
     return described_as(
         str(StringDescription().append_text("redirects to ").append_description_of(url_matcher)),
-        is_response()
-        .with_status_code(between(300, 399))
-        .and_headers(has_entry("Location", url_matcher)),
+        is_response().with_status_code(between(300, 399)).and_headers(has_entry("Location", url_matcher)),
     )
 
 
@@ -267,10 +282,6 @@ def response_with(
     body: Union[str, Matcher[str]] = ANYTHING,
     content: Union[bytes, Matcher[bytes]] = ANYTHING,
     json: Union[JsonStructure, Matcher[JsonStructure]] = ANYTHING,
-    headers: Union[
-        Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
-    ] = ANYTHING,
-) -> "ResponseMatcher":  # pragma: no cover
-    return ResponseMatcher(
-        status_code=status_code, body=body, content=content, json=json, headers=headers
-    )
+    headers: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]] = ANYTHING,
+) -> ResponseMatcher:  # pragma: no cover
+    return ResponseMatcher(status_code=status_code, body=body, content=content, json=json, headers=headers)

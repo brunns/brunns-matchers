@@ -1,6 +1,6 @@
-# encoding=utf-8
 import logging
-from typing import Mapping, Sequence, Union
+from collections.abc import Mapping, Sequence
+from typing import Union
 
 from deprecated import deprecated
 from furl import furl
@@ -31,11 +31,12 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
         host: Union[str, Matcher[str]] = ANYTHING,
         path: Union[str, Matcher[str]] = ANYTHING,
         query: Union[
-            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
+            Mapping[str, Union[str, Matcher[str]]],
+            Matcher[Mapping[str, Union[str, Matcher[str]]]],
         ] = ANYTHING,
         fragment: Union[str, Matcher[str]] = ANYTHING,
     ) -> None:
-        super(UrlWith, self).__init__()
+        super().__init__()
         self.scheme: Matcher[str] = ANYTHING
         self.username: Matcher[str] = ANYTHING
         self.password: Matcher[str] = ANYTHING
@@ -81,9 +82,7 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
         describe_field_mismatch(self.host, "host", url.host, mismatch_description)
         describe_field_mismatch(self.port, "port", url.port, mismatch_description)
         describe_field_mismatch(self.path, "path", url.path, mismatch_description)
-        describe_field_mismatch(
-            self.path_segments, "path segments", url.path.segments, mismatch_description
-        )
+        describe_field_mismatch(self.path_segments, "path segments", url.path.segments, mismatch_description)
         describe_field_mismatch(self.query, "query", url.query.params, mismatch_description)
         describe_field_mismatch(self.fragment, "fragment", url.fragment, mismatch_description)
 
@@ -96,9 +95,7 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
         describe_field_match(self.host, "host", url.host, match_description)
         describe_field_match(self.port, "port", url.port, match_description)
         describe_field_match(self.path, "path", url.path, match_description)
-        describe_field_match(
-            self.path_segments, "path segments", url.path.segments, match_description
-        )
+        describe_field_match(self.path_segments, "path segments", url.path.segments, match_description)
         describe_field_match(self.query, "query", url.query.params, match_description)
         describe_field_match(self.fragment, "fragment", url.fragment, match_description)
 
@@ -153,18 +150,14 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
 
     def with_query(
         self,
-        query: Union[
-            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
-        ],
+        query: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
     ):
         self.query = wrap_matcher(query)
         return self
 
     def and_query(
         self,
-        query: Union[
-            Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]
-        ],
+        query: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
     ):
         return self.with_query(query)
 

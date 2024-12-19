@@ -1,20 +1,19 @@
-# encoding=utf-8
 import logging
 import socket
 
 logger = logging.getLogger(__name__)
 
 
-def internet_connection(host="8.8.8.8", port=53, timeout=1):
-    """
-    Host: 8.8.8.8 (google-public-dns-a.google.com)
+def internet_connection(host: str = "8.8.8.8", port: int = 53, timeout: int = 1) -> bool:
+    """Host: 8.8.8.8 (google-public-dns-a.google.com)
     OpenPort: 53/tcp
     from: https://stackoverflow.com/a/33117579/1073696
     """
     try:
         socket.setdefaulttimeout(timeout)
         socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
-        return True
     except OSError as ex:
-        logger.warning(exc_info=ex)
+        logger.warning("Unexpected", exc_info=ex)
         return False
+    else:
+        return True

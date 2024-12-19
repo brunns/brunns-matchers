@@ -1,4 +1,3 @@
-# encoding=utf-8
 import difflib
 from typing import Any, Union
 
@@ -13,7 +12,7 @@ from hamcrest.core.string_description import StringDescription
 
 class MismatchesWith(BaseMatcher[Matcher]):
     def __init__(self, value_not_to_match: Any, expected_message: Union[str, Matcher[str]]) -> None:
-        super(MismatchesWith, self).__init__()
+        super().__init__()
         self.value_not_to_match = value_not_to_match
         self.expected_message: Matcher[str] = wrap_matcher(expected_message)
 
@@ -24,7 +23,7 @@ class MismatchesWith(BaseMatcher[Matcher]):
 
     def describe_to(self, description: Description) -> None:
         description.append_text("a matcher which mismatches the value ").append_description_of(
-            self.value_not_to_match
+            self.value_not_to_match,
         ).append_text("\ngiving message ").append_description_of(self.expected_message)
 
     def describe_mismatch(self, matcher_under_test: Matcher[Any], description: Description) -> None:
@@ -36,17 +35,13 @@ class MismatchesWith(BaseMatcher[Matcher]):
         self.append_diff(actual_message, description)
 
     def append_diff(self, actual_message, description):
-        if isinstance(self.expected_message, IsEqual) and isinstance(
-            self.expected_message.object, str
-        ):
+        if isinstance(self.expected_message, IsEqual) and isinstance(self.expected_message.object, str):
             differ = difflib.Differ()
             diff = differ.compare([self.expected_message.object], [actual_message.out])
             description.append_text("\ndiff:\n").append_text("\n".join(diff))
 
 
-def mismatches_with(
-    value_not_to_match: Any, expected_message: Union[str, Matcher[str]]
-) -> MismatchesWith:
+def mismatches_with(value_not_to_match: Any, expected_message: Union[str, Matcher[str]]) -> MismatchesWith:
     """TODO"""
     return MismatchesWith(value_not_to_match, expected_message)
 
@@ -58,7 +53,7 @@ def mismatches(value_not_to_match: Any) -> MismatchesWith:
 
 class MatchesWith(BaseMatcher[Matcher]):
     def __init__(self, value_to_match: Any, expected_message: Union[str, Matcher[str]]) -> None:
-        super(MatchesWith, self).__init__()
+        super().__init__()
         self.value_to_match = value_to_match
         self.expected_message: Matcher[str] = wrap_matcher(expected_message)
 
@@ -71,7 +66,7 @@ class MatchesWith(BaseMatcher[Matcher]):
 
     def describe_to(self, description: Description) -> None:
         description.append_text("a matcher which matches the value ").append_description_of(
-            self.value_to_match
+            self.value_to_match,
         ).append_text("\ngiving message ").append_description_of(self.expected_message)
 
     def describe_mismatch(self, matcher_under_test: Matcher[Any], description: Description) -> None:
@@ -84,9 +79,7 @@ class MatchesWith(BaseMatcher[Matcher]):
         self.append_diff(actual_message, description)
 
     def append_diff(self, actual_message, description):
-        if isinstance(self.expected_message, IsEqual) and isinstance(
-            self.expected_message.object, str
-        ):
+        if isinstance(self.expected_message, IsEqual) and isinstance(self.expected_message.object, str):
             differ = difflib.Differ()
             diff = differ.compare([self.expected_message.object], [actual_message.out])
             description.append_text("\ndiff:\n").append_text("\n".join(diff))

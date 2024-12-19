@@ -1,4 +1,3 @@
-# encoding=utf-8
 import logging
 import os
 import platform
@@ -21,9 +20,7 @@ def db():
     conn = sqlite3.connect(":memory:")
 
     cursor = conn.cursor()
-    cursor.execute(
-        "CREATE TABLE sausages (kind VARCHAR NOT NULL PRIMARY KEY, rating INT NOT NULL);"
-    )
+    cursor.execute("CREATE TABLE sausages (kind VARCHAR NOT NULL PRIMARY KEY, rating INT NOT NULL);")
     cursor.execute("INSERT INTO sausages VALUES (?, ?);", ("cumberland", 10))
     cursor.execute("INSERT INTO sausages VALUES (?, ?);", ("vegetarian", 0))
     cursor.execute("INSERT INTO sausages VALUES (?, ?);", ("lincolnshire", 9))
@@ -38,18 +35,16 @@ def httpbin(docker_ip, docker_services) -> URL:
     if HTTPBIN_CONTAINERISED:
         port = docker_services.port_for("httpbin", 80)
         url = URL(f"http://{docker_ip}:{port}")
-        docker_services.wait_until_responsive(
-            timeout=30.0, pause=0.1, check=lambda: is_responsive(url)
-        )
+        docker_services.wait_until_responsive(timeout=30.0, pause=0.1, check=lambda: is_responsive(url))
         return url
-    else:
-        return URL("https://httpbin.org")
+    return URL("https://httpbin.org")
 
 
 def is_responsive(url: URL) -> bool:
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=5)
         response.raise_for_status()
-        return True
     except (RequestsConnectionError, HTTPError):
         return False
+    else:
+        return True

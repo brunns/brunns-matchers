@@ -1,10 +1,9 @@
-# encoding=utf-8
 import datetime
 from pathlib import Path
 
-from brunns.builder.internet import UrlBuilder
 from hamcrest import assert_that, contains_string, has_string, not_
 
+from brunns.builder.internet import UrlBuilder
 from brunns.matchers.matcher import mismatches_with
 from brunns.matchers.object import (
     between,
@@ -95,16 +94,14 @@ def test_identical_properties_ignoring_some():
     assert_that(a, not_(has_identical_properties_to(c, ignoring={"aa"})))
     assert_that(
         has_identical_properties_to(a, ignoring=["bb", "cc"]),
-        has_string(
-            f"object with identical properties to object <{a}> ignoring properties named {{'bb', 'cc'}}"
-        ),
+        has_string(f"object with identical properties to object <{a}> ignoring properties named {{'bb', 'cc'}}"),
     )
     assert_that(has_identical_properties_to(a, ignoring={"aa"}), mismatches_with(c, f"was <{c}>"))
 
 
 def test_nested_identical_properties():
     # Given
-    class SomeClass(object):
+    class SomeClass:
         def __init__(self, a, b, c):
             self.a = a
             self.b = b
@@ -133,7 +130,7 @@ def test_nested_identical_properties():
 
 def test_equal_vars():
     # Given
-    class SomeClass(object):
+    class SomeClass:
         def __init__(self, a, b, c):
             self.a = a
             self.b = b
@@ -150,7 +147,7 @@ def test_equal_vars():
 
     date1 = datetime.date(1968, 7, 21)
     date2 = datetime.date(1968, 7, 21)
-    date3 = datetime.date.today()
+    date3 = datetime.datetime.now(tz=datetime.timezone.utc).date()
 
     path1 = Path("some/path")
     path2 = Path("some/path")
@@ -190,7 +187,7 @@ def test_equal_vars():
 
 def test_equal_vars_for_objects_containing_list_of_objects():
     # Given
-    class SomeClass(object):
+    class SomeClass:
         def __init__(self, a):
             self.a = a
 
@@ -205,7 +202,7 @@ def test_equal_vars_for_objects_containing_list_of_objects():
 
 def test_equal_vars_for_objects_containing_dict_of_objects():
     # Given
-    class SomeClass(object):
+    class SomeClass:
         def __init__(self, a):
             self.a = a
 
@@ -264,9 +261,7 @@ def test_between_dates():
     assert_that(date, not_(between(datetime.date(1968, 7, 22), datetime.date(1968, 7, 24))))
     assert_that(
         between(datetime.date(1968, 7, 20), datetime.date(1968, 7, 22)),
-        has_string(
-            "(a value greater than or equal to <1968-07-20> and a value less than or equal to <1968-07-22>)"
-        ),
+        has_string("(a value greater than or equal to <1968-07-20> and a value less than or equal to <1968-07-22>)"),
     )
     assert_that(
         between(datetime.date(1968, 7, 22), datetime.date(1968, 7, 24)),

@@ -1,4 +1,3 @@
-# encoding=utf-8
 from unittest import mock
 
 from hamcrest import assert_that, contains_string, has_string, not_
@@ -74,18 +73,14 @@ def test_call_has_args():
     assert_that(call, not_(call_has_args("first", "second", "third", key="banana")))
     assert_that(call, not_(call_has_args("first", "second", "third", "sam", key="banana")))
     assert_that(call, not_(call_has_args("first", "second", "third", key="forth", another="fred")))
-    assert_that(
-        call, call_has_args("first", contains_string("eco"), "third", key=contains_string("ort"))
-    )
+    assert_that(call, call_has_args("first", contains_string("eco"), "third", key=contains_string("ort")))
     assert_that(
         call_has_args("first", "second", key="banana"),
         has_string("mock.call with arguments ('first', 'second', key='banana')"),
     )
     assert_that(
         call_has_args("first", "second", "third", key="banana"),
-        mismatches_with(
-            call, contains_string("got arguments ('first', 'second', 'third', key='forth')")
-        ),
+        mismatches_with(call, contains_string("got arguments ('first', 'second', 'third', key='forth')")),
     )
 
 

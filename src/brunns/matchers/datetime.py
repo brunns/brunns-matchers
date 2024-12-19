@@ -19,7 +19,8 @@ def is_weekday() -> Matcher[date]:
 class HasWeekday(BaseMatcher[date]):
     """Match if date has matching day of the week.
 
-    :param day: Day of week, with 0 being Monday, 1 being Tuesday, and so on."""
+    :param day: Day of week, with 0 being Monday, 1 being Tuesday, and so on.
+    """
 
     def __init__(self, day: Union[int, Matcher[int]]) -> None:
         self.day = wrap_matcher(day)
@@ -32,7 +33,5 @@ class HasWeekday(BaseMatcher[date]):
 
     def describe_mismatch(self, actual: date, description: Description) -> None:
         description.append_text("was ").append_description_of(actual).append_text(
-            " with weekday "
-        ).append_description_of(actual.weekday()).append_text(", a ").append_text(
-            actual.strftime("%A")
-        )
+            " with weekday ",
+        ).append_description_of(actual.weekday()).append_text(", a ").append_text(actual.strftime("%A"))

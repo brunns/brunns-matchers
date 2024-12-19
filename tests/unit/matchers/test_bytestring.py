@@ -1,4 +1,3 @@
-# encoding=utf-8
 import logging
 
 from hamcrest import assert_that, has_string, not_

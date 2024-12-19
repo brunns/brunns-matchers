@@ -1,8 +1,8 @@
-# encoding=utf-8
 import email
 import re
 from dataclasses import dataclass
-from typing import Match, Union, cast
+from re import Match
+from typing import Union, cast
 
 from deprecated import deprecated
 from hamcrest import anything
@@ -66,12 +66,8 @@ class EmailWith(BaseMatcher[str]):
     @staticmethod
     def _parse_email(actual_email: str) -> Email:
         parsed = email.message_from_string(actual_email)
-        actual_to_name, actual_to_address = cast(
-            Match, re.match("(.*) <(.*)>", parsed["To"])
-        ).groups()
-        actual_from_name, actual_from_address = cast(
-            Match, re.match("(.*) <(.*)>", parsed["From"])
-        ).groups()
+        actual_to_name, actual_to_address = cast(Match, re.match("(.*) <(.*)>", parsed["To"])).groups()
+        actual_from_name, actual_from_address = cast(Match, re.match("(.*) <(.*)>", parsed["From"])).groups()
         actual_subject = parsed["Subject"]
         actual_body_text = cast(str, parsed.get_payload())
         return Email(
@@ -96,13 +92,9 @@ class EmailWith(BaseMatcher[str]):
         email = self._parse_email(actual_email)
         mismatch_description.append_text("was email with")
         describe_field_mismatch(self.to_name, "to_name", email.to_name, mismatch_description)
-        describe_field_mismatch(
-            self.to_address, "to_address", email.to_address, mismatch_description
-        )
+        describe_field_mismatch(self.to_address, "to_address", email.to_address, mismatch_description)
         describe_field_mismatch(self.from_name, "from_name", email.from_name, mismatch_description)
-        describe_field_mismatch(
-            self.from_address, "from_address", email.from_address, mismatch_description
-        )
+        describe_field_mismatch(self.from_address, "from_address", email.from_address, mismatch_description)
         describe_field_mismatch(self.subject, "subject", email.subject, mismatch_description)
         describe_field_mismatch(self.body_text, "body", email.body_text, mismatch_description)
 
@@ -112,9 +104,7 @@ class EmailWith(BaseMatcher[str]):
         describe_field_match(self.to_name, "to_name", email.to_name, match_description)
         describe_field_match(self.to_address, "to_address", email.to_address, match_description)
         describe_field_match(self.from_name, "from_name", email.from_name, match_description)
-        describe_field_match(
-            self.from_address, "from_address", email.from_address, match_description
-        )
+        describe_field_match(self.from_address, "from_address", email.from_address, match_description)
         describe_field_match(self.subject, "subject", email.subject, match_description)
         describe_field_match(self.body_text, "body", email.body_text, match_description)
 

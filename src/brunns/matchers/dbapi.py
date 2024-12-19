@@ -1,31 +1,30 @@
-# encoding=utf-8
 import logging
-from typing import Any, Iterable, Optional, Tuple
+from collections.abc import Iterable
+from typing import (
+    Any,
+    Optional,
+    Protocol,  # type: ignore[attr-defined]
+)
 
-from brunns.row.rowwrapper import RowWrapper  # type: ignore
 from hamcrest import anything, described_as
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.matcher import Matcher
 
-try:
-    from typing import Protocol  # type: ignore
-except ImportError:  # pragma: no cover
-    from typing_extensions import Protocol  # type: ignore
-
+from brunns.row.rowwrapper import RowWrapper  # type: ignore[attr-defined]
 
 logger = logging.getLogger(__name__)
 
 
 class Cursor(Protocol):
-    def fetchall(self) -> Iterable[Tuple[Any, ...]]:  # pragma: no cover
+    def fetchall(self) -> Iterable[tuple[Any, ...]]:  # pragma: no cover
         ...
 
     def execute(self, statement: str):  # pragma: no cover
         ...
 
     @property
-    def description(self) -> Optional[Tuple[Tuple[str, str]]]:  # pragma: no cover
+    def description(self) -> Optional[tuple[tuple[str, str]]]:  # pragma: no cover
         ...
 
 
@@ -43,7 +42,7 @@ class SelectReturnsRowsMatching(BaseMatcher[Connection]):
         try:
             rows = self._get_rows(conn, self.select)
             return self.row_matcher.matches(rows)
-        except Exception:  # noqa: B902
+        except Exception:
             return False
 
     @staticmethod
@@ -51,26 +50,21 @@ class SelectReturnsRowsMatching(BaseMatcher[Connection]):
         cursor = conn.cursor()
         cursor.execute(select)
         wrapper = RowWrapper(cursor.description)
-        rows = [wrapper.wrap(row) for row in cursor.fetchall()]
-        return rows
+        return [wrapper.wrap(row) for row in cursor.fetchall()]
 
     def describe_to(self, description: Description) -> None:
-        description.append_text("DB connection for which statement ").append_description_of(
-            self.select
-        ).append_text(" returns rows matching ").append_description_of(self.row_matcher)
+        description.append_text("DB connection for which statement ").append_description_of(self.select).append_text(
+            " returns rows matching ",
+        ).append_description_of(self.row_matcher)
 
     def describe_mismatch(self, conn: Connection, mismatch_description: Description) -> None:
         try:
             rows = self._get_rows(conn, self.select)
             self.row_matcher.describe_mismatch(rows, mismatch_description)
-        except Exception as e:  # noqa: B902
-            mismatch_description.append_text("SQL statement ").append_description_of(
-                self.select
-            ).append_text(" gives ").append_description_of(type(e).__name__).append_text(
-                " "
-            ).append_description_of(
-                e
-            )
+        except Exception as e:
+            mismatch_description.append_text("SQL statement ").append_description_of(self.select).append_text(
+                " gives ",
+            ).append_description_of(type(e).__name__).append_text(" ").append_description_of(e)
 
 
 def has_table(table: str) -> Matcher:
@@ -94,8 +88,6 @@ def has_table_with_rows(table: str, row_matcher: Matcher) -> Matcher:
     )
 
 
-def given_select_returns_rows_matching(
-    select: str, row_matcher: Matcher
-) -> SelectReturnsRowsMatching:
+def given_select_returns_rows_matching(select: str, row_matcher: Matcher) -> SelectReturnsRowsMatching:
     """TODO"""
     return SelectReturnsRowsMatching(select, row_matcher)

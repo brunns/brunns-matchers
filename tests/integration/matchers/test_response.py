@@ -1,4 +1,3 @@
-# encoding=utf-8
 import logging
 import os
 import platform
@@ -28,7 +27,7 @@ def test_response_status_code(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "status/345")
+    actual = requests.get(httpbin / "status/345", timeout=5)
 
     # Then
     assert_that(actual, is_response().with_status_code(345))
@@ -44,7 +43,7 @@ def test_response_json(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "json")
+    actual = requests.get(httpbin / "json", timeout=5)
 
     # Then
     assert_that(actual, is_response().with_json(has_key("slideshow")))
@@ -57,14 +56,14 @@ def test_response_content(httpbin):
 
     # When
     actual = requests.get(
-        httpbin / "anything" % {"foo": "bar"}, headers={"X-Clacks-Overhead": "Sir Terry Pratchett"}
+        httpbin / "anything" % {"foo": "bar"},
+        headers={"X-Clacks-Overhead": "Sir Terry Pratchett"},
+        timeout=5,
     )
 
     # Then
     assert_that(actual, is_response().with_status_code(200))
-    assert_that(
-        actual, is_response().with_status_code(200).and_content(contains_bytestring(b"foo"))
-    )
+    assert_that(actual, is_response().with_status_code(200).and_content(contains_bytestring(b"foo")))
     assert_that(actual, not_(is_response().with_content(b"seems unlikely")))
 
 
@@ -73,7 +72,7 @@ def test_response_cookies(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "cookies/set" % {"foo": "bar"}, allow_redirects=False)
+    actual = requests.get(httpbin / "cookies/set" % {"foo": "bar"}, allow_redirects=False, timeout=5)
 
     # Then
     assert_that(actual, is_response().with_status_code(302).and_cookies(has_entries(foo="bar")))
@@ -84,14 +83,12 @@ def test_response_elapsed(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "delay/0.5")
+    actual = requests.get(httpbin / "delay/0.5", timeout=5)
 
     # Then
     assert_that(
         actual,
-        is_response()
-        .with_status_code(200)
-        .and_elapsed(between(timedelta(seconds=0.5), timedelta(seconds=1.5))),
+        is_response().with_status_code(200).and_elapsed(between(timedelta(seconds=0.5), timedelta(seconds=1.5))),
     )
 
 
@@ -100,7 +97,7 @@ def test_response_history(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "cookies/set" % {"foo": "bar"})
+    actual = requests.get(httpbin / "cookies/set" % {"foo": "bar"}, timeout=5)
 
     # Then
     assert_that(
@@ -117,7 +114,7 @@ def test_response_encoding(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "encoding/utf8")
+    actual = requests.get(httpbin / "encoding/utf8", timeout=5)
 
     # Then
     assert_that(actual, is_response().with_encoding("utf-8"))

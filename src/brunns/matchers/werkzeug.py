@@ -34,6 +34,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         super().__init__()
         self.status_code: Matcher[int] = ANYTHING
         self.text: Matcher[str] = ANYTHING
+        self.mimetype: Matcher[str] = ANYTHING
         self.json: Matcher[JsonStructure] = ANYTHING
         self.headers: Matcher[Mapping[str, Union[str, Matcher[str]]]] = ANYTHING
 
@@ -41,6 +42,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         return (
             self.status_code.matches(response.status_code)
             and self.text.matches(response.text)
+            and self.mimetype.matches(response.mimetype)
             and self.json.matches(response.json)
             and self.headers.matches(response.headers)
         )
@@ -49,6 +51,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         description.append_text("response with")
         append_matcher_description(self.status_code, "status code", description)
         append_matcher_description(self.text, "text", description)
+        append_matcher_description(self.mimetype, "mimetype", description)
         append_matcher_description(self.json, "json", description)
         append_matcher_description(self.headers, "headers", description)
 
@@ -56,6 +59,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         mismatch_description.append_text("was response with")
         describe_field_mismatch(self.status_code, "status code", response.status_code, mismatch_description)
         describe_field_mismatch(self.text, "text", response.text, mismatch_description)
+        describe_field_mismatch(self.mimetype, "mimetype", response.mimetype, mismatch_description)
         describe_field_mismatch(self.json, "json", response.json, mismatch_description)
         describe_field_mismatch(self.headers, "headers", response.headers, mismatch_description)
 
@@ -63,6 +67,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         match_description.append_text("was response with")
         describe_field_match(self.status_code, "status code", response.status_code, match_description)
         describe_field_match(self.text, "text", response.text, match_description)
+        describe_field_match(self.mimetype, "mimetype", response.mimetype, match_description)
         describe_field_match(self.json, "json", response.json, match_description)
         describe_field_match(self.headers, "headers", response.headers, match_description)
 
@@ -79,6 +84,13 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
 
     def and_text(self, text: Union[str, Matcher[str]]) -> "WerkzeugResponseMatcher":
         return self.with_text(text)
+
+    def with_mimetype(self, mimetype: Union[str, Matcher[str]]) -> "WerkzeugResponseMatcher":
+        self.mimetype = wrap_matcher(mimetype)
+        return self
+
+    def and_mimetype(self, mimetype: Union[str, Matcher[str]]) -> "WerkzeugResponseMatcher":
+        return self.with_mimetype(mimetype)
 
     def with_json(self, json: Union[JsonStructure, Matcher[JsonStructure]]) -> "WerkzeugResponseMatcher":
         self.json = wrap_matcher(json)

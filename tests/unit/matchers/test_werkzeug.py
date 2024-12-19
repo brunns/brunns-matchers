@@ -71,9 +71,7 @@ def test_response_matcher_mimetype():
     )
     assert_that(
         is_werkzeug_response().with_mimetype("text/json"),
-        mismatches_with(
-            stub_response, contains_string("was response with mimetype: was 'text/xml'")
-        ),
+        mismatches_with(stub_response, contains_string("was response with mimetype: was 'text/xml'")),
     )
     assert_that(
         is_werkzeug_response().with_mimetype("text/xml"),

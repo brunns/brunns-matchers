@@ -1,7 +1,6 @@
 import collections
 import inspect
 from collections.abc import Iterable, Mapping
-from contextlib import suppress
 from itertools import zip_longest
 from typing import Any, Optional, Union
 
@@ -56,6 +55,8 @@ class HasIdenticalPropertiesTo(BaseMatcher[Any]):
     def _matches(self, actual: Any) -> bool:
         return equal_vars(actual, self.expected, ignoring=self.ignoring)
 
+    # TODO: Needs a describe_mismatch()
+
     def describe_to(self, description: Description) -> None:
         description.append_text("object with identical properties to object ").append_description_of(self.expected)
         if self.ignoring:
@@ -64,14 +65,15 @@ class HasIdenticalPropertiesTo(BaseMatcher[Any]):
 
 def equal_vars(left: Any, right: Any, ignoring: Optional[Iterable[str]] = None) -> bool:
     """Test if two objects are equal using public vars() and properties if available, with == otherwise."""
-    with suppress(TypeError):
+    try:
         left_vars = _vars_and_properties(left, ignoring=ignoring)
         right_vars = _vars_and_properties(right, ignoring=ignoring)
-        if left_vars:
-            return left_vars.keys() == right_vars.keys() and all(
-                equal_vars(right_vars[key], value, ignoring=ignoring) for key, value in left_vars.items()
-            )
-    return _equal_vars_for_non_objects(left, right)
+    except TypeError:
+        return _equal_vars_for_non_objects(left, right)
+    else:
+        return left_vars.keys() == right_vars.keys() and all(
+            equal_vars(right_vars[key], value, ignoring=ignoring) for key, value in left_vars.items()
+        )
 
 
 def _equal_vars_for_non_objects(left: Any, right: Any) -> bool:

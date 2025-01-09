@@ -7,7 +7,7 @@ target-version = "py39"
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["ANN", "D", "N813", "TD", "FIX002", "FA100", "PLR0913", "COM812", "ISC001"]
+ignore = ["ANN", "D", "N813", "TD", "FIX002", "FA100", "PLR0913", "COM812", "ISC001", "A005"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 5

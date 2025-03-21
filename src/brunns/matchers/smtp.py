@@ -66,10 +66,10 @@ class EmailWith(BaseMatcher[str]):
     @staticmethod
     def _parse_email(actual_email: str) -> Email:
         parsed = email.message_from_string(actual_email)
-        actual_to_name, actual_to_address = cast(Match, re.match("(.*) <(.*)>", parsed["To"])).groups()
-        actual_from_name, actual_from_address = cast(Match, re.match("(.*) <(.*)>", parsed["From"])).groups()
+        actual_to_name, actual_to_address = cast("Match", re.match("(.*) <(.*)>", parsed["To"])).groups()
+        actual_from_name, actual_from_address = cast("Match", re.match("(.*) <(.*)>", parsed["From"])).groups()
         actual_subject = parsed["Subject"]
-        actual_body_text = cast(str, parsed.get_payload())
+        actual_body_text = cast("str", parsed.get_payload())
         return Email(
             to_name=actual_to_name,
             to_address=actual_to_address,

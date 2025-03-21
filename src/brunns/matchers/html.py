@@ -22,7 +22,7 @@ class HtmlWithTag(BaseMatcher[str]):
         self.name = name
         self.id_ = id_
         self.tag_matcher: Matcher[Tag] = (
-            tag_matcher if isinstance(tag_matcher, Matcher) else tag_has_string(cast(str, tag_matcher))
+            tag_matcher if isinstance(tag_matcher, Matcher) else tag_has_string(cast("str", tag_matcher))
         )
 
     def _matches(self, actual: str) -> bool:
@@ -123,7 +123,7 @@ class TableHasRow(BaseMatcher[Tag]):
         rows_and_cells = [(row, self._row_cells(row)) for row in rows if self._row_cells(row)]
         indexed_rows_and_cells = [(index, row, cells) for index, (row, cells) in enumerate(rows_and_cells)]
         indexed_row_matcher = cast(
-            Matcher[tuple[int, Tag, Sequence[Tag]]],
+            "Matcher[tuple[int, Tag, Sequence[Tag]]]",
             contains_exactly(self.index_matcher, self.row_matcher, self.cells_matcher),
         )
         return has_item(indexed_row_matcher).matches(indexed_rows_and_cells)  # type: ignore[arg-type]

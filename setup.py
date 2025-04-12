@@ -58,5 +58,6 @@ setup(
         "yarl>=1.9",
         "furl>=2.0",
         "Werkzeug>=2.0",
+        "feedparser>=6.0",
     ],
 )

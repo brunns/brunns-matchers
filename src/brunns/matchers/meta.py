@@ -64,11 +64,6 @@ class BaseAutoMatcher(BaseMatcher, Generic[T], metaclass=AutoMatcherMeta):
 
     class StatusMatcher(BaseAutoMatcher[Status]): ...
 
-    def is_status() -> Matcher[Status]:
-        return StatusMatcher()
-
-    status = Status(id=99, code="ACTIVE")
-
     def is_status() -> Matcher[Status]: return StatusMatcher()
 
     actual = Status(status_code="ACTIVE", count=99)

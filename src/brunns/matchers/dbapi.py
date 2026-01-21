@@ -4,6 +4,7 @@ from typing import (
     Any,
     Optional,
     Protocol,  # type: ignore[attr-defined]
+    cast,
 )
 
 from hamcrest import anything, described_as
@@ -49,7 +50,7 @@ class SelectReturnsRowsMatching(BaseMatcher[Connection]):
     def _get_rows(conn: Connection, select: str):
         cursor = conn.cursor()
         cursor.execute(select)
-        wrapper = RowWrapper(cursor.description)
+        wrapper = RowWrapper(cast("Any", cursor.description or ()))
         return [wrapper.wrap(row) for row in cursor.fetchall()]
 
     def describe_to(self, description: Description) -> None:

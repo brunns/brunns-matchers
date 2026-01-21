@@ -6,6 +6,7 @@ from urllib.error import HTTPError
 
 import pytest
 import requests
+from mbtest.server import MountebankServer
 from requests.exceptions import ConnectionError as RequestsConnectionError
 from yarl import URL
 
@@ -38,6 +39,19 @@ def httpbin(docker_ip, docker_services) -> URL:
         docker_services.wait_until_responsive(timeout=30.0, pause=0.1, check=lambda: is_responsive(url))
         return url
     return URL("https://httpbin.org")
+
+
+@pytest.fixture(scope="session")
+def mountebank_instance(docker_ip, docker_services) -> URL:
+    port = docker_services.port_for("mountebank", 2525)
+    url = URL(f"http://{docker_ip}:{port}")
+    docker_services.wait_until_responsive(timeout=30.0, pause=0.1, check=lambda: is_responsive(url))
+    return url
+
+
+@pytest.fixture(scope="session")
+def mock_server(mountebank_instance: URL) -> MountebankServer:
+    return MountebankServer(host=mountebank_instance.host, port=mountebank_instance.port)
 
 
 def is_responsive(url: URL) -> bool:

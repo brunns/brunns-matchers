@@ -166,8 +166,8 @@ texinfo_documents = [
         "brunns-matchers Documentation",
         author,
         "brunns-matchers",
-        "One line description of project.",
-        "Miscellaneous",
+        "Various custom PyHamcrest matchers.",
+        "Testing",
     ),
 ]
 

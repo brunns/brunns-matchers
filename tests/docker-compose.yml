@@ -1,6 +1,10 @@
-version: '2'
 services:
   httpbin:
     image: "kennethreitz/httpbin"
     ports:
       - "8000:80"
+  mountebank:
+    image: "bbyars/mountebank"
+    ports:
+      - "2525:2525"
+      - "4545:4545"

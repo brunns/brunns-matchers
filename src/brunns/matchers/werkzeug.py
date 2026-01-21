@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import Union
+from typing import Any, Union, cast
 
 from hamcrest import anything, described_as, has_entry
 from hamcrest.core.base_matcher import BaseMatcher
@@ -42,9 +42,9 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         return (
             self.status_code.matches(response.status_code)
             and self.text.matches(response.text)
-            and self.mimetype.matches(response.mimetype)
+            and self.mimetype.matches(response.mimetype or "")
             and self.json.matches(response.json)
-            and self.headers.matches(response.headers)
+            and self.headers.matches(cast("Mapping[str, Any]", response.headers))
         )
 
     def describe_to(self, description: Description) -> None:

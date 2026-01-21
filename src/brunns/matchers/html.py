@@ -1,5 +1,5 @@
 from collections.abc import Mapping, Sequence
-from typing import Optional, Union, cast
+from typing import Any, Optional, Union, cast
 
 from bs4 import BeautifulSoup, Tag  # type: ignore[attr-defined]
 from hamcrest import all_of, anything, contains_exactly, has_entry, has_item
@@ -27,7 +27,7 @@ class HtmlWithTag(BaseMatcher[str]):
 
     def _matches(self, actual: str) -> bool:
         found_tags: Sequence[Tag] = self.findall(actual)
-        return has_item(self.tag_matcher).matches(found_tags)
+        return cast("Matcher[Sequence[Tag]]", has_item(self.tag_matcher)).matches(found_tags)
 
     def findall(self, actual: str) -> Sequence[Tag]:
         soup = actual if isinstance(actual, Tag) else BeautifulSoup(actual, "html.parser")
@@ -71,9 +71,9 @@ class TagWith(BaseMatcher[Tag]):
         # TODO - remove type ignore when https://github.com/python/mypy/issues/3283 is resolved.
         return (
             self.name.matches(tag.name)
-            and self.string.matches(tag.string)
+            and self.string.matches(tag.string or "")
             and (self.clazz == ANYTHING or has_item(self.clazz).matches(tag.get("class", [])))  # type: ignore[arg-type]
-            and self.attributes.matches(tag.attrs)
+            and self.attributes.matches(cast("Mapping[str, Any]", tag.attrs))
         )
 
     def describe_to(self, description: Description) -> None:

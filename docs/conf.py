@@ -13,6 +13,9 @@
 #
 import os
 import sys
+from typing import Union
+
+import bs4.element
 
 sys.path.insert(0, os.path.abspath("../src/brunns/"))
 
@@ -188,3 +191,9 @@ epub_exclude_files = ["search.html"]
 
 
 # -- Extension configuration -------------------------------------------------
+
+
+# -- Monkey patching missing types -------------------------------------------
+
+if not hasattr(bs4.element, "_RawAttributeValue"):
+    bs4.element._RawAttributeValue = Union[str, list[str]]  # noqa: SLF001

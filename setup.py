@@ -52,7 +52,7 @@ setup(
         "pyhamcrest>=2.0",
         "Deprecated>=1.2",
         "brunns-row>=2.0",
-        "beautifulsoup4==4.12.3",
+        "beautifulsoup4>=4.0",
         "requests>=2.0",
         "httpx>=0.28",
         "yarl>=1.9",

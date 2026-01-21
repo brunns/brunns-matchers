@@ -1,8 +1,8 @@
 from unittest import mock
 
+from brunns.builder.internet import UrlBuilder as a_url  # type: ignore[attr-defined]
 from hamcrest import assert_that, contains_string, has_entries, has_string, not_
 
-from brunns.builder.internet import UrlBuilder as a_url  # type: ignore[attr-defined]
 from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.url import is_url
 from brunns.matchers.werkzeug import is_werkzeug_response, redirects_to

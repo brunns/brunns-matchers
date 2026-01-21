@@ -116,7 +116,7 @@ class ResponseMatcher(BaseMatcher[ResponseType]):
     def _get_response_json(response: ResponseType) -> Optional[str]:
         try:
             return response.json()
-        except ValueError:
+        except (ValueError, AttributeError):
             return None
 
     def describe_to(self, description: Description) -> None:

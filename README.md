@@ -36,7 +36,13 @@ Requires [tox](https://tox.readthedocs.io). Run `make precommit` tells you if yo
 
 ## Releasing
 
-Requires [hub](https://hub.github.com/), [setuptools](https://setuptools.readthedocs.io), [wheel](https://pypi.org/project/wheel/) and [twine](https://twine.readthedocs.io). To release `n.n.n`:
+Requires [gh](https://cli.github.com/), [setuptools](https://setuptools.readthedocs.io), [wheel](https://pypi.org/project/wheel/) and [twine](https://twine.readthedocs.io). 
+
+```shell
+pip install --upgrade setuptools twine wheel --isolated
+```
+
+To release `n.n.n`:
 
 ```sh
 version="n.n.n" # Needs to match new version number in setup.py.

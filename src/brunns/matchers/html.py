@@ -149,36 +149,64 @@ class TableHasRow(BaseMatcher[Tag]):
 
 
 def has_title(title: Union[str, Matcher[str]]) -> HtmlWithTag:
-    """TODO"""
+    """Matches HTML containing a <title> tag with the specified text content.
+
+    :param title: The string content or a matcher for the content of the title tag.
+    """
     return HtmlWithTag(TagWith(string=title), name="title")
 
 
 def has_named_tag(name, matcher) -> HtmlWithTag:
-    """TODO"""
+    """Matches HTML containing a tag with a specific name that satisfies a matcher.
+
+    :param name: The HTML tag name to find (e.g., 'div', 'span').
+    :param matcher: A matcher to apply to the found tag(s).
+    """
     return HtmlWithTag(matcher, name=name)
 
 
 def has_id_tag(id_, matcher) -> HtmlWithTag:
-    """TODO"""
+    """Matches HTML containing a tag with a specific 'id' attribute that satisfies a matcher.
+
+    :param id_: The HTML id attribute to find.
+    :param matcher: A matcher to apply to the found tag(s).
+    """
     return HtmlWithTag(matcher, id_=id_)
 
 
 def tag_has_string(matcher: Union[str, Matcher[str]]) -> TagWith:
-    """TODO"""
+    """Matches a BeautifulSoup Tag if its text content matches the given criteria.
+
+    :param matcher: A string or string matcher to validate against the tag's content.
+    """
     return TagWith(string=matcher)
 
 
 def has_class(clazz: Union[str, Matcher[str]]) -> TagWith:
-    """TODO"""
+    """Matches a BeautifulSoup Tag if it possesses the specified CSS class.
+
+    :param clazz: A string or string matcher to find within the tag's 'class' attribute list.
+    """
     return TagWith(clazz=clazz)
 
 
 def has_table(matcher, id_=ANYTHING) -> HtmlHasTable:
-    """TODO"""
+    """Matches HTML containing a <table> element satisfying the given table matcher.
+
+    :param matcher: A matcher to apply to the table Tag.
+    :param id_: Optional matcher or string for the table's 'id' attribute.
+    """
     return HtmlHasTable(matcher, id_=id_)
 
 
 def has_row(row_matches=ANYTHING, cells_match=ANYTHING, index_matches=ANYTHING, *, header_row=False) -> TableHasRow:
+    """Matches a table Tag if it contains a row satisfying the specified criteria.
+
+    :param row_matches: Matcher for the <tr> Tag itself.
+    :param cells_match: Matcher for the sequence of cells (<td>) within the row.
+    :param index_matches: Matcher for the row's index within the table.
+    :param header_row: If True, looks for <th> cells instead of <td>.
+    """
     return TableHasRow(
         row_matcher=row_matches,
         cells_matcher=cells_match,
@@ -188,16 +216,31 @@ def has_row(row_matches=ANYTHING, cells_match=ANYTHING, index_matches=ANYTHING, 
 
 
 def has_header_row(cells_matcher=ANYTHING, row_matcher=ANYTHING) -> TableHasRow:
+    """Matches a table Tag if it contains a header row satisfying the specified criteria.
+
+    This is a convenience wrapper around ``has_row`` with ``header_row=True``.
+
+    :param cells_matcher: Matcher for the sequence of header cells (<th>) within the row.
+    :param row_matcher: Matcher for the <tr> Tag itself.
+    """
     return has_row(cells_match=cells_matcher, row_matches=row_matcher, header_row=True)
 
 
 def has_id(id_: Union[str, Matcher[str]]) -> TagWith:
+    """Matches a BeautifulSoup Tag if it has the specified element ID.
+
+    :param id_: The string ID or a matcher for the ID.
+    """
     return TagWith(attributes=has_entry("id", id_))
 
 
 def has_attributes(
     matcher: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
 ) -> TagWith:
+    """Matches a BeautifulSoup Tag if its attributes dictionary matches the provided matcher.
+
+    :param matcher: A dictionary or matcher to validate the tag's attributes.
+    """
     return TagWith(attributes=matcher)
 
 
@@ -206,6 +249,12 @@ def has_link(
     clazz: Union[str, Matcher[str]] = ANYTHING,
     href: Union[str, Matcher[str]] = ANYTHING,
 ) -> HtmlWithTag:
+    """Matches HTML containing an anchor (<a>) tag with specific attributes.
+
+    :param id_: Matcher or string for the 'id' attribute.
+    :param clazz: Matcher or string for the 'class' attribute.
+    :param href: Matcher or string for the 'href' attribute.
+    """
     href_matcher: ATTR_MATCHER = has_entry("href", href) if href != ANYTHING else ANYTHING
     id_matcher: ATTR_MATCHER = has_entry("id", id_) if id_ != ANYTHING else ANYTHING
     return HtmlWithTag(TagWith(name="a", clazz=clazz, attributes=all_of(href_matcher, id_matcher)))
@@ -216,6 +265,12 @@ def has_image(
     clazz: Union[str, Matcher[str]] = ANYTHING,
     src: Union[str, Matcher[str]] = ANYTHING,
 ) -> HtmlWithTag:
+    """Matches HTML containing an image (<img>) tag with specific attributes.
+
+    :param id_: Matcher or string for the 'id' attribute.
+    :param clazz: Matcher or string for the 'class' attribute.
+    :param src: Matcher or string for the 'src' attribute.
+    """
     src_matcher: ATTR_MATCHER = has_entry("src", src) if src != ANYTHING else ANYTHING
     id_matcher: ATTR_MATCHER = has_entry("id", id_) if id_ != ANYTHING else ANYTHING
     return HtmlWithTag(TagWith(name="img", clazz=clazz, attributes=all_of(src_matcher, id_matcher)))

@@ -37,6 +37,20 @@ The "brunns.matchers.html" module
     :members:
 
 
+The "brunns.matchers.matcher" module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: brunns.matchers.matcher
+    :members:
+
+
+The "brunns.matchers.meta" module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: brunns.matchers.meta
+    :members:
+
+
 The "brunns.matchers.mock" module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -58,6 +72,13 @@ The "brunns.matchers.response" module
     :members:
 
 
+The "brunns.matchers.rss" module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: brunns.matchers.rss
+    :members:
+
+
 The "brunns.matchers.smtp" module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -69,4 +90,11 @@ The "brunns.matchers.url" module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: brunns.matchers.url
+    :members:
+
+
+The "brunns.matchers.werkzeug" module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: brunns.matchers.werkzeug
     :members:

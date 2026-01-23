@@ -35,7 +35,7 @@ class Connection(Protocol):
 
 
 class SelectReturnsRowsMatching(BaseMatcher[Connection]):
-    def __init__(self, select: str, row_matcher: Matcher) -> None:
+    def __init__(self, select: str, row_matcher: Matcher[list[Any]]) -> None:
         self.select = select
         self.row_matcher = row_matcher
 
@@ -68,8 +68,11 @@ class SelectReturnsRowsMatching(BaseMatcher[Connection]):
             ).append_description_of(type(e).__name__).append_text(" ").append_description_of(e)
 
 
-def has_table(table: str) -> Matcher:
-    """TODO"""
+def has_table(table: str) -> Matcher[Connection]:
+    """Matches if database has table with name.
+
+    :param table: Table name.
+    """
     select = f"SELECT * FROM {table};"  # nosec
     return described_as(
         "DB connection has table named %0",
@@ -78,8 +81,12 @@ def has_table(table: str) -> Matcher:
     )
 
 
-def has_table_with_rows(table: str, row_matcher: Matcher) -> Matcher:
-    """TODO"""
+def has_table_with_rows(table: str, row_matcher: Matcher[list[Any]]) -> Matcher[Connection]:
+    """Matches if database has table with rows matching.
+
+    :param table: Table name.
+    :param row_matcher: Row matchers.
+    """
     select = f"SELECT * FROM {table};"  # nosec
     return described_as(
         "DB connection with table %0 with rows matching %1",
@@ -89,6 +96,5 @@ def has_table_with_rows(table: str, row_matcher: Matcher) -> Matcher:
     )
 
 
-def given_select_returns_rows_matching(select: str, row_matcher: Matcher) -> SelectReturnsRowsMatching:
-    """TODO"""
+def given_select_returns_rows_matching(select: str, row_matcher: Matcher[list[Any]]) -> SelectReturnsRowsMatching:
     return SelectReturnsRowsMatching(select, row_matcher)

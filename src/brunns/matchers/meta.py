@@ -44,35 +44,35 @@ class AutoMatcherMeta(type):
 
 
 class BaseAutoMatcher(BaseMatcher, Generic[T], metaclass=AutoMatcherMeta):
-    """Create matchers for classes. Use like so:
+    """Dynamically create matchers for classes. Use like so:
 
-    ```python
-    from dataclasses import dataclass
-    from typing import Optional
+    .. code-block:: python
 
-    from hamcrest import assert_that, starts_with
-    from hamcrest.core.matcher import Matcher
-    from pydantic import BaseModel
+        from dataclasses import dataclass
+        from typing import Optional
 
-    from brunns.matchers.meta import BaseAutoMatcher
+        from hamcrest import assert_that, starts_with
+        from hamcrest.core.matcher import Matcher
+        from pydantic import BaseModel
 
-    @dataclass
-    class Status:
-        id: int
-        code: str
-        reason: Optional[str] = None
+        from brunns.matchers.meta import BaseAutoMatcher
 
-    class StatusMatcher(BaseAutoMatcher[Status]): ...
+        @dataclass
+        class Status:
+            id: int
+            code: str
+            reason: Optional[str] = None
 
-    def is_status() -> Matcher[Status]: return StatusMatcher()
+        class StatusMatcher(BaseAutoMatcher[Status]): ...
 
-    actual = Status(status_code="ACTIVE", count=99)
-    assert_that(actual, is_status().with_code(starts_with("ACT")).and_reason(None))
-    assert_that(actual, is_status().with_id(42))  # Will fail
-    ```
+        def is_status() -> Matcher[Status]: return StatusMatcher()
 
-    Works only for classes with `__annotations__`; typically manually annotated classes, dataclasses.dataclass and
-    pydantic.BaseModel instances.
+        actual = Status(status_code="ACTIVE", count=99)
+        assert_that(actual, is_status().with_code(starts_with("ACT")).and_reason(None))
+        assert_that(actual, is_status().with_id(42))  # Will fail
+
+    Works only for classes with ``__annotations__``; typically manually annotated classes, ``dataclasses.dataclass`` and
+    ``pydantic.BaseModel`` instances.
     """
 
     __domain_class__ = None  # Will be inferred when subclassed generically

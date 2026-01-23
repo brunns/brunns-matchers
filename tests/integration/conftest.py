@@ -13,7 +13,7 @@ from yarl import URL
 logger = logging.getLogger(__name__)
 LOCAL = os.getenv("GITHUB_ACTIONS") != "true"
 LINUX = platform.system() == "Linux"
-HTTPBIN_CONTAINERISED = LINUX or LOCAL
+CONTAINERS_AVAILABLE = LINUX or LOCAL
 
 
 @pytest.fixture(scope="session")
@@ -33,7 +33,7 @@ def db():
 
 @pytest.fixture(scope="session")
 def httpbin(docker_ip, docker_services) -> URL:
-    if HTTPBIN_CONTAINERISED:
+    if CONTAINERS_AVAILABLE:
         port = docker_services.port_for("httpbin", 80)
         url = URL(f"http://{docker_ip}:{port}")
         docker_services.wait_until_responsive(timeout=30.0, pause=0.1, check=lambda: is_responsive(url))

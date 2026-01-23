@@ -67,8 +67,53 @@ Matchers
 * :py:func:`~brunns.matchers.matcher.matches_with` - matches if matcher matches value with specific message.
 
 Meta (auto-matchers)
+~~~~~~~~~~~~~~~~~~~~
 
 * :py:class:`~brunns.matchers.meta.BaseAutoMatcher` - dynamically create matchers for classes.
+
+Mocks
+~~~~~
+
+* :py:func:`~brunns.matchers.mock.has_call` - matches if mock has a specific call.
+* :py:func:`~brunns.matchers.mock.call_has_arg` - matches if a call has a specific argument.
+* :py:func:`~brunns.matchers.mock.call_has_args` - matches if a call has specific arguments.
+
+Object
+~~~~~~
+
+* :py:func:`~brunns.matchers.object.has_repr` - matches if object's repr() matches.
+* :py:func:`~brunns.matchers.object.has_identical_properties_to` - matches if object has identical properties to another.
+* :py:func:`~brunns.matchers.object.true` - matches if object is truthy.
+* :py:func:`~brunns.matchers.object.false` - matches if object is falsy.
+* :py:func:`~brunns.matchers.object.between` - matches if value is within a range.
+
+Response
+~~~~~~~~
+
+* :py:func:`~brunns.matchers.response.is_response` - matches requests or httpx response.
+* :py:func:`~brunns.matchers.response.redirects_to` - matches if response redirects to URL.
+
+RSS
+~~~
+
+* :py:func:`~brunns.matchers.rss.is_rss_feed` - matches if string is a valid RSS feed.
+* :py:func:`~brunns.matchers.rss.is_rss_entry` - matches if object is an RSS feed entry.
+
+SMTP
+~~~~
+
+* :py:func:`~brunns.matchers.smtp.is_email` - matches if string is a valid email message.
+
+URL
+~~~
+
+* :py:func:`~brunns.matchers.url.is_url` - matches URL strings.
+
+Werkzeug Responses
+~~~~~~~~~~~~~~~~~~
+
+* :py:func:`~brunns.matchers.werkzeug.is_werkzeug_response` - matches Werkzeug TestResponse.
+* :py:func:`~brunns.matchers.werkzeug.redirects_to` - matches if response redirects to URL.
 
 Indices and tables
 ==================

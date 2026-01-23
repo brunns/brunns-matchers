@@ -26,10 +26,12 @@ ANYTHING = anything()
 
 
 def is_response() -> "ResponseMatcher":
-    """Matches :requests.models.Response: or :httpx.Response:.
+    """Matches a ``requests.Response`` or ``httpx.Response`` object.
 
-    Todo:
+    This function returns a :class:`ResponseMatcher` which can be refined using builder methods
+    (e.g. ``.with_status_code(200)``).
 
+    :return: A matcher for HTTP responses.
     """
     return ResponseMatcher()
 
@@ -38,17 +40,18 @@ ResponseType = Union[requests.Response, httpx.Response]
 
 
 class ResponseMatcher(BaseMatcher[ResponseType]):
-    """Matches :requests.models.Response: or :httpx.Response:.
-    :param status_code: Expected status code
-    :param body: Expected body
-    :param content: Expected content
-    :param json: Expected json
-    :param headers: Expected headers
-    :param cookies: Expected cookies
-    :param elapsed: Expected elapsed time
-    :param history: Expected history
-    :param url: Expected url
-    :param encoding: Expected encoding
+    """Matches :class:`requests.Response` or :class:`httpx.Response`.
+
+    :param status_code: Expected status code.
+    :param body: Expected body text.
+    :param content: Expected raw binary content.
+    :param json: Expected JSON body (parsed).
+    :param headers: Expected headers dictionary.
+    :param cookies: Expected cookies dictionary.
+    :param elapsed: Expected elapsed time (timedelta).
+    :param history: Expected history sequence.
+    :param url: Expected URL.
+    :param encoding: Expected encoding string.
     """
 
     def __init__(
@@ -266,9 +269,13 @@ class ResponseMatcher(BaseMatcher[ResponseType]):
 
 
 def redirects_to(url_matcher: Union[str, Matcher[str], URL, Matcher[URL]]) -> Matcher[ResponseType]:
-    """Is a response a redirect to a URL matching the supplied matcher? Matches :requests.models.Response: or
-    :httpx.Response:.
-    :param url_matcher: Expected URL.
+    """Is a response a redirect to a URL matching the supplied matcher?
+
+    Matches if the status code is between 300 and 399 and the ``Location`` header matches
+    the provided URL matcher.
+
+    :param url_matcher: The expected URL (string or matcher) found in the Location header.
+    :return: A matcher for redirect responses.
     """
     return described_as(
         str(StringDescription().append_text("redirects to ").append_description_of(url_matcher)),
@@ -284,4 +291,9 @@ def response_with(
     json: Union[JsonStructure, Matcher[JsonStructure]] = ANYTHING,
     headers: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]] = ANYTHING,
 ) -> ResponseMatcher:  # pragma: no cover
+    """Matches a response with specific attributes.
+
+    .. deprecated:: 2.3.0
+       Use :func:`is_response` and its builder methods instead.
+    """
     return ResponseMatcher(status_code=status_code, body=body, content=content, json=json, headers=headers)

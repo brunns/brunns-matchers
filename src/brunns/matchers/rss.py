@@ -4,6 +4,7 @@ from typing import Optional, Union
 
 import feedparser
 import httpx
+from furl import furl
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher, T
 from hamcrest.core.description import Description
@@ -25,7 +26,7 @@ class RssFeedMatcher(BaseMatcher[str]):
         self.published: Matcher[Union[datetime, None]] = ANYTHING
         self.entries: Matcher[list[feedparser.FeedParserDict]] = ANYTHING
 
-    def _matches(self, item: Union[str, URL]) -> bool:
+    def _matches(self, item: Union[str, URL, furl]) -> bool:
         try:
             actual = feedparser.parse(str(item))
         except (ValueError, httpx.HTTPError):
@@ -193,8 +194,22 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict]):
 
 
 def is_rss_feed() -> RssFeedMatcher:
+    """Matches a string (or URL-like object) as an RSS feed using ``feedparser``.
+
+    The string is parsed as an RSS feed, and the resulting structure is checked.
+    This matcher uses a builder pattern (e.g., ``.with_title(...)``) to refine the match.
+
+    :return: A matcher for RSS feed content.
+    """
     return RssFeedMatcher()
 
 
 def is_rss_entry() -> RssFeedEntryMatcher:
+    """Matches a single RSS feed entry (item) within an RSS feed.
+
+    This matcher operates on ``feedparser.FeedParserDict`` objects, typically found in
+    the ``entries`` list of a parsed feed.
+
+    :return: A matcher for an RSS feed entry.
+    """
     return RssFeedEntryMatcher()

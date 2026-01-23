@@ -19,15 +19,15 @@ from hamcrest.core.matcher import Matcher
 
 
 def has_repr(expected: Any) -> Matcher[Any]:
-    """Object with repr() matching
-    :param expected: Expected value.
+    """Matches if the object's ``repr()`` matches the expected string or matcher.
+
+    :param expected: The expected string representation or a string matcher.
+    :return: A matcher that validates ``repr(obj)``.
     """
     return HasRepr(expected)
 
 
 class HasRepr(BaseMatcher[Any]):
-    """object with repr() matching"""
-
     def __init__(self, expected: Union[str, Matcher[str]]) -> None:
         self.expected: Matcher[str] = wrap_matcher(expected)
 
@@ -40,9 +40,14 @@ class HasRepr(BaseMatcher[Any]):
 
 
 def has_identical_properties_to(expected: Any, ignoring: Optional[Iterable[str]] = None) -> Matcher[Any]:
-    """Matches object with identical properties to
-    :param expected: Expected object
-    :param ignoring: Collection of names to ignore in comparisons
+    """Matches an object if its public properties and attributes are identical to the expected object's.
+
+    This matcher performs a deep recursive comparison of all public attributes (those not starting with ``_``)
+    and properties. It gracefully handles nested dictionaries and sequences.
+
+    :param expected: The reference object to compare against.
+    :param ignoring: A collection of attribute names to exclude from the comparison.
+    :return: A matcher for object equality based on public state.
     """
     return HasIdenticalPropertiesTo(expected, ignoring=ignoring)
 
@@ -64,7 +69,13 @@ class HasIdenticalPropertiesTo(BaseMatcher[Any]):
 
 
 def equal_vars(left: Any, right: Any, ignoring: Optional[Iterable[str]] = None) -> bool:
-    """Test if two objects are equal using public vars() and properties if available, with == otherwise."""
+    """Test if two objects are equal using public vars() and properties if available, with == otherwise.
+
+    :param left: The first object to compare.
+    :param right: The second object to compare.
+    :param ignoring: Optional list of attribute names to ignore.
+    :return: True if objects are equivalent, False otherwise.
+    """
     try:
         left_vars = _vars_and_properties(left, ignoring=ignoring)
         right_vars = _vars_and_properties(right, ignoring=ignoring)
@@ -114,21 +125,32 @@ class Truthy(BaseMatcher[Any]):
 
 
 def true() -> Matcher[Any]:
-    """Matches truthy values.
-    :return: Matcher(object)
+    """Matches any value that evaluates to True in a boolean context (truthy).
+
+    :return: A matcher for truthiness.
     """
     return Truthy()
 
 
 def false() -> Matcher[Any]:
-    """Matches falsey values.
-    :return: Matcher(object)
+    """Matches any value that evaluates to False in a boolean context (falsy).
+
+    :return: A matcher for falsiness.
     """
     return not_(true())
 
 
 def between(lower: Any, upper: Any, *, lower_inclusive=True, upper_inclusive=True) -> Matcher[Any]:
-    """TODO"""
+    """Matches if a value is within a specific range.
+
+    :param lower: The lower bound of the range.
+    :param upper: The upper bound of the range.
+    :param lower_inclusive: If True, the range includes the lower bound (>=).
+                            If False, it is exclusive (>). Defaults to True.
+    :param upper_inclusive: If True, the range includes the upper bound (<=).
+                            If False, it is exclusive (<). Defaults to True.
+    :return: A matcher for the specified range.
+    """
     return all_of(
         greater_than_or_equal_to(lower) if lower_inclusive else greater_than(lower),
         less_than_or_equal_to(upper) if upper_inclusive else less_than(upper),

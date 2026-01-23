@@ -81,8 +81,6 @@ class HasCall(BaseMatcher[Mock]):
 
 
 class CallHasArgs(BaseMatcher[_Call]):
-    """mock.call with arguments"""
-
     def __init__(self, *args, **kwargs) -> None:
         super().__init__()
         self.args = [wrap_matcher(arg) for arg in args]
@@ -107,19 +105,33 @@ class CallHasArgs(BaseMatcher[_Call]):
 
 
 def call_has_arg(arg: Union[int, str], expected: Any) -> BaseMatcher[_Call]:
-    """TODO"""
+    """Matches a ``mock.call`` if a specific positional or keyword argument satisfies the matcher.
+
+    :param arg: If an integer, refers to the index of a positional argument.
+                If a string, refers to the name of a keyword argument.
+    :param expected: The expected value or matcher for that argument.
+    """
     if isinstance(arg, int):
         return CallHasPositionalArg(cast("int", arg), expected)
     return CallHasKeywordArg(cast("str", arg), expected)
 
 
 def has_call(call_matcher: Matcher) -> HasCall:
-    """TODO"""
+    """Matches a ``unittest.mock.Mock`` object if any of its calls satisfy the given matcher.
+
+    :param call_matcher: A matcher that validates a single ``mock.call`` object
+                         (e.g., created by ``call_has_arg`` or ``call_has_args``).
+    """
     return HasCall(call_matcher)
 
 
 def call_has_args(*args, **kwargs) -> CallHasArgs:
-    """mock.call with arguments
-    TODO
+    """Matches a ``mock.call`` if it matches all provided positional and keyword arguments.
+
+    The match is loose for keyword arguments (only specified keys are checked), but
+    positional arguments are checked in order.
+
+    :param args: Expected values or matchers for positional arguments.
+    :param kwargs: Expected values or matchers for keyword arguments.
     """
     return CallHasArgs(*args, **kwargs)

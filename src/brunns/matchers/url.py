@@ -9,6 +9,7 @@ from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
+from yarl import URL
 
 from brunns.matchers.utils import (
     append_matcher_description,
@@ -21,11 +22,27 @@ ANYTHING = anything()
 
 
 def is_url() -> "UrlWith":
-    """TODO"""
+    """Matches a string (or ``furl`` / ``yarl.URL`` object) as a URL.
+
+    This function returns a :class:`UrlWith` matcher which can be refined using builder methods
+    to match specific parts of the URL (e.g. ``.with_host(...)``, ``.with_query(...)``).
+
+    :return: A matcher for URL components.
+    """
     return UrlWith()
 
 
-class UrlWith(BaseMatcher[Union[furl, str]]):
+class UrlWith(BaseMatcher[Union[str, URL, furl]]):
+    """Matches specific components of a URL.
+
+    The matcher parses the actual value using the ``furl`` library.
+
+    :param host: Expected hostname (e.g., "google.com").
+    :param path: Expected path string (e.g., "/search").
+    :param query: Expected query parameters dictionary.
+    :param fragment: Expected URL fragment (hash).
+    """
+
     def __init__(
         self,
         host: Union[str, Matcher[str]] = ANYTHING,
@@ -47,7 +64,7 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
         self.query = wrap_matcher(query)
         self.fragment = wrap_matcher(fragment)
 
-    def _matches(self, url: Union[furl, str]) -> bool:
+    def _matches(self, url: Union[str, URL, furl]) -> bool:
         url = furl(url)
         return (
             self.scheme.matches(url.scheme)
@@ -73,7 +90,7 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
         append_matcher_description(self.query, "query", description)
         append_matcher_description(self.fragment, "fragment", description)
 
-    def describe_mismatch(self, url: Union[furl, str], mismatch_description: Description) -> None:
+    def describe_mismatch(self, url: Union[str, URL, furl], mismatch_description: Description) -> None:
         url = furl(url)
         mismatch_description.append_text("was URL with")
         describe_field_mismatch(self.scheme, "scheme", url.scheme, mismatch_description)
@@ -86,7 +103,7 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
         describe_field_mismatch(self.query, "query", url.query.params, mismatch_description)
         describe_field_mismatch(self.fragment, "fragment", url.fragment, mismatch_description)
 
-    def describe_match(self, url: Union[furl, str], match_description: Description) -> None:
+    def describe_match(self, url: Union[str, URL, furl], match_description: Description) -> None:
         url = furl(url)
         match_description.append_text("was URL with")
         describe_field_match(self.scheme, "scheme", url.scheme, match_description)
@@ -171,39 +188,79 @@ class UrlWith(BaseMatcher[Union[furl, str]]):
 
 @deprecated(version="2.3.0", reason="Use builder style is_url()")
 def url_with_host(matcher: Union[str, Matcher]):  # pragma: no cover
+    """Matches URL with specific host.
+
+    .. deprecated:: 2.3.0
+       Use ``is_url().with_host(...)`` instead.
+    """
     return UrlWith(host=matcher)
 
 
 @deprecated(version="2.3.0", reason="Use builder style is_url()")
 def url_with_path(matcher: Union[str, Matcher]):  # pragma: no cover
+    """Matches URL with specific path.
+
+    .. deprecated:: 2.3.0
+       Use ``is_url().with_path(...)`` instead.
+    """
     return UrlWith(path=matcher)
 
 
 @deprecated(version="2.3.0", reason="Use builder style is_url()")
 def url_with_query(matcher: Union[Mapping[str, str], Matcher]):  # pragma: no cover
+    """Matches URL with specific query parameters.
+
+    .. deprecated:: 2.3.0
+       Use ``is_url().with_query(...)`` instead.
+    """
     return UrlWith(query=matcher)
 
 
 @deprecated(version="2.3.0", reason="Use builder style is_url()")
 def url_with_fragment(matcher: Union[str, Matcher]):  # pragma: no cover
+    """Matches URL with specific fragment.
+
+    .. deprecated:: 2.3.0
+       Use ``is_url().with_fragment(...)`` instead.
+    """
     return UrlWith(fragment=matcher)
 
 
 @deprecated(version="2.2.0", reason="Use builder style is_url()")
 def to_host(matcher: Union[str, Matcher]):  # pragma: no cover
+    """Matches URL with specific host.
+
+    .. deprecated:: 2.2.0
+       Use ``is_url().with_host(...)`` instead.
+    """
     return url_with_host(matcher)
 
 
 @deprecated(version="2.2.0", reason="Use builder style is_url()")
 def with_path(matcher: Union[str, Matcher]):  # pragma: no cover
+    """Matches URL with specific path.
+
+    .. deprecated:: 2.2.0
+       Use ``is_url().with_path(...)`` instead.
+    """
     return url_with_path(matcher)
 
 
 @deprecated(version="2.2.0", reason="Use builder style is_url()")
 def with_query(matcher: Union[Mapping[str, str], Matcher]):  # pragma: no cover
+    """Matches URL with specific query parameters.
+
+    .. deprecated:: 2.2.0
+       Use ``is_url().with_query(...)`` instead.
+    """
     return url_with_query(matcher)
 
 
 @deprecated(version="2.2.0", reason="Use builder style is_url()")
 def with_fragment(matcher: Union[str, Matcher]):  # pragma: no cover
+    """Matches URL with specific fragment.
+
+    .. deprecated:: 2.2.0
+       Use ``is_url().with_fragment(...)`` instead.
+    """
     return url_with_fragment(matcher)

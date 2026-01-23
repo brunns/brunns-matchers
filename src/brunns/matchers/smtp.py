@@ -30,8 +30,14 @@ class Email:
     body_text: str
 
 
-def is_email():
-    """"""
+def is_email() -> "EmailWith":
+    """Matches a string as an RFC 822 / MIME email message.
+
+    This function returns an :class:`EmailWith` matcher which can be refined using builder methods
+    (e.g., ``.with_subject(...)``). It parses the string using Python's :mod:`email` module.
+
+    :return: A matcher for email strings.
+    """
     return EmailWith()
 
 
@@ -66,6 +72,8 @@ class EmailWith(BaseMatcher[str]):
     @staticmethod
     def _parse_email(actual_email: str) -> Email:
         parsed = email.message_from_string(actual_email)
+        # Handle cases where To/From might be missing or malformed gracefully?
+        # Current implementation assumes valid format per regex below.
         actual_to_name, actual_to_address = cast("Match", re.match("(.*) <(.*)>", parsed["To"])).groups()
         actual_from_name, actual_from_address = cast("Match", re.match("(.*) <(.*)>", parsed["From"])).groups()
         actual_subject = parsed["Subject"]
@@ -160,14 +168,18 @@ def email_with(
     subject: Union[str, Matcher[str]] = ANYTHING,
     body_text: Union[str, Matcher[str]] = ANYTHING,
 ) -> Matcher:  # pragma: no cover
-    """Match email with
-    :param to_name:
-    :param to_address:
-    :param from_name:
-    :param from_address:
-    :param subject:
-    :param body_text:
-    :return: Matcher
+    """Matches an email string with specific attributes.
+
+    .. deprecated:: 2.3.0
+       Use :func:`is_email` and its builder methods instead.
+
+    :param to_name: Expected recipient name.
+    :param to_address: Expected recipient email address.
+    :param from_name: Expected sender name.
+    :param from_address: Expected sender email address.
+    :param subject: Expected subject line.
+    :param body_text: Expected body content.
+    :return: A matcher for email strings.
     """
     return EmailWith(
         to_name=to_name,

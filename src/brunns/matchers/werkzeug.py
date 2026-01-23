@@ -21,12 +21,21 @@ ANYTHING = anything()
 
 
 def is_werkzeug_response() -> "WerkzeugResponseMatcher":
-    """Matches :requests.models.Response: object."""
+    """Matches a ``werkzeug.test.TestResponse`` object (e.g. from Flask test client).
+
+    This function returns a :class:`WerkzeugResponseMatcher` which can be refined using builder methods
+    (e.g., ``.with_status_code(200)``).
+
+    :return: A matcher for Werkzeug/Flask test responses.
+    """
     return WerkzeugResponseMatcher()
 
 
 class WerkzeugResponseMatcher(BaseMatcher[Response]):
-    """Matches :requests.models.Response: object."""
+    """Matches a ``werkzeug.test.TestResponse`` object.
+
+    This matcher is useful for testing Flask applications using the built-in test client.
+    """
 
     def __init__(
         self,
@@ -114,8 +123,12 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
 
 
 def redirects_to(url_matcher: Union[str, Matcher]) -> Matcher[Response]:
-    """Is a response a redirect to a URL matching the suplplied matcher? Matches :requests.models.Response:.
-    :param url_matcher: Expected URL.
+    """Matches if the Werkzeug response is a redirect to the specified URL.
+
+    Checks if the status code is between 300 and 399 and the ``Location`` header matches.
+
+    :param url_matcher: The expected URL string or matcher.
+    :return: A matcher for redirect responses.
     """
     return described_as(
         str(StringDescription().append_text("redirects to ").append_description_of(url_matcher)),

@@ -1,6 +1,6 @@
 # brunns-matchers
 
-Various custom [PyHamcrest](https://pyhamcrest.readthedocs.io) matchers.
+Various custom [PyHamcrest](https://pyhamcrest.readthedocs.io) matchers. See [the documentation](https://brunns-matchers.readthedocs.io/) for details.
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![Build Status](https://travis-ci.org/brunns/brunns-matchers.svg?branch=master&logo=travis)](https://travis-ci.org/brunns/brunns-matchers)

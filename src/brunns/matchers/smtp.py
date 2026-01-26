@@ -117,45 +117,117 @@ class EmailWith(BaseMatcher[str]):
         describe_field_match(self.body_text, "body", email.body_text, match_description)
 
     def with_to_name(self, to_name: Union[str, Matcher[str]]):
+        """Matches if the email 'To' name matches the given value or matcher.
+
+        :param to_name: The expected recipient name or matcher.
+        :return: Self, for chaining.
+        """
         self.to_name = wrap_matcher(to_name)
         return self
 
     def and_to_name(self, to_name: Union[str, Matcher[str]]):
+        """Matches if the email 'To' name matches the given value or matcher.
+
+        A synonym for :meth:`with_to_name`.
+
+        :param to_name: The expected recipient name or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_to_name(to_name)
 
     def with_to_address(self, to_address: Union[str, Matcher[str]]):
+        """Matches if the email 'To' address matches the given value or matcher.
+
+        :param to_address: The expected recipient email address or matcher.
+        :return: Self, for chaining.
+        """
         self.to_address = wrap_matcher(to_address)
         return self
 
     def and_to_address(self, to_address: Union[str, Matcher[str]]):
+        """Matches if the email 'To' address matches the given value or matcher.
+
+        A synonym for :meth:`with_to_address`.
+
+        :param to_address: The expected recipient email address or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_to_address(to_address)
 
     def with_from_name(self, from_name: Union[str, Matcher[str]]):
+        """Matches if the email 'From' name matches the given value or matcher.
+
+        :param from_name: The expected sender name or matcher.
+        :return: Self, for chaining.
+        """
         self.from_name = wrap_matcher(from_name)
         return self
 
     def and_from_name(self, from_name: Union[str, Matcher[str]]):
+        """Matches if the email 'From' name matches the given value or matcher.
+
+        A synonym for :meth:`with_from_name`.
+
+        :param from_name: The expected sender name or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_from_name(from_name)
 
     def with_from_address(self, from_address: Union[str, Matcher[str]]):
+        """Matches if the email 'From' address matches the given value or matcher.
+
+        :param from_address: The expected sender email address or matcher.
+        :return: Self, for chaining.
+        """
         self.from_address = wrap_matcher(from_address)
         return self
 
     def and_from_address(self, from_address: Union[str, Matcher[str]]):
+        """Matches if the email 'From' address matches the given value or matcher.
+
+        A synonym for :meth:`with_from_address`.
+
+        :param from_address: The expected sender email address or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_from_address(from_address)
 
     def with_subject(self, subject: Union[str, Matcher[str]]):
+        """Matches if the email subject matches the given value or matcher.
+
+        :param subject: The expected subject string or matcher.
+        :return: Self, for chaining.
+        """
         self.subject = wrap_matcher(subject)
         return self
 
     def and_subject(self, subject: Union[str, Matcher[str]]):
+        """Matches if the email subject matches the given value or matcher.
+
+        A synonym for :meth:`with_subject`.
+
+        :param subject: The expected subject string or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_subject(subject)
 
     def with_body_text(self, body_text: Union[str, Matcher[str]]):
+        """Matches if the email body text matches the given value or matcher.
+
+        :param body_text: The expected body string or matcher.
+        :return: Self, for chaining.
+        """
         self.body_text = wrap_matcher(body_text)
         return self
 
     def and_body_text(self, body_text: Union[str, Matcher[str]]):
+        """Matches if the email body text matches the given value or matcher.
+
+        A synonym for :meth:`with_body_text`.
+
+        :param body_text: The expected body string or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_body_text(body_text)
 
 

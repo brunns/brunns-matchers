@@ -81,37 +81,92 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         describe_field_match(self.headers, "headers", response.headers, match_description)
 
     def with_status_code(self, status_code: Union[int, Matcher[int]]) -> "WerkzeugResponseMatcher":
+        """Matches if the response status code matches the given value or matcher.
+
+        :param status_code: The expected status code (e.g. 200) or matcher.
+        :return: Self, for chaining.
+        """
         self.status_code = wrap_matcher(status_code)
         return self
 
     def and_status_code(self, status_code: Union[int, Matcher[int]]) -> "WerkzeugResponseMatcher":
+        """Matches if the response status code matches the given value or matcher.
+
+        A synonym for :meth:`with_status_code`.
+
+        :param status_code: The expected status code or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_status_code(status_code)
 
     def with_text(self, text: Union[str, Matcher[str]]) -> "WerkzeugResponseMatcher":
+        """Matches if the response body text matches the given value or matcher.
+
+        :param text: The expected body text string or matcher.
+        :return: Self, for chaining.
+        """
         self.text = wrap_matcher(text)
         return self
 
     def and_text(self, text: Union[str, Matcher[str]]) -> "WerkzeugResponseMatcher":
+        """Matches if the response body text matches the given value or matcher.
+
+        A synonym for :meth:`with_text`.
+
+        :param text: The expected body text string or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_text(text)
 
     def with_mimetype(self, mimetype: Union[str, Matcher[str]]) -> "WerkzeugResponseMatcher":
+        """Matches if the response mimetype matches the given value or matcher.
+
+        :param mimetype: The expected mimetype string or matcher.
+        :return: Self, for chaining.
+        """
         self.mimetype = wrap_matcher(mimetype)
         return self
 
     def and_mimetype(self, mimetype: Union[str, Matcher[str]]) -> "WerkzeugResponseMatcher":
+        """Matches if the response mimetype matches the given value or matcher.
+
+        A synonym for :meth:`with_mimetype`.
+
+        :param mimetype: The expected mimetype string or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_mimetype(mimetype)
 
     def with_json(self, json: Union[JsonStructure, Matcher[JsonStructure]]) -> "WerkzeugResponseMatcher":
+        """Matches if the response JSON body matches the given value or matcher.
+
+        The response body is parsed as JSON before matching.
+
+        :param json: The expected JSON structure or matcher.
+        :return: Self, for chaining.
+        """
         self.json = wrap_matcher(json)
         return self
 
     def and_json(self, json: Union[JsonStructure, Matcher[JsonStructure]]) -> "WerkzeugResponseMatcher":
+        """Matches if the response JSON body matches the given value or matcher.
+
+        A synonym for :meth:`with_json`.
+
+        :param json: The expected JSON structure or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_json(json)
 
     def with_headers(
         self,
         headers: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
     ) -> "WerkzeugResponseMatcher":
+        """Matches if the response headers match the given value or matcher.
+
+        :param headers: The expected headers dictionary or matcher.
+        :return: Self, for chaining.
+        """
         self.headers = wrap_matcher(headers)
         return self
 
@@ -119,6 +174,13 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         self,
         headers: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
     ) -> "WerkzeugResponseMatcher":
+        """Matches if the response headers match the given value or matcher.
+
+        A synonym for :meth:`with_headers`.
+
+        :param headers: The expected headers dictionary or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_headers(headers)
 
 

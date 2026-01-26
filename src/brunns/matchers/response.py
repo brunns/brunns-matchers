@@ -162,37 +162,92 @@ class ResponseMatcher(BaseMatcher[ResponseType]):
         describe_field_match(self.encoding, "encoding", response.encoding, match_description)
 
     def with_status_code(self, status_code: Union[int, Matcher[int]]):
+        """Matches if the response status code matches the given value or matcher.
+
+        :param status_code: The expected status code (e.g. 200) or a matcher (e.g. ``between(200, 299)``).
+        :return: Self, for chaining.
+        """
         self.status_code = wrap_matcher(status_code)
         return self
 
     def and_status_code(self, status_code: Union[int, Matcher[int]]):
+        """Matches if the response status code matches the given value or matcher.
+
+        A synonym for :meth:`with_status_code`.
+
+        :param status_code: The expected status code.
+        :return: Self, for chaining.
+        """
         return self.with_status_code(status_code)
 
     def with_body(self, body: Union[str, Matcher[str]]):
+        """Matches if the response body text matches the given value or matcher.
+
+        :param body: The expected body string or matcher.
+        :return: Self, for chaining.
+        """
         self.body = wrap_matcher(body)
         return self
 
     def and_body(self, body: Union[str, Matcher[str]]):
+        """Matches if the response body text matches the given value or matcher.
+
+        A synonym for :meth:`with_body`.
+
+        :param body: The expected body string or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_body(body)
 
     def with_content(self, content: Union[bytes, Matcher[bytes]]):
+        """Matches if the response binary content matches the given value or matcher.
+
+        :param content: The expected bytes or matcher.
+        :return: Self, for chaining.
+        """
         self.content = wrap_matcher(content)
         return self
 
     def and_content(self, content: Union[bytes, Matcher[bytes]]):
+        """Matches if the response binary content matches the given value or matcher.
+
+        A synonym for :meth:`with_content`.
+
+        :param content: The expected bytes or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_content(content)
 
     def with_json(self, json: Union[JsonStructure, Matcher[JsonStructure]]):
+        """Matches if the response JSON body matches the given value or matcher.
+
+        The response body is parsed as JSON before matching.
+
+        :param json: The expected JSON structure (dict, list, etc.) or matcher.
+        :return: Self, for chaining.
+        """
         self.json = wrap_matcher(json)
         return self
 
     def and_json(self, json: Union[JsonStructure, Matcher[JsonStructure]]):
+        """Matches if the response JSON body matches the given value or matcher.
+
+        A synonym for :meth:`with_json`.
+
+        :param json: The expected JSON structure or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_json(json)
 
     def with_headers(
         self,
         headers: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
     ):
+        """Matches if the response headers match the given value or matcher.
+
+        :param headers: The expected headers dictionary or matcher.
+        :return: Self, for chaining.
+        """
         self.headers = wrap_matcher(headers)
         return self
 
@@ -200,12 +255,24 @@ class ResponseMatcher(BaseMatcher[ResponseType]):
         self,
         headers: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
     ):
+        """Matches if the response headers match the given value or matcher.
+
+        A synonym for :meth:`with_headers`.
+
+        :param headers: The expected headers dictionary or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_headers(headers)
 
     def with_cookies(
         self,
         cookies: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
     ):
+        """Matches if the response cookies match the given value or matcher.
+
+        :param cookies: The expected cookies dictionary or matcher.
+        :return: Self, for chaining.
+        """
         self.cookies = wrap_matcher(cookies)
         return self
 
@@ -213,13 +280,32 @@ class ResponseMatcher(BaseMatcher[ResponseType]):
         self,
         cookies: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
     ):
+        """Matches if the response cookies match the given value or matcher.
+
+        A synonym for :meth:`with_cookies`.
+
+        :param cookies: The expected cookies dictionary or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_cookies(cookies)
 
     def with_elapsed(self, elapsed: Union[timedelta, Matcher[timedelta]]):
+        """Matches if the response elapsed time matches the given value or matcher.
+
+        :param elapsed: The expected timedelta or matcher.
+        :return: Self, for chaining.
+        """
         self.elapsed = wrap_matcher(elapsed)
         return self
 
     def and_elapsed(self, elapsed: Union[timedelta, Matcher[timedelta]]):
+        """Matches if the response elapsed time matches the given value or matcher.
+
+        A synonym for :meth:`with_elapsed`.
+
+        :param elapsed: The expected timedelta or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_elapsed(elapsed)
 
     def with_history(
@@ -241,6 +327,11 @@ class ResponseMatcher(BaseMatcher[ResponseType]):
             ],
         ],
     ):
+        """Matches if the response history (redirects) matches the given sequence or matcher.
+
+        :param history: The expected sequence of responses/matchers or a sequence matcher.
+        :return: Self, for chaining.
+        """
         self.history = wrap_matcher(history)
         return self
 
@@ -251,20 +342,51 @@ class ResponseMatcher(BaseMatcher[ResponseType]):
             Matcher[Sequence[Union[ResponseType, Matcher[ResponseType]]]],
         ],
     ):
+        """Matches if the response history (redirects) matches the given sequence or matcher.
+
+        A synonym for :meth:`with_history`.
+
+        :param history: The expected sequence or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_history(history)
 
     def with_url(self, url: Union[furl, str, Matcher[Union[furl, str]]]):
+        """Matches if the response URL matches the given value or matcher.
+
+        :param url: The expected URL string, object, or matcher.
+        :return: Self, for chaining.
+        """
         self.url = wrap_matcher(url)
         return self
 
     def and_url(self, url: Union[furl, str, Matcher[Union[furl, str]]]):
+        """Matches if the response URL matches the given value or matcher.
+
+        A synonym for :meth:`with_url`.
+
+        :param url: The expected URL string, object, or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_url(url)
 
     def with_encoding(self, encoding: Union[Optional[str], Matcher[Optional[str]]]):
+        """Matches if the response encoding matches the given value or matcher.
+
+        :param encoding: The expected encoding string or matcher.
+        :return: Self, for chaining.
+        """
         self.encoding = wrap_matcher(encoding)
         return self
 
     def and_encoding(self, encoding: Union[Optional[str], Matcher[Optional[str]]]):
+        """Matches if the response encoding matches the given value or matcher.
+
+        A synonym for :meth:`with_encoding`.
+
+        :param encoding: The expected encoding string or matcher.
+        :return: Self, for chaining.
+        """
         return self.with_encoding(encoding)
 
 

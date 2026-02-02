@@ -1,5 +1,5 @@
 import difflib
-from typing import Any, Union
+from typing import Any
 
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
@@ -11,7 +11,7 @@ from hamcrest.core.string_description import StringDescription
 
 
 class MismatchesWith(BaseMatcher[Matcher]):
-    def __init__(self, value_not_to_match: Any, expected_message: Union[str, Matcher[str]]) -> None:
+    def __init__(self, value_not_to_match: Any, expected_message: str | Matcher[str]) -> None:
         super().__init__()
         self.value_not_to_match = value_not_to_match
         self.expected_message: Matcher[str] = wrap_matcher(expected_message)
@@ -41,7 +41,7 @@ class MismatchesWith(BaseMatcher[Matcher]):
             description.append_text("\ndiff:\n").append_text("\n".join(diff))
 
 
-def mismatches_with(value_not_to_match: Any, expected_message: Union[str, Matcher[str]]) -> MismatchesWith:
+def mismatches_with(value_not_to_match: Any, expected_message: str | Matcher[str]) -> MismatchesWith:
     """Matches if the matcher under test fails to match the value, and provides the expected mismatch message.
 
     This is useful for testing custom matchers to ensure they reject invalid values and provide
@@ -63,7 +63,7 @@ def mismatches(value_not_to_match: Any) -> MismatchesWith:
 
 
 class MatchesWith(BaseMatcher[Matcher]):
-    def __init__(self, value_to_match: Any, expected_message: Union[str, Matcher[str]]) -> None:
+    def __init__(self, value_to_match: Any, expected_message: str | Matcher[str]) -> None:
         super().__init__()
         self.value_to_match = value_to_match
         self.expected_message: Matcher[str] = wrap_matcher(expected_message)
@@ -96,7 +96,7 @@ class MatchesWith(BaseMatcher[Matcher]):
             description.append_text("\ndiff:\n").append_text("\n".join(diff))
 
 
-def matches_with(value_to_match: Any, expected_message: Union[str, Matcher[str]]) -> MatchesWith:
+def matches_with(value_to_match: Any, expected_message: str | Matcher[str]) -> MatchesWith:
     """Matches if the matcher under test successfully matches the value, and provides the expected match description.
 
     :param value_to_match: The value that the matcher under test should accept.

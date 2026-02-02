@@ -1,5 +1,5 @@
 from collections.abc import Mapping, Sequence
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 from bs4 import BeautifulSoup, Tag  # type: ignore[attr-defined]
 from hamcrest import all_of, anything, contains_exactly, has_entry, has_item
@@ -9,15 +9,15 @@ from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 
 ANYTHING = anything()
-ATTR_MATCHER = Union[Matcher[Mapping[str, Union[str, Matcher[str]]]], Mapping[str, Union[str, Matcher[str]]]]
+ATTR_MATCHER = Matcher[Mapping[str, str | Matcher[str]]] | Mapping[str, str | Matcher[str]]
 
 
 class HtmlWithTag(BaseMatcher[str]):
     def __init__(
         self,
-        tag_matcher: Union[str, Matcher[Tag]],
-        name: Optional[str] = None,
-        id_: Optional[str] = None,
+        tag_matcher: str | Matcher[Tag],
+        name: str | None = None,
+        id_: str | None = None,
     ) -> None:
         self.name = name
         self.id_ = id_
@@ -54,18 +54,15 @@ class HtmlWithTag(BaseMatcher[str]):
 class TagWith(BaseMatcher[Tag]):
     def __init__(
         self,
-        name: Union[str, Matcher[str]] = ANYTHING,
-        string: Union[str, Matcher[str]] = ANYTHING,
-        clazz: Union[str, Matcher[str]] = ANYTHING,
-        attributes: Union[
-            Mapping[str, Union[str, Matcher[str]]],
-            Matcher[Mapping[str, Union[str, Matcher[str]]]],
-        ] = ANYTHING,
+        name: str | Matcher[str] = ANYTHING,
+        string: str | Matcher[str] = ANYTHING,
+        clazz: str | Matcher[str] = ANYTHING,
+        attributes: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]] = ANYTHING,
     ) -> None:
         self.name: Matcher[str] = wrap_matcher(name)
         self.string: Matcher[str] = wrap_matcher(string)
         self.clazz: Matcher[str] = wrap_matcher(clazz)
-        self.attributes: Matcher[Mapping[str, Union[str, Matcher[str]]]] = wrap_matcher(attributes)
+        self.attributes: Matcher[Mapping[str, str | Matcher[str]]] = wrap_matcher(attributes)
 
     def _matches(self, tag: Tag) -> bool:
         # TODO - remove type ignore when https://github.com/python/mypy/issues/3283 is resolved.
@@ -89,7 +86,7 @@ class TagWith(BaseMatcher[Tag]):
 
 
 class HtmlHasTable(BaseMatcher[str]):
-    def __init__(self, table_matcher: Matcher[Tag], id_: Union[str, Matcher[str]] = ANYTHING) -> None:
+    def __init__(self, table_matcher: Matcher[Tag], id_: str | Matcher[str] = ANYTHING) -> None:
         self.table_matcher = table_matcher
         self.id_: Matcher[str] = wrap_matcher(id_)
 
@@ -108,7 +105,7 @@ class TableHasRow(BaseMatcher[Tag]):
         self,
         row_matcher: Matcher[Tag] = ANYTHING,
         cells_matcher: Matcher[Sequence[Tag]] = ANYTHING,
-        index_matcher: Union[int, Matcher[int]] = ANYTHING,
+        index_matcher: int | Matcher[int] = ANYTHING,
         *,
         header_row: bool = False,
     ) -> None:
@@ -148,7 +145,7 @@ class TableHasRow(BaseMatcher[Tag]):
         mismatch_description.append_text("\n\nfound rows:\n").append_list("", "\n", "", table.find_all("tr"))
 
 
-def has_title(title: Union[str, Matcher[str]]) -> HtmlWithTag:
+def has_title(title: str | Matcher[str]) -> HtmlWithTag:
     """Matches HTML containing a <title> tag with the specified text content.
 
     :param title: The string content or a matcher for the content of the title tag.
@@ -174,7 +171,7 @@ def has_id_tag(id_, matcher) -> HtmlWithTag:
     return HtmlWithTag(matcher, id_=id_)
 
 
-def tag_has_string(matcher: Union[str, Matcher[str]]) -> TagWith:
+def tag_has_string(matcher: str | Matcher[str]) -> TagWith:
     """Matches a BeautifulSoup Tag if its text content matches the given criteria.
 
     :param matcher: A string or string matcher to validate against the tag's content.
@@ -182,7 +179,7 @@ def tag_has_string(matcher: Union[str, Matcher[str]]) -> TagWith:
     return TagWith(string=matcher)
 
 
-def has_class(clazz: Union[str, Matcher[str]]) -> TagWith:
+def has_class(clazz: str | Matcher[str]) -> TagWith:
     """Matches a BeautifulSoup Tag if it possesses the specified CSS class.
 
     :param clazz: A string or string matcher to find within the tag's 'class' attribute list.
@@ -226,7 +223,7 @@ def has_header_row(cells_matcher=ANYTHING, row_matcher=ANYTHING) -> TableHasRow:
     return has_row(cells_match=cells_matcher, row_matches=row_matcher, header_row=True)
 
 
-def has_id(id_: Union[str, Matcher[str]]) -> TagWith:
+def has_id(id_: str | Matcher[str]) -> TagWith:
     """Matches a BeautifulSoup Tag if it has the specified element ID.
 
     :param id_: The string ID or a matcher for the ID.
@@ -235,7 +232,7 @@ def has_id(id_: Union[str, Matcher[str]]) -> TagWith:
 
 
 def has_attributes(
-    matcher: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
+    matcher: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
 ) -> TagWith:
     """Matches a BeautifulSoup Tag if its attributes dictionary matches the provided matcher.
 
@@ -245,9 +242,9 @@ def has_attributes(
 
 
 def has_link(
-    id_: Union[str, Matcher[str]] = ANYTHING,
-    clazz: Union[str, Matcher[str]] = ANYTHING,
-    href: Union[str, Matcher[str]] = ANYTHING,
+    id_: str | Matcher[str] = ANYTHING,
+    clazz: str | Matcher[str] = ANYTHING,
+    href: str | Matcher[str] = ANYTHING,
 ) -> HtmlWithTag:
     """Matches HTML containing an anchor (<a>) tag with specific attributes.
 
@@ -261,9 +258,9 @@ def has_link(
 
 
 def has_image(
-    id_: Union[str, Matcher[str]] = ANYTHING,
-    clazz: Union[str, Matcher[str]] = ANYTHING,
-    src: Union[str, Matcher[str]] = ANYTHING,
+    id_: str | Matcher[str] = ANYTHING,
+    clazz: str | Matcher[str] = ANYTHING,
+    src: str | Matcher[str] = ANYTHING,
 ) -> HtmlWithTag:
     """Matches HTML containing an image (<img>) tag with specific attributes.
 

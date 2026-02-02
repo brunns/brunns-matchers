@@ -1,5 +1,5 @@
 import json
-from typing import Any, Union
+from typing import Any
 
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
@@ -17,7 +17,7 @@ class JsonMatching(BaseMatcher[str]):
     :param matcher: Value to match against deserialised JSON.
     """
 
-    def __init__(self, matcher: Union[JsonStructure, Matcher[JsonStructure]]) -> None:
+    def __init__(self, matcher: JsonStructure | Matcher[JsonStructure]) -> None:
         self.matcher: Matcher[JsonStructure] = wrap_matcher(matcher)
 
     def describe_to(self, description: Description) -> None:
@@ -39,7 +39,7 @@ class JsonMatching(BaseMatcher[str]):
             self.matcher.describe_mismatch(loads, description)
 
 
-def json_matching(matcher: Union[Matcher[JsonStructure], JsonStructure]) -> JsonMatching:
+def json_matching(matcher: Matcher[JsonStructure] | JsonStructure) -> JsonMatching:
     """Matches string containing JSON data.
 
     :param matcher: Value to match against deserialised JSON.

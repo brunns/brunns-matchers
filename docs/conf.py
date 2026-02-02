@@ -13,7 +13,6 @@
 #
 import os
 import sys
-from typing import Union
 
 import bs4.element
 
@@ -196,4 +195,4 @@ epub_exclude_files = ["search.html"]
 # -- Monkey patching missing types -------------------------------------------
 
 if not hasattr(bs4.element, "_RawAttributeValue"):
-    bs4.element._RawAttributeValue = Union[str, list[str]]  # noqa: SLF001
+    bs4.element._RawAttributeValue = str | list[str]  # noqa: SLF001

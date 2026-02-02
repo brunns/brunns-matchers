@@ -2,7 +2,7 @@ import collections
 import inspect
 from collections.abc import Iterable, Mapping
 from itertools import zip_longest
-from typing import Any, Optional, Union
+from typing import Any
 
 from hamcrest import (
     all_of,
@@ -28,7 +28,7 @@ def has_repr(expected: Any) -> Matcher[Any]:
 
 
 class HasRepr(BaseMatcher[Any]):
-    def __init__(self, expected: Union[str, Matcher[str]]) -> None:
+    def __init__(self, expected: str | Matcher[str]) -> None:
         self.expected: Matcher[str] = wrap_matcher(expected)
 
     def _matches(self, actual: Any) -> bool:
@@ -39,7 +39,7 @@ class HasRepr(BaseMatcher[Any]):
         self.expected.describe_to(description)
 
 
-def has_identical_properties_to(expected: Any, ignoring: Optional[Iterable[str]] = None) -> Matcher[Any]:
+def has_identical_properties_to(expected: Any, ignoring: Iterable[str] | None = None) -> Matcher[Any]:
     """Matches an object if its public properties and attributes are identical to the expected object's.
 
     This matcher performs a deep recursive comparison of all public attributes (those not starting with ``_``)
@@ -53,7 +53,7 @@ def has_identical_properties_to(expected: Any, ignoring: Optional[Iterable[str]]
 
 
 class HasIdenticalPropertiesTo(BaseMatcher[Any]):
-    def __init__(self, expected: Any, ignoring: Optional[Iterable[str]] = None) -> None:
+    def __init__(self, expected: Any, ignoring: Iterable[str] | None = None) -> None:
         self.expected = expected
         self.ignoring = ignoring
 
@@ -68,7 +68,7 @@ class HasIdenticalPropertiesTo(BaseMatcher[Any]):
             description.append_text(" ignoring properties named ").append_list("{", ", ", "}", self.ignoring)
 
 
-def equal_vars(left: Any, right: Any, ignoring: Optional[Iterable[str]] = None) -> bool:
+def equal_vars(left: Any, right: Any, ignoring: Iterable[str] | None = None) -> bool:
     """Test if two objects are equal using public vars() and properties if available, with == otherwise.
 
     :param left: The first object to compare.
@@ -100,7 +100,7 @@ def _equal_vars_for_non_objects(left: Any, right: Any) -> bool:
     return left == right
 
 
-def _vars_and_properties(obj: Any, ignoring: Optional[Iterable[str]] = None) -> Mapping[str, Any]:
+def _vars_and_properties(obj: Any, ignoring: Iterable[str] | None = None) -> Mapping[str, Any]:
     """Get an object's public vars() and properties. Raises TypeError if not an object with vars()."""
     ignoring = ignoring or {}
     vars_and_props = {

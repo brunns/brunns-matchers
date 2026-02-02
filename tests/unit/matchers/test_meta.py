@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 import pytest
 from hamcrest import assert_that, has_items, has_string, not_, starts_with
@@ -13,7 +12,7 @@ from brunns.matchers.meta import BaseAutoMatcher
 class Status:
     id: int
     code: str
-    reason: Optional[str] = None
+    reason: str | None = None
 
 
 def test_metaclass():

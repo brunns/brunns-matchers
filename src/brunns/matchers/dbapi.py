@@ -2,7 +2,6 @@ import logging
 from collections.abc import Iterable
 from typing import (
     Any,
-    Optional,
     Protocol,  # type: ignore[attr-defined]
     cast,
 )
@@ -25,7 +24,7 @@ class Cursor(Protocol):
         ...
 
     @property
-    def description(self) -> Optional[tuple[tuple[str, str]]]:  # pragma: no cover
+    def description(self) -> tuple[tuple[str, str]] | None:  # pragma: no cover
         ...
 
 

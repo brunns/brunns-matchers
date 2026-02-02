@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime
-from typing import Optional, Union
 
 import feedparser
 import httpx
@@ -23,10 +22,10 @@ class RssFeedMatcher(BaseMatcher[str]):
         self.title: Matcher[str] = ANYTHING
         self.link: Matcher[URL] = ANYTHING
         self.description: Matcher[str] = ANYTHING
-        self.published: Matcher[Union[datetime, None]] = ANYTHING
+        self.published: Matcher[datetime | None] = ANYTHING
         self.entries: Matcher[list[feedparser.FeedParserDict]] = ANYTHING
 
-    def _matches(self, item: Union[str, URL, furl]) -> bool:
+    def _matches(self, item: str | URL | furl) -> bool:
         try:
             actual = feedparser.parse(str(item))
         except (ValueError, httpx.HTTPError):
@@ -83,42 +82,42 @@ class RssFeedMatcher(BaseMatcher[str]):
         describe_field_match(self.published, "published", published, match_description)
         describe_field_match(self.entries, "entries", actual.entries, match_description)
 
-    def _get_published_date(self, feed) -> Optional[datetime]:
+    def _get_published_date(self, feed) -> datetime | None:
         return datetime.strptime(feed.published, "%a, %d %b %Y %H:%M:%S %z") if "published" in feed else None
 
-    def with_title(self, title: Union[str, Matcher[str]]):
+    def with_title(self, title: str | Matcher[str]):
         self.title = wrap_matcher(title)
         return self
 
-    def and_title(self, title: Union[str, Matcher[str]]):
+    def and_title(self, title: str | Matcher[str]):
         return self.with_title(title)
 
-    def with_link(self, link: Union[URL, Matcher[URL]]):
+    def with_link(self, link: URL | Matcher[URL]):
         self.link = wrap_matcher(link)
         return self
 
-    def and_link(self, link: Union[URL, Matcher[URL]]):
+    def and_link(self, link: URL | Matcher[URL]):
         return self.with_link(link)
 
-    def with_description(self, description: Union[str, Matcher[str]]):
+    def with_description(self, description: str | Matcher[str]):
         self.description = wrap_matcher(description)
         return self
 
-    def and_description(self, description: Union[str, Matcher[str]]):
+    def and_description(self, description: str | Matcher[str]):
         return self.with_description(description)
 
-    def with_published(self, published: Union[datetime, None, Matcher[Union[datetime, None]]]):
+    def with_published(self, published: datetime | None | Matcher[datetime | None]):
         self.published = wrap_matcher(published)
         return self
 
-    def and_published(self, published: Union[datetime, None, Matcher[Union[datetime, None]]]):
+    def and_published(self, published: datetime | None | Matcher[datetime | None]):
         return self.with_published(published)
 
-    def with_entries(self, entries: Union[list[feedparser.FeedParserDict], Matcher[list[feedparser.FeedParserDict]]]):
+    def with_entries(self, entries: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]):
         self.entries = wrap_matcher(entries)
         return self
 
-    def and_entries(self, entries: Union[list[feedparser.FeedParserDict], Matcher[list[feedparser.FeedParserDict]]]):
+    def and_entries(self, entries: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]):
         return self.with_entries(entries)
 
 
@@ -127,7 +126,7 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict]):
         self.title: Matcher[str] = ANYTHING
         self.link: Matcher[URL] = ANYTHING
         self.description: Matcher[str] = ANYTHING
-        self.published: Matcher[Union[datetime, None]] = ANYTHING
+        self.published: Matcher[datetime | None] = ANYTHING
 
     def _matches(self, item: feedparser.FeedParserDict) -> bool:
         published = self._get_published_date(item)
@@ -161,35 +160,35 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict]):
         published = self._get_published_date(item)
         describe_field_mismatch(self.published, "published", published, mismatch_description)
 
-    def _get_published_date(self, entry: feedparser.FeedParserDict) -> Optional[datetime]:
+    def _get_published_date(self, entry: feedparser.FeedParserDict) -> datetime | None:
         return datetime.strptime(entry["published"], "%a, %d %b %Y %H:%M:%S %z") if "published" in entry else None
 
-    def with_title(self, title: Union[str, Matcher[str]]):
+    def with_title(self, title: str | Matcher[str]):
         self.title = wrap_matcher(title)
         return self
 
-    def and_title(self, title: Union[str, Matcher[str]]):
+    def and_title(self, title: str | Matcher[str]):
         return self.with_title(title)
 
-    def with_link(self, link: Union[URL, Matcher[URL]]):
+    def with_link(self, link: URL | Matcher[URL]):
         self.link = wrap_matcher(link)
         return self
 
-    def and_link(self, link: Union[URL, Matcher[URL]]):
+    def and_link(self, link: URL | Matcher[URL]):
         return self.with_link(link)
 
-    def with_description(self, description: Union[str, Matcher[str]]):
+    def with_description(self, description: str | Matcher[str]):
         self.description = wrap_matcher(description)
         return self
 
-    def and_description(self, description: Union[str, Matcher[str]]):
+    def and_description(self, description: str | Matcher[str]):
         return self.with_description(description)
 
-    def with_published(self, published: Union[datetime, None, Matcher[Union[datetime, None]]]):
+    def with_published(self, published: datetime | None | Matcher[datetime | None]):
         self.published = wrap_matcher(published)
         return self
 
-    def and_published(self, published: Union[datetime, None, Matcher[Union[datetime, None]]]):
+    def and_published(self, published: datetime | None | Matcher[datetime | None]):
         return self.with_published(published)
 
 

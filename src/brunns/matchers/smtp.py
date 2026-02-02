@@ -2,7 +2,7 @@ import email
 import re
 from dataclasses import dataclass
 from re import Match
-from typing import Union, cast
+from typing import cast
 
 from deprecated import deprecated
 from hamcrest import anything
@@ -44,12 +44,12 @@ def is_email() -> "EmailWith":
 class EmailWith(BaseMatcher[str]):
     def __init__(
         self,
-        to_name: Union[str, Matcher[str]] = ANYTHING,
-        to_address: Union[str, Matcher[str]] = ANYTHING,
-        from_name: Union[str, Matcher[str]] = ANYTHING,
-        from_address: Union[str, Matcher[str]] = ANYTHING,
-        subject: Union[str, Matcher[str]] = ANYTHING,
-        body_text: Union[str, Matcher[str]] = ANYTHING,
+        to_name: str | Matcher[str] = ANYTHING,
+        to_address: str | Matcher[str] = ANYTHING,
+        from_name: str | Matcher[str] = ANYTHING,
+        from_address: str | Matcher[str] = ANYTHING,
+        subject: str | Matcher[str] = ANYTHING,
+        body_text: str | Matcher[str] = ANYTHING,
     ) -> None:
         self.to_name: Matcher[str] = wrap_matcher(to_name)
         self.to_address: Matcher[str] = wrap_matcher(to_address)
@@ -116,7 +116,7 @@ class EmailWith(BaseMatcher[str]):
         describe_field_match(self.subject, "subject", email.subject, match_description)
         describe_field_match(self.body_text, "body", email.body_text, match_description)
 
-    def with_to_name(self, to_name: Union[str, Matcher[str]]):
+    def with_to_name(self, to_name: str | Matcher[str]):
         """Matches if the email 'To' name matches the given value or matcher.
 
         :param to_name: The expected recipient name or matcher.
@@ -125,7 +125,7 @@ class EmailWith(BaseMatcher[str]):
         self.to_name = wrap_matcher(to_name)
         return self
 
-    def and_to_name(self, to_name: Union[str, Matcher[str]]):
+    def and_to_name(self, to_name: str | Matcher[str]):
         """Matches if the email 'To' name matches the given value or matcher.
 
         A synonym for :meth:`with_to_name`.
@@ -135,7 +135,7 @@ class EmailWith(BaseMatcher[str]):
         """
         return self.with_to_name(to_name)
 
-    def with_to_address(self, to_address: Union[str, Matcher[str]]):
+    def with_to_address(self, to_address: str | Matcher[str]):
         """Matches if the email 'To' address matches the given value or matcher.
 
         :param to_address: The expected recipient email address or matcher.
@@ -144,7 +144,7 @@ class EmailWith(BaseMatcher[str]):
         self.to_address = wrap_matcher(to_address)
         return self
 
-    def and_to_address(self, to_address: Union[str, Matcher[str]]):
+    def and_to_address(self, to_address: str | Matcher[str]):
         """Matches if the email 'To' address matches the given value or matcher.
 
         A synonym for :meth:`with_to_address`.
@@ -154,7 +154,7 @@ class EmailWith(BaseMatcher[str]):
         """
         return self.with_to_address(to_address)
 
-    def with_from_name(self, from_name: Union[str, Matcher[str]]):
+    def with_from_name(self, from_name: str | Matcher[str]):
         """Matches if the email 'From' name matches the given value or matcher.
 
         :param from_name: The expected sender name or matcher.
@@ -163,7 +163,7 @@ class EmailWith(BaseMatcher[str]):
         self.from_name = wrap_matcher(from_name)
         return self
 
-    def and_from_name(self, from_name: Union[str, Matcher[str]]):
+    def and_from_name(self, from_name: str | Matcher[str]):
         """Matches if the email 'From' name matches the given value or matcher.
 
         A synonym for :meth:`with_from_name`.
@@ -173,7 +173,7 @@ class EmailWith(BaseMatcher[str]):
         """
         return self.with_from_name(from_name)
 
-    def with_from_address(self, from_address: Union[str, Matcher[str]]):
+    def with_from_address(self, from_address: str | Matcher[str]):
         """Matches if the email 'From' address matches the given value or matcher.
 
         :param from_address: The expected sender email address or matcher.
@@ -182,7 +182,7 @@ class EmailWith(BaseMatcher[str]):
         self.from_address = wrap_matcher(from_address)
         return self
 
-    def and_from_address(self, from_address: Union[str, Matcher[str]]):
+    def and_from_address(self, from_address: str | Matcher[str]):
         """Matches if the email 'From' address matches the given value or matcher.
 
         A synonym for :meth:`with_from_address`.
@@ -192,7 +192,7 @@ class EmailWith(BaseMatcher[str]):
         """
         return self.with_from_address(from_address)
 
-    def with_subject(self, subject: Union[str, Matcher[str]]):
+    def with_subject(self, subject: str | Matcher[str]):
         """Matches if the email subject matches the given value or matcher.
 
         :param subject: The expected subject string or matcher.
@@ -201,7 +201,7 @@ class EmailWith(BaseMatcher[str]):
         self.subject = wrap_matcher(subject)
         return self
 
-    def and_subject(self, subject: Union[str, Matcher[str]]):
+    def and_subject(self, subject: str | Matcher[str]):
         """Matches if the email subject matches the given value or matcher.
 
         A synonym for :meth:`with_subject`.
@@ -211,7 +211,7 @@ class EmailWith(BaseMatcher[str]):
         """
         return self.with_subject(subject)
 
-    def with_body_text(self, body_text: Union[str, Matcher[str]]):
+    def with_body_text(self, body_text: str | Matcher[str]):
         """Matches if the email body text matches the given value or matcher.
 
         :param body_text: The expected body string or matcher.
@@ -220,7 +220,7 @@ class EmailWith(BaseMatcher[str]):
         self.body_text = wrap_matcher(body_text)
         return self
 
-    def and_body_text(self, body_text: Union[str, Matcher[str]]):
+    def and_body_text(self, body_text: str | Matcher[str]):
         """Matches if the email body text matches the given value or matcher.
 
         A synonym for :meth:`with_body_text`.
@@ -233,12 +233,12 @@ class EmailWith(BaseMatcher[str]):
 
 @deprecated(version="2.3.0", reason="Use builder style is_email()")
 def email_with(
-    to_name: Union[str, Matcher[str]] = ANYTHING,
-    to_address: Union[str, Matcher[str]] = ANYTHING,
-    from_name: Union[str, Matcher[str]] = ANYTHING,
-    from_address: Union[str, Matcher[str]] = ANYTHING,
-    subject: Union[str, Matcher[str]] = ANYTHING,
-    body_text: Union[str, Matcher[str]] = ANYTHING,
+    to_name: str | Matcher[str] = ANYTHING,
+    to_address: str | Matcher[str] = ANYTHING,
+    from_name: str | Matcher[str] = ANYTHING,
+    from_address: str | Matcher[str] = ANYTHING,
+    subject: str | Matcher[str] = ANYTHING,
+    body_text: str | Matcher[str] = ANYTHING,
 ) -> Matcher:  # pragma: no cover
     """Matches an email string with specific attributes.
 

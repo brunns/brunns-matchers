@@ -1,5 +1,5 @@
 from itertools import chain, zip_longest
-from typing import Any, Union, cast
+from typing import Any, cast
 from unittest.mock import Mock, _Call
 
 from hamcrest.core.base_matcher import BaseMatcher
@@ -104,7 +104,7 @@ class CallHasArgs(BaseMatcher[_Call]):
         ).append_text(")")
 
 
-def call_has_arg(arg: Union[int, str], expected: Any) -> BaseMatcher[_Call]:
+def call_has_arg(arg: int | str, expected: Any) -> BaseMatcher[_Call]:
     """Matches a ``mock.call`` if a specific positional or keyword argument satisfies the matcher.
 
     :param arg: If an integer, refers to the index of a positional argument.

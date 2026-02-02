@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import Any, Union, cast
+from typing import Any, cast
 
 from hamcrest import anything, described_as, has_entry
 from hamcrest.core.base_matcher import BaseMatcher
@@ -45,7 +45,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         self.text: Matcher[str] = ANYTHING
         self.mimetype: Matcher[str] = ANYTHING
         self.json: Matcher[JsonStructure] = ANYTHING
-        self.headers: Matcher[Mapping[str, Union[str, Matcher[str]]]] = ANYTHING
+        self.headers: Matcher[Mapping[str, str | Matcher[str]]] = ANYTHING
 
     def _matches(self, response: Response) -> bool:
         return (
@@ -80,7 +80,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         describe_field_match(self.json, "json", response.json, match_description)
         describe_field_match(self.headers, "headers", response.headers, match_description)
 
-    def with_status_code(self, status_code: Union[int, Matcher[int]]) -> "WerkzeugResponseMatcher":
+    def with_status_code(self, status_code: int | Matcher[int]) -> "WerkzeugResponseMatcher":
         """Matches if the response status code matches the given value or matcher.
 
         :param status_code: The expected status code (e.g. 200) or matcher.
@@ -89,7 +89,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         self.status_code = wrap_matcher(status_code)
         return self
 
-    def and_status_code(self, status_code: Union[int, Matcher[int]]) -> "WerkzeugResponseMatcher":
+    def and_status_code(self, status_code: int | Matcher[int]) -> "WerkzeugResponseMatcher":
         """Matches if the response status code matches the given value or matcher.
 
         A synonym for :meth:`with_status_code`.
@@ -99,7 +99,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         """
         return self.with_status_code(status_code)
 
-    def with_text(self, text: Union[str, Matcher[str]]) -> "WerkzeugResponseMatcher":
+    def with_text(self, text: str | Matcher[str]) -> "WerkzeugResponseMatcher":
         """Matches if the response body text matches the given value or matcher.
 
         :param text: The expected body text string or matcher.
@@ -108,7 +108,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         self.text = wrap_matcher(text)
         return self
 
-    def and_text(self, text: Union[str, Matcher[str]]) -> "WerkzeugResponseMatcher":
+    def and_text(self, text: str | Matcher[str]) -> "WerkzeugResponseMatcher":
         """Matches if the response body text matches the given value or matcher.
 
         A synonym for :meth:`with_text`.
@@ -118,7 +118,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         """
         return self.with_text(text)
 
-    def with_mimetype(self, mimetype: Union[str, Matcher[str]]) -> "WerkzeugResponseMatcher":
+    def with_mimetype(self, mimetype: str | Matcher[str]) -> "WerkzeugResponseMatcher":
         """Matches if the response mimetype matches the given value or matcher.
 
         :param mimetype: The expected mimetype string or matcher.
@@ -127,7 +127,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         self.mimetype = wrap_matcher(mimetype)
         return self
 
-    def and_mimetype(self, mimetype: Union[str, Matcher[str]]) -> "WerkzeugResponseMatcher":
+    def and_mimetype(self, mimetype: str | Matcher[str]) -> "WerkzeugResponseMatcher":
         """Matches if the response mimetype matches the given value or matcher.
 
         A synonym for :meth:`with_mimetype`.
@@ -137,7 +137,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         """
         return self.with_mimetype(mimetype)
 
-    def with_json(self, json: Union[JsonStructure, Matcher[JsonStructure]]) -> "WerkzeugResponseMatcher":
+    def with_json(self, json: JsonStructure | Matcher[JsonStructure]) -> "WerkzeugResponseMatcher":
         """Matches if the response JSON body matches the given value or matcher.
 
         The response body is parsed as JSON before matching.
@@ -148,7 +148,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         self.json = wrap_matcher(json)
         return self
 
-    def and_json(self, json: Union[JsonStructure, Matcher[JsonStructure]]) -> "WerkzeugResponseMatcher":
+    def and_json(self, json: JsonStructure | Matcher[JsonStructure]) -> "WerkzeugResponseMatcher":
         """Matches if the response JSON body matches the given value or matcher.
 
         A synonym for :meth:`with_json`.
@@ -160,7 +160,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
 
     def with_headers(
         self,
-        headers: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
+        headers: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
     ) -> "WerkzeugResponseMatcher":
         """Matches if the response headers match the given value or matcher.
 
@@ -172,7 +172,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
 
     def and_headers(
         self,
-        headers: Union[Mapping[str, Union[str, Matcher[str]]], Matcher[Mapping[str, Union[str, Matcher[str]]]]],
+        headers: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
     ) -> "WerkzeugResponseMatcher":
         """Matches if the response headers match the given value or matcher.
 
@@ -184,7 +184,7 @@ class WerkzeugResponseMatcher(BaseMatcher[Response]):
         return self.with_headers(headers)
 
 
-def redirects_to(url_matcher: Union[str, Matcher]) -> Matcher[Response]:
+def redirects_to(url_matcher: str | Matcher) -> Matcher[Response]:
     """Matches if the Werkzeug response is a redirect to the specified URL.
 
     Checks if the status code is between 300 and 399 and the ``Location`` header matches.

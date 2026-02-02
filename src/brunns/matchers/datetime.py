@@ -1,5 +1,4 @@
 from datetime import date
-from typing import Union
 
 from hamcrest import described_as
 from hamcrest.core.base_matcher import BaseMatcher
@@ -22,7 +21,7 @@ class HasWeekday(BaseMatcher[date]):
     :param day: Day of week, with 0 being Monday, 1 being Tuesday, and so on.
     """
 
-    def __init__(self, day: Union[int, Matcher[int]]) -> None:
+    def __init__(self, day: int | Matcher[int]) -> None:
         self.day = wrap_matcher(day)
 
     def _matches(self, actual: date) -> bool:

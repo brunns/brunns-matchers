@@ -105,7 +105,7 @@ wheels = [
 
 [[package]]
 name = "brunns-matchers"
-version = "2.10.0"
+version = "2.10.1"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -116,6 +116,7 @@ dependencies = [
     { name = "httpx" },
     { name = "pyhamcrest" },
     { name = "requests" },
+    { name = "scripttest" },
     { name = "werkzeug" },
     { name = "yarl" },
 ]
@@ -127,13 +128,14 @@ dev = [
     { name = "contexttimer" },
     { name = "furo" },
     { name = "mbtest" },
+    { name = "mockito" },
     { name = "mutmut" },
     { name = "mypy" },
     { name = "pipdeptree" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-docker" },
-    { name = "refurb" },
+    { name = "pytest-mockito" },
     { name = "ruff" },
     { name = "sphinx", version = "8.1.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "sphinx", version = "9.0.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
@@ -155,7 +157,6 @@ docs = [
 lint = [
     { name = "bandit" },
     { name = "mypy" },
-    { name = "refurb" },
     { name = "ruff" },
     { name = "types-requests" },
 ]
@@ -163,9 +164,11 @@ test = [
     { name = "brunns-builder" },
     { name = "contexttimer" },
     { name = "mbtest" },
+    { name = "mockito" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-docker" },
+    { name = "pytest-mockito" },
 ]
 
 [package.metadata]
@@ -182,6 +185,7 @@ requires-dist = [
     { name = "furo", marker = "extra == 'docs'" },
     { name = "httpx", specifier = ">=0.28" },
     { name = "mbtest", marker = "extra == 'test'", specifier = "~=2.14.0" },
+    { name = "mockito", marker = "extra == 'test'", specifier = ">=1.5.5" },
     { name = "mutmut", marker = "extra == 'dev'" },
     { name = "mypy", marker = "extra == 'lint'", specifier = ">=1.2" },
     { name = "pipdeptree", marker = "extra == 'dev'" },
@@ -189,9 +193,10 @@ requires-dist = [
     { name = "pytest", marker = "extra == 'test'", specifier = ">=9.0" },
     { name = "pytest-cov", marker = "extra == 'test'" },
     { name = "pytest-docker", marker = "extra == 'test'", specifier = "~=3.1" },
-    { name = "refurb", marker = "extra == 'lint'", specifier = ">=1.0" },
+    { name = "pytest-mockito", marker = "extra == 'test'", specifier = ">=0.0.5" },
     { name = "requests", specifier = ">=2.0" },
     { name = "ruff", marker = "extra == 'lint'" },
+    { name = "scripttest", specifier = ">=1.3" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = ">=3.0" },
     { name = "sphinx-autodoc-typehints", marker = "extra == 'docs'", specifier = ">=2.3" },
     { name = "types-requests", marker = "extra == 'lint'" },
@@ -496,7 +501,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [
@@ -912,6 +917,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba", size = 8729, upload-time = "2022-08-14T12:40:10.846Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
+]
+
+[[package]]
+name = "mockito"
+version = "1.5.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/24/71/12c56464071524a7941744e8b8fb02c6614500d27475c2d643d2e780a4b0/mockito-1.5.5.tar.gz", hash = "sha256:49826e3901dc826d0204e93b16dce1c61dde9d3a94eadc9c209ab0e130283393", size = 60707, upload-time = "2025-11-17T11:28:41.21Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ff/f0/fc3475ef7732d080c6a555e4ce12e606c699e82e220eb4bcafb9e801fc07/mockito-1.5.5-py3-none-any.whl", hash = "sha256:422a6ce2666e3c32d756547b98ee67e83a339f457e132476689643015845fc36", size = 30456, upload-time = "2025-11-17T11:28:40.371Z" },
 ]
 
 [[package]]
@@ -1382,6 +1396,19 @@ wheels = [
 ]
 
 [[package]]
+name = "pytest-mockito"
+version = "0.0.6.post1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "mockito" },
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d2/13/56507ae9b513d4bac9ac5e412e7ff66d34827fc5c23e44fccde37a5c82ef/pytest_mockito-0.0.6.post1.tar.gz", hash = "sha256:67e26a69942de4c50001268c779700f8d722384d20385313a88e81b6d23fb71c", size = 3552, upload-time = "2026-02-10T09:36:18.784Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c8/9a/3bb38852013dbb5f03191f35f75823a38cc9e01d2a087c5dfe735dacae94/pytest_mockito-0.0.6.post1-py3-none-any.whl", hash = "sha256:b8384e1ac3e92828475fb6d24d6888e97acef52d9a77328d1333d48e9174ddbf", size = 3939, upload-time = "2026-02-10T09:36:17.552Z" },
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1470,19 +1497,6 @@ wheels = [
 ]
 
 [[package]]
-name = "refurb"
-version = "2.2.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "mypy" },
-    { name = "tomli", marker = "python_full_version < '3.11'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/02/53/c90648f39d7b5d61122b7c6978cdfa29e8bdfd758711306d770c1a339b00/refurb-2.2.0.tar.gz", hash = "sha256:645472793b3af40cca121e37df45dd9b20b525c4df99429d9fd9f6b5c238b9ea", size = 89129, upload-time = "2025-09-17T16:31:10.404Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/7b/44/608465b7217bf5b9eb7484d428e6bb8f21bc19bf8a8ffc992b7f313e1ece/refurb-2.2.0-py3-none-any.whl", hash = "sha256:2d41f728f166b3315fb9e4618881589385666bcdf1f6d9f879981d6d86091b34", size = 140226, upload-time = "2025-09-17T16:31:09.098Z" },
-]
-
-[[package]]
 name = "requests"
 version = "2.32.5"
 source = { registry = "https://pypi.org/simple" }
@@ -1542,6 +1556,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/6f/b0/69adf22f4e24f3677208adb715c578266842e6e6a3cc77483f48dd999ede/ruff-0.15.0-py3-none-win32.whl", hash = "sha256:238a717ef803e501b6d51e0bdd0d2c6e8513fe9eec14002445134d3907cd46c3", size = 10465945, upload-time = "2026-02-03T17:53:12.591Z" },
     { url = "https://files.pythonhosted.org/packages/51/ad/f813b6e2c97e9b4598be25e94a9147b9af7e60523b0cb5d94d307c15229d/ruff-0.15.0-py3-none-win_amd64.whl", hash = "sha256:dd5e4d3301dc01de614da3cdffc33d4b1b96fb89e45721f1598e5532ccf78b18", size = 11564657, upload-time = "2026-02-03T17:52:51.893Z" },
     { url = "https://files.pythonhosted.org/packages/f6/b0/2d823f6e77ebe560f4e397d078487e8d52c1516b331e3521bc75db4272ca/ruff-0.15.0-py3-none-win_arm64.whl", hash = "sha256:c480d632cc0ca3f0727acac8b7d053542d9e114a462a145d0b00e7cd658c515a", size = 10865753, upload-time = "2026-02-03T17:53:03.014Z" },
+]
+
+[[package]]
+name = "scripttest"
+version = "2.0.post1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/6b/75/40225296f18bcd24c95258f3a01fce7e4a014b67141209846d794c3bb694/scripttest-2.0.post1.tar.gz", hash = "sha256:a6067f1feadf4b2ed3e594b0b32e41589640e7fa3974765aa63d508520c0bfdc", size = 16203, upload-time = "2025-04-09T20:06:34.35Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/97/84/5435e29eb508955dfd3caeefa193f0ddd09f5b0b4ddc3f9fc17819776a1b/scripttest-2.0.post1-py3-none-any.whl", hash = "sha256:ec818fd362d5ee0321e000ea43c0540020336771f5168bd591ddd5b37258ca06", size = 7462, upload-time = "2025-04-09T20:06:30.914Z" },
 ]
 
 [[package]]

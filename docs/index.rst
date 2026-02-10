@@ -99,6 +99,11 @@ RSS
 * :py:func:`~brunns.matchers.rss.is_rss_feed` - matches if string is a valid RSS feed.
 * :py:func:`~brunns.matchers.rss.is_rss_entry` - matches if object is an RSS feed entry.
 
+Scripttest
+~~~~~~~~~~
+
+* :py:func:`~brunns.matchers.scripttest.is_proc_result` - matches scripttest ProcResult from command execution.
+
 SMTP
 ~~~~
 

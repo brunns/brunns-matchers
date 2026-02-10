@@ -1,8 +1,7 @@
 """Unit tests for scripttest matchers."""
 
-from unittest import mock
-
 from hamcrest import (
+    anything,
     assert_that,
     contains_exactly,
     contains_string,
@@ -11,20 +10,23 @@ from hamcrest import (
     has_string,
     not_,
 )
+from mockito import mock
 
 from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.scripttest import is_proc_result
 
 # Create a mock ProcResult for testing
-MOCK_PROC_RESULT = mock.MagicMock(
-    returncode=0,
-    stdout="test output\n",
-    stderr="",
-    args=["script.py", "arg1", "arg2"],
-    stdin=b"input data",
-    files_created={"output.txt": mock.MagicMock(), "result.log": mock.MagicMock()},
-    files_deleted={},
-    files_updated={"config.ini": mock.MagicMock()},
+MOCK_PROC_RESULT = mock(
+    {
+        "returncode": 0,
+        "stdout": "test output\n",
+        "stderr": "",
+        "args": ["script.py", "arg1", "arg2"],
+        "stdin": b"input data",
+        "files_created": {"output.txt": mock(), "result.log": mock()},
+        "files_deleted": {},
+        "files_updated": {"config.ini": mock()},
+    },
 )
 
 
@@ -223,7 +225,7 @@ def test_proc_result_matcher_builder():
         .and_stderr("")
         .and_args(contains_exactly("script.py", "arg1", "arg2"))
         .and_stdin(b"input data")
-        .and_files_created(has_entries({"output.txt": mock.ANY, "result.log": mock.ANY}))
+        .and_files_created(has_entries({"output.txt": anything(), "result.log": anything()}))
         .and_files_deleted({})
         .and_files_updated(has_key("config.ini"))
     )

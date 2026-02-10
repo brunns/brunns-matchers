@@ -1,29 +1,31 @@
 from datetime import timedelta
-from unittest import mock
 
 from brunns.builder.internet import UrlBuilder as a_url  # type: ignore[attr-defined]
 from hamcrest import assert_that, contains_exactly, contains_string, has_entries, has_string, not_
+from mockito import mock, when
 
 from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.object import between
 from brunns.matchers.response import is_response, redirects_to
 from brunns.matchers.url import is_url
 
-MOCK_RESPONSE = mock.MagicMock(
-    status_code=200,
-    text="sausages",
-    content=b"content",
-    json=mock.MagicMock(return_value={"a": "b"}),
-    headers={"key": "value"},
-    cookies={"name": "value"},
-    elapsed=timedelta(seconds=1),
-    history=[
-        mock.MagicMock(url=a_url().with_path("/path1").build()),
-        mock.MagicMock(url=a_url().with_path("/path2").build()),
-    ],
-    url=a_url().with_path("/path0").build(),
-    encoding="utf-8",
+MOCK_RESPONSE = mock(
+    {
+        "status_code": 200,
+        "text": "sausages",
+        "content": b"content",
+        "headers": {"key": "value"},
+        "cookies": {"name": "value"},
+        "elapsed": timedelta(seconds=1),
+        "history": [
+            mock({"url": a_url().with_path("/path1").build()}),
+            mock({"url": a_url().with_path("/path2").build()}),
+        ],
+        "url": a_url().with_path("/path0").build(),
+        "encoding": "utf-8",
+    },
 )
+when(MOCK_RESPONSE).json().thenReturn({"a": "b"})
 
 
 def test_response_matcher_status_code():
@@ -283,8 +285,15 @@ def test_response_matcher_encoding():
 
 def test_response_matcher_invalid_json():
     # Given
-    stub_response = mock.MagicMock(status_code=200, text="body", content=b"content", headers={"key": "value"})
-    type(stub_response).json = mock.PropertyMock(side_effect=ValueError)
+    stub_response = mock(
+        {
+            "status_code": 200,
+            "text": "body",
+            "content": b"content",
+            "headers": {"key": "value"},
+        },
+    )
+    when(stub_response).json().thenRaise(ValueError)
 
     # When
 
@@ -298,7 +307,12 @@ def test_response_matcher_invalid_json():
 
 def test_redirect_to():
     # Given
-    stub_response = mock.MagicMock(status_code=301, headers={"Location": a_url().with_path("/sausages").build()})
+    stub_response = mock(
+        {
+            "status_code": 301,
+            "headers": {"Location": a_url().with_path("/sausages").build()},
+        },
+    )
 
     # When
 

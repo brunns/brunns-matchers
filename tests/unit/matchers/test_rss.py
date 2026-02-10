@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
-from unittest import mock
 
 import feedparser
 import httpx
 from hamcrest import anything, assert_that, contains_string, equal_to, has_item, has_string, not_
+from mockito import mock, patch
 from yarl import URL
 
 from brunns.matchers.matcher import matches_with, mismatches_with
@@ -120,9 +120,7 @@ def test_entry_matcher():
 
 
 def test_rss_http_error():
-    with mock.patch("brunns.matchers.rss.feedparser.parse") as mock_parse:
-        mock_parse.side_effect = httpx.HTTPError("404!")
-
+    with patch(feedparser.parse, lambda *_args, **_kwargs: (_ for _ in ()).throw(httpx.HTTPError("404!"))):
         matcher = is_rss_feed()
         invalid_input = "irrelevant"
 
@@ -132,9 +130,7 @@ def test_rss_http_error():
 
 
 def test_rss_feed_parsing_failure():
-    with mock.patch("brunns.matchers.rss.feedparser.parse") as mock_parse:
-        mock_parse.side_effect = ValueError("Boom")
-
+    with patch(feedparser.parse, lambda *_args, **_kwargs: (_ for _ in ()).throw(ValueError("Boom"))):
         matcher = is_rss_feed()
         invalid_input = "invalid"
 
@@ -144,9 +140,8 @@ def test_rss_feed_parsing_failure():
 
 
 def test_rss_feed_empty_xml():
-    with mock.patch("brunns.matchers.rss.feedparser.parse") as mock_parse:
-        mock_parse.return_value = mock.Mock(feed={})
-
+    mock_result = mock({"feed": {}})
+    with patch(feedparser.parse, lambda *_args, **_kwargs: mock_result):
         matcher = is_rss_feed()
         dummy_input = "irrelevant"
 

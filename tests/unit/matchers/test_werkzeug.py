@@ -1,18 +1,19 @@
-from unittest import mock
-
 from brunns.builder.internet import UrlBuilder as a_url  # type: ignore[attr-defined]
 from hamcrest import assert_that, contains_string, has_entries, has_string, not_
+from mockito import mock
 
 from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.url import is_url
 from brunns.matchers.werkzeug import is_werkzeug_response, redirects_to
 
-MOCK_RESPONSE = mock.MagicMock(
-    status_code=200,
-    text="sausages",
-    json={"a": "b"},
-    headers={"key": "value"},
-    mimetype="text/xml",
+MOCK_RESPONSE = mock(
+    {
+        "status_code": 200,
+        "text": "sausages",
+        "json": {"a": "b"},
+        "headers": {"key": "value"},
+        "mimetype": "text/xml",
+    },
 )
 
 
@@ -127,7 +128,12 @@ def test_response_matcher_headers():
 
 def test_redirect_to():
     # Given
-    stub_response = mock.MagicMock(status_code=301, headers={"Location": a_url().with_path("/sausages").build()})
+    stub_response = mock(
+        {
+            "status_code": 301,
+            "headers": {"Location": a_url().with_path("/sausages").build()},
+        },
+    )
 
     # When
 

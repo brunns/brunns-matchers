@@ -10,7 +10,9 @@ from scripttest import TestFileEnvironment
 from brunns.matchers.scripttest import is_proc_result
 
 # scripttest doesn't track file changes properly on Windows
-skipif_windows = pytest.mark.skipif(platform.system() == "Windows", reason="scripttest file tracking not supported on Windows")
+skipif_windows = pytest.mark.skipif(
+    platform.system() == "Windows", reason="scripttest file tracking not supported on Windows"
+)
 
 
 @pytest.fixture

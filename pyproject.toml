@@ -1,9 +1,125 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "brunns-matchers"
+version = "2.10.0"
+description = "Custom PyHamcrest matchers"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    { name = "Simon Brunning", email = "simon@brunningonline.net" },
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Testing",
+]
+dependencies = [
+    "pyhamcrest>=2.0",
+    "Deprecated>=1.2",
+    "brunns-row>=2.0",
+    "beautifulsoup4>=4.0",
+    "requests>=2.0",
+    "httpx>=0.28",
+    "yarl>=1.9",
+    "furl>=2.0",
+    "Werkzeug>=2.0",
+    "feedparser>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/brunns/brunns-matchers/"
+Documentation = "https://brunns-matchers.readthedocs.io/"
+Repository = "https://github.com/brunns/brunns-matchers/"
+Issues = "https://github.com/brunns/brunns-matchers/issues"
+
+[project.optional-dependencies]
+test = [
+    "pytest>=9.0",
+    "pytest-cov",
+    "contexttimer>=0.3",
+    "brunns-builder>=1.1.1",
+    "pytest-docker~=3.1",
+    "mbtest~=2.14.0",
+]
+lint = [
+    "ruff",
+    "bandit~=1.4",
+    "refurb>=1.0",
+    "mypy>=1.2",
+    "types-requests",
+]
+docs = [
+    "sphinx>=3.0",
+    "sphinx-autodoc-typehints>=2.3",
+    "furo",
+]
+dev = [
+    "brunns-matchers[test,lint,docs]",
+    "mutmut",
+    "pipdeptree",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+log_cli = true
+
+[tool.coverage.run]
+branch = true
+omit = ["*/matcher.py", "src/brunns/matchers/__init__.py"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+
+[tool.mypy]
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = "furl"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "werkzeug.test"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "deprecated"
+ignore_missing_imports = true
+
+[tool.mutmut]
+paths_to_mutate = "src/"
+backup = false
+runner = "uv run pytest"
+tests_dir = "tests/"
+
 [tool.refurb]
 ignore = [140]
 
 [tool.ruff]
 line-length = 120
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -16,5 +132,4 @@ max-complexity = 5
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101", "N802"]
 "**/dbapi.py" = ["S608", "BLE001"]
-"setup.py" = ["PTH", "SIM115"]
 "docs/*" = ["ERA001", "A001", "PTH", "SIM115", "INP001"]

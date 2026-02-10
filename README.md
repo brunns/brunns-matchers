@@ -30,26 +30,40 @@ Install with pip:
 
 ## Developing
 
-Requires [tox](https://tox.readthedocs.io). Run `make precommit` tells you if you're OK to commit. For more options, run:
+Requires [uv](https://docs.astral.sh/uv/). Install with:
+
+```shell
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Then install dependencies:
+
+```shell
+uv sync --all-extras
+```
+
+Run `make precommit` to check if you're OK to commit. For more options, run:
 
     make help
 
 ## Releasing
 
-Requires [gh](https://cli.github.com/), [setuptools](https://setuptools.readthedocs.io), [wheel](https://pypi.org/project/wheel/) and [twine](https://twine.readthedocs.io). 
+Releases are automated via GitHub Actions. To release version `n.n.n`:
 
-```shell
-pip install --upgrade setuptools twine wheel --isolated
-```
+1. Update version in `pyproject.toml`
+2. Run `make precommit` to ensure all checks pass
+3. Commit and tag:
+   ```sh
+   version="n.n.n"
+   git commit -am "Release v$version"
+   git tag "v$version"
+   git push origin master --tags
+   ```
 
-To release `n.n.n`:
+The GitHub Actions workflow will automatically:
+- Run tests and coverage checks
+- Build distribution packages
+- Publish to PyPI (using OIDC trusted publishing)
+- Create a GitHub release with auto-generated notes
 
-```sh
-version="n.n.n" # Needs to match new version number in setup.py.
-git checkout -b "release-$version"
-make precommit && git commit -am"Release $version" && git push --set-upstream origin "release-$version" # If not already all pushed, which it should be.
-gh release create "v$version" --target "release-$version" --generate-notes
-python setup.py sdist bdist_wheel && twine upload dist/*$version*
-git checkout master && git merge "release-$version"
-git push
-```
+**Note**: Ensure PyPI trusted publishing is configured. See CLAUDE.md for setup instructions.

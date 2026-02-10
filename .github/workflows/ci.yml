@@ -16,17 +16,18 @@ jobs:
         os: ['ubuntu-latest']
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Install build tools
-        run: python3 -m pip install --upgrade pip setuptools wheel tox~=3.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Install dependencies
+        run: uv sync --all-extras
       - name: Run Tests
-        # Run tox using the version of Python in `PATH`
-        run: tox -e py
-        
+        run: uv run pytest
+
   test-py-versions:
     name: 'Test Python versions'
     needs: test
@@ -44,17 +45,18 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Install build tools
-        run: python3 -m pip install --upgrade pip setuptools wheel tox~=3.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Install dependencies
+        run: uv sync --all-extras
       - name: Run Tests
-        # Run tox using the version of Python in `PATH`
-        run: tox -e py
-        
+        run: uv run pytest
+
   test-oses:
     name: 'Test OSes'
     needs: test
@@ -66,16 +68,17 @@ jobs:
         experimental: [true]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Install build tools
-        run: python3 -m pip install --upgrade pip setuptools wheel tox~=3.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Install dependencies
+        run: uv sync --all-extras
       - name: Run Tests
-        # Run tox using the version of Python in `PATH`
-        run: tox -e py
+        run: uv run pytest
 
   coverage:
     name: 'Check coverage'
@@ -87,18 +90,20 @@ jobs:
         os: ['ubuntu-latest']
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Install build tools
-        run: python3 -m pip install --upgrade pip setuptools wheel tox~=3.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Install dependencies
+        run: uv sync --all-extras
       - name: Check coverage
-        run: tox -e coverage
+        run: uv run pytest --cov=src/brunns/matchers --cov-report=term-missing
 
   lint-etc:
-    name: 'Linting and docs'
+    name: 'Linting, type checking, and docs'
     needs: test
     runs-on: ${{ matrix.os }}
     strategy:
@@ -107,16 +112,24 @@ jobs:
         os: [ 'ubuntu-latest' ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Install build tools
-        run: python3 -m pip install --upgrade pip setuptools wheel tox~=3.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Install dependencies
+        run: uv sync --all-extras
       - name: Check format
-        run: tox -e check-format
+        run: uv run ruff format . --check
+      - name: Check lint
+        run: uv run ruff check .
+      - name: Check security
+        run: uv run bandit -r src/
+      - name: Check refurb
+        run: uv run refurb src/
       - name: Check types
-        run: tox -e mypy
+        run: uv run mypy src/ --ignore-missing-imports
       - name: Build docs
-        run: tox -e docs
+        run: uv run sphinx-build docs build_docs --color -W -bhtml

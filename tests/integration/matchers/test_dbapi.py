@@ -73,7 +73,7 @@ def test_has_rows(db):
         has_table_with_rows("sausages", has_item(has_properties(kind="vegan"))),
         mismatches_with(
             db,
-            all_of(contains_string("was <["), contains_string("RowTuple(kind='vegetarian', rating=0)")),
+            all_of(contains_string("was <["), contains_string("kind='vegetarian', rating=0")),
         ),
     )
     assert_that(

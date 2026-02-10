@@ -101,6 +101,12 @@ If not already configured, set up trusted publishing at https://pypi.org/manage/
 
 Also create a GitHub environment named "pypi" in the repository settings.
 
+## Tool Preferences
+
+- **JSON parsing**: Use `jq` instead of `python -c` for parsing JSON output
+- **Python tool & package management**: Use `uv` and `uvx` where appropriate.
+- **Command-line tools**: Prefer standard Unix tools when available
+
 ## Architecture
 
 ### Matcher Design Pattern

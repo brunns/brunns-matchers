@@ -127,8 +127,6 @@ jobs:
         run: uv run ruff check .
       - name: Check security
         run: uv run bandit -r src/
-      - name: Check refurb
-        run: uv run refurb src/
       - name: Check types
         run: uv run mypy src/ --ignore-missing-imports
       - name: Build docs

@@ -22,7 +22,7 @@ coverage: colima ## Test coverage report
 lint: check-format ## Lint code
 
 .PHONY: extra-lint
-extra-lint: mypy bandit refurb  ## Extra, optional linting
+extra-lint: mypy bandit  ## Extra, optional linting
 
 .PHONY: mypy
 mypy: ## Type check with mypy
@@ -31,10 +31,6 @@ mypy: ## Type check with mypy
 .PHONY: bandit
 bandit: ## Security check with bandit
 	uv run bandit -r src/
-
-.PHONY: refurb
-refurb: ## Modernization suggestions with refurb
-	uv run refurb src/
 
 .PHONY: check-format
 check-format: ## Check code formatting

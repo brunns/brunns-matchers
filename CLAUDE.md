@@ -34,8 +34,6 @@ This project uses [uv](https://docs.astral.sh/uv/) for dependency management and
   - Uses mypy with settings in pyproject.toml
 - **Security scanning**: `uv run bandit -r src/` or `make bandit`
   - Uses bandit to detect security issues
-- **Modernization checks**: `uv run refurb src/` or `make refurb`
-  - Suggests modern Python idioms
 - **Pre-commit checks**: `make precommit`
   - Runs tests, lint, coverage, mypy, and docs
 

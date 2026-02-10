@@ -61,6 +61,7 @@ jobs:
     name: 'Test OSes'
     needs: test
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
         python: ['3.14']

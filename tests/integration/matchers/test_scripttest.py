@@ -1,5 +1,6 @@
 """Integration tests for scripttest matchers using real commands."""
 
+import platform
 import textwrap
 
 import pytest
@@ -7,6 +8,9 @@ from hamcrest import assert_that, contains_string, has_key, not_
 from scripttest import TestFileEnvironment
 
 from brunns.matchers.scripttest import is_proc_result
+
+# scripttest doesn't track file changes properly on Windows
+skipif_windows = pytest.mark.skipif(platform.system() == "Windows", reason="scripttest file tracking not supported on Windows")
 
 
 @pytest.fixture
@@ -58,6 +62,7 @@ def test_proc_result_with_stderr_output(test_env):
     )
 
 
+@skipif_windows
 def test_proc_result_with_file_creation(test_env):
     # Given
     script_content = textwrap.dedent("""
@@ -75,6 +80,7 @@ def test_proc_result_with_file_creation(test_env):
     )
 
 
+@skipif_windows
 def test_proc_result_with_file_modification(test_env):
     # Given - create a file first
     test_env.writefile("config.txt", b"initial content")
@@ -94,6 +100,7 @@ def test_proc_result_with_file_modification(test_env):
     )
 
 
+@skipif_windows
 def test_proc_result_with_multiple_files(test_env):
     # Given
     script_content = textwrap.dedent("""
@@ -147,6 +154,7 @@ def test_proc_result_empty_files_dicts(test_env):
     )
 
 
+@skipif_windows
 def test_proc_result_chained_matchers(test_env):
     # Given
     script_content = textwrap.dedent("""

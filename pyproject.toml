@@ -70,7 +70,6 @@ docs = [
 ]
 dev = [
     "brunns-matchers[test,lint,docs]",
-    "mutmut",
     "pipdeptree",
 ]
 

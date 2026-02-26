@@ -46,12 +46,6 @@ format: ## Format code
 piprot: ## Check for outdated dependencies
 	uv pip list --outdated
 
-.PHONY: mutmut
-mutmut: clean ## Run mutation tests
-	uv run mutmut run
-	uv run mutmut html
-	open html/index.html
-
 .PHONY: docs
 docs: ## Generate documentation
 	uv run sphinx-build docs build_docs --color -W -bhtml
@@ -78,7 +72,7 @@ precommit: test lint coverage mypy docs ## Pre-commit targets
 clean: ## Clean generated files
 	find . -name '*.pyc' -delete
 	find . -name '*.pyo' -delete
-	rm -rf build/ dist/ *.egg-info/ .cache .coverage .pytest_cache  *.svg  .mutmut-cache html/
+	rm -rf build/ dist/ *.egg-info/ .cache .coverage .pytest_cache *.svg html/
 	find . -name "__pycache__" -type d -print | xargs -t rm -r
 	find . -name "test-output" -type d -print | xargs -t rm -r
 

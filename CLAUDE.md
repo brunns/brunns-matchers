@@ -46,8 +46,6 @@ This project uses [uv](https://docs.astral.sh/uv/) for dependency management and
 - **Check outdated deps**: `uv pip list --outdated` or `make piprot`
 - **Python REPL**: `uv run python` or `make repl`
 - **Clean build artifacts**: `make clean`
-- **Mutation testing**: `make mutmut`
-  - Runs mutmut to test test quality
 
 ## Building and Publishing
 

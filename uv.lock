@@ -182,7 +182,7 @@ requires-dist = [
     { name = "furl", specifier = ">=2.0" },
     { name = "furo", marker = "extra == 'docs'" },
     { name = "httpx", specifier = ">=0.28" },
-    { name = "mbtest", marker = "extra == 'test'", specifier = "~=2.14.0" },
+    { name = "mbtest", marker = "extra == 'test'", specifier = ">=2.14,<2.16" },
     { name = "mockito", marker = "extra == 'test'", specifier = ">=1.5.5" },
     { name = "mypy", marker = "extra == 'lint'", specifier = ">=1.2" },
     { name = "pyhamcrest", specifier = ">=2.0" },
@@ -783,7 +783,7 @@ wheels = [
 
 [[package]]
 name = "mbtest"
-version = "2.14.0"
+version = "2.15.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "brunns-matchers" },
@@ -792,9 +792,9 @@ dependencies = [
     { name = "pyhamcrest" },
     { name = "yarl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1c/c4/4fb2c3af7862f71c42f4164cd56dd5d862dcf5496450a36b9ccbbf21a33e/mbtest-2.14.0.tar.gz", hash = "sha256:a0b934929ea20c195acf40c272dcf27faea94178b93d77c264d92488468c6a2e", size = 22908, upload-time = "2025-01-03T09:12:18.481Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/32/9e/8919873686c9b9bac472f633ec31dba8d4c758c0beb87d6f661cee7257c3/mbtest-2.15.0.tar.gz", hash = "sha256:889d6a97991085ba3ab65acb235c473193772e3ac8d0c318d55d128536cc9205", size = 22829, upload-time = "2026-02-26T14:17:47.239Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8a/05/0649c1e40e0482871ff5cde5bbe87733ad7d7e31975ac2c062a1c121b9a3/mbtest-2.14.0-py3-none-any.whl", hash = "sha256:9498158af69fcfba33c33cf2c297c397074f94ea2c8d3307592a72dabd752573", size = 24619, upload-time = "2025-01-03T09:12:17.122Z" },
+    { url = "https://files.pythonhosted.org/packages/2d/e4/a3ce3ec43d80927749604f691925fa43321de96964c2274f23674c5450c3/mbtest-2.15.0-py3-none-any.whl", hash = "sha256:d215a97521e0e09a4c15110ed68a5b51315b4a38281c2f278a142996873da4f2", size = 25032, upload-time = "2026-02-26T14:17:44.584Z" },
 ]
 
 [[package]]

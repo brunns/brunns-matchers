@@ -55,7 +55,7 @@ test = [
     "brunns-builder>=1.1.1",
     "pytest-docker~=3.1",
     "pytest-mockito>=0.0.5",
-    "mbtest~=2.14.0",
+    "mbtest>=2.14,<2.16",
 ]
 lint = [
     "ruff",

@@ -73,7 +73,6 @@ dev = [
     "ruff",
     "sphinx-autodoc-typehints>=2.3",
     "sphinx>=3.0",
-    "types-requests",
 ]
 
 

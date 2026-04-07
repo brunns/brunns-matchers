@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Protocol, Self, TypeVar, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, TypeVar, runtime_checkable
 
 from deprecated import deprecated
 from furl import furl
@@ -135,147 +135,147 @@ class UrlWith(BaseMatcher[U]):
         describe_field_match(self.query, "query", parsed_url.query.params, match_description)
         describe_field_match(self.fragment, "fragment", parsed_url.fragment, match_description)
 
-    def with_scheme(self, scheme: str | Matcher[str]) -> Self:
+    def with_scheme(self, scheme: str | Matcher[str]) -> UrlWith:
         """Matches if the URL scheme matches the given value or matcher.
 
         :param scheme: The expected scheme (e.g. "https") or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         self.scheme = wrap_matcher(scheme)
         return self
 
-    def and_scheme(self, scheme: str | Matcher[str]) -> Self:
+    def and_scheme(self, scheme: str | Matcher[str]) -> UrlWith:
         """Matches if the URL scheme matches the given value or matcher.
 
         A synonym for :meth:`with_scheme`.
 
         :param scheme: The expected scheme or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         return self.with_scheme(scheme)
 
-    def with_username(self, username: str | Matcher[str]) -> Self:
+    def with_username(self, username: str | Matcher[str]) -> UrlWith:
         """Matches if the URL username matches the given value or matcher.
 
         :param username: The expected username or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         self.username = wrap_matcher(username)
         return self
 
-    def and_username(self, username: str | Matcher[str]) -> Self:
+    def and_username(self, username: str | Matcher[str]) -> UrlWith:
         """Matches if the URL username matches the given value or matcher.
 
         A synonym for :meth:`with_username`.
 
         :param username: The expected username or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         return self.with_username(username)
 
-    def with_password(self, password: str | Matcher[str]) -> Self:
+    def with_password(self, password: str | Matcher[str]) -> UrlWith:
         """Matches if the URL password matches the given value or matcher.
 
         :param password: The expected password or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         self.password = wrap_matcher(password)
         return self
 
-    def and_password(self, password: str | Matcher[str]) -> Self:
+    def and_password(self, password: str | Matcher[str]) -> UrlWith:
         """Matches if the URL password matches the given value or matcher.
 
         A synonym for :meth:`with_password`.
 
         :param password: The expected password or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         return self.with_password(password)
 
-    def with_host(self, host: str | Matcher[str]) -> Self:
+    def with_host(self, host: str | Matcher[str]) -> UrlWith:
         """Matches if the URL host matches the given value or matcher.
 
         :param host: The expected hostname or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         self.host = wrap_matcher(host)
         return self
 
-    def and_host(self, host: str | Matcher[str]) -> Self:
+    def and_host(self, host: str | Matcher[str]) -> UrlWith:
         """Matches if the URL host matches the given value or matcher.
 
         A synonym for :meth:`with_host`.
 
         :param host: The expected hostname or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         return self.with_host(host)
 
-    def with_port(self, port: int | Matcher[int]) -> Self:
+    def with_port(self, port: int | Matcher[int]) -> UrlWith:
         """Matches if the URL port matches the given value or matcher.
 
         :param port: The expected port integer or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         self.port = wrap_matcher(port)
         return self
 
-    def and_port(self, port: int | Matcher[int]) -> Self:
+    def and_port(self, port: int | Matcher[int]) -> UrlWith:
         """Matches if the URL port matches the given value or matcher.
 
         A synonym for :meth:`with_port`.
 
         :param port: The expected port integer or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         return self.with_port(port)
 
-    def with_path(self, path: str | Matcher[str]) -> Self:
+    def with_path(self, path: str | Matcher[str]) -> UrlWith:
         """Matches if the URL path matches the given value or matcher.
 
         :param path: The expected path string (e.g. "/foo/bar") or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         self.path = wrap_matcher(path)
         return self
 
-    def and_path(self, path: str | Matcher[str]) -> Self:
+    def and_path(self, path: str | Matcher[str]) -> UrlWith:
         """Matches if the URL path matches the given value or matcher.
 
         A synonym for :meth:`with_path`.
 
         :param path: The expected path string or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         return self.with_path(path)
 
-    def with_path_segments(self, path_segments: Sequence[str] | Matcher[Sequence[str]]) -> Self:
+    def with_path_segments(self, path_segments: Sequence[str] | Matcher[Sequence[str]]) -> UrlWith:
         """Matches if the URL path segments match the given sequence or matcher.
 
         :param path_segments: The expected sequence of path segments (e.g. ["foo", "bar"]) or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         self.path_segments = wrap_matcher(path_segments)
         return self
 
-    def and_path_segments(self, path_segments: Sequence[str] | Matcher[Sequence[str]]) -> Self:
+    def and_path_segments(self, path_segments: Sequence[str] | Matcher[Sequence[str]]) -> UrlWith:
         """Matches if the URL path segments match the given sequence or matcher.
 
         A synonym for :meth:`with_path_segments`.
 
         :param path_segments: The expected sequence of path segments or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         return self.with_path_segments(path_segments)
 
     def with_query(
         self,
         query: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
-    ) -> Self:
+    ) -> UrlWith:
         """Matches if the URL query parameters match the given dictionary or matcher.
 
         :param query: The expected query parameters dictionary or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         self.query = wrap_matcher(query)
         return self
@@ -283,32 +283,32 @@ class UrlWith(BaseMatcher[U]):
     def and_query(
         self,
         query: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
-    ) -> Self:
+    ) -> UrlWith:
         """Matches if the URL query parameters match the given dictionary or matcher.
 
         A synonym for :meth:`with_query`.
 
         :param query: The expected query parameters dictionary or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         return self.with_query(query)
 
-    def with_fragment(self, fragment: str | Matcher[str]) -> Self:
+    def with_fragment(self, fragment: str | Matcher[str]) -> UrlWith:
         """Matches if the URL fragment (hash) matches the given value or matcher.
 
         :param fragment: The expected fragment string or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         self.fragment = wrap_matcher(fragment)
         return self
 
-    def and_fragment(self, fragment: str | Matcher[str]) -> Self:
+    def and_fragment(self, fragment: str | Matcher[str]) -> UrlWith:
         """Matches if the URL fragment (hash) matches the given value or matcher.
 
         A synonym for :meth:`with_fragment`.
 
         :param fragment: The expected fragment string or matcher.
-        :return: Self, for chaining.
+        :return: UrlWith, for chaining.
         """
         return self.with_fragment(fragment)
 

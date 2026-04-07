@@ -40,7 +40,7 @@ check-format: ## Check code formatting
 .PHONY: format
 format: ## Format code
 	uv run ruff format .
-	uv run ruff check . --fix
+	uv run ruff check . --fix-only
 
 .PHONY: piprot
 piprot: ## Check for outdated dependencies

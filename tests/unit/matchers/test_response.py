@@ -6,7 +6,7 @@ from mockito import mock, when
 
 from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.object import between
-from brunns.matchers.response import is_response, redirects_to
+from brunns.matchers.response import ResponseProtocol, is_response, redirects_to
 from brunns.matchers.url import is_url
 
 MOCK_RESPONSE = mock(
@@ -24,6 +24,7 @@ MOCK_RESPONSE = mock(
         "url": a_url().with_path("/path0").build(),
         "encoding": "utf-8",
     },
+    spec=ResponseProtocol,
 )
 when(MOCK_RESPONSE).json().thenReturn({"a": "b"})
 

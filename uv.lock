@@ -106,23 +106,30 @@ name = "brunns-matchers"
 version = "2.11.2"
 source = { editable = "." }
 dependencies = [
-    { name = "beautifulsoup4" },
     { name = "brunns-row" },
     { name = "deprecated" },
-    { name = "feedparser" },
-    { name = "furl" },
-    { name = "httpx" },
     { name = "pyhamcrest" },
-    { name = "requests" },
-    { name = "scripttest" },
-    { name = "werkzeug" },
-    { name = "yarl" },
 ]
 
 [package.optional-dependencies]
+cli = [
+    { name = "scripttest" },
+]
+html = [
+    { name = "beautifulsoup4" },
+]
+rss = [
+    { name = "feedparser" },
+]
+url = [
+    { name = "furl" },
+]
+
+[package.dev-dependencies]
 dev = [
     { name = "bandit" },
     { name = "brunns-builder" },
+    { name = "brunns-matchers", extra = ["cli", "html", "rss", "url"] },
     { name = "contexttimer" },
     { name = "furo" },
     { name = "mbtest" },
@@ -140,64 +147,39 @@ dev = [
     { name = "sphinx-autodoc-typehints", version = "3.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
     { name = "sphinx-autodoc-typehints", version = "3.9.11", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "types-requests" },
-]
-docs = [
-    { name = "furo" },
-    { name = "sphinx", version = "8.1.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "sphinx", version = "9.0.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
-    { name = "sphinx", version = "9.1.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
-    { name = "sphinx-autodoc-typehints", version = "3.0.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "sphinx-autodoc-typehints", version = "3.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
-    { name = "sphinx-autodoc-typehints", version = "3.9.11", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
-]
-lint = [
-    { name = "bandit" },
-    { name = "mypy" },
-    { name = "ruff" },
-    { name = "types-requests" },
-]
-test = [
-    { name = "brunns-builder" },
-    { name = "contexttimer" },
-    { name = "mbtest" },
-    { name = "mockito" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "pytest-docker" },
-    { name = "pytest-mockito" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "bandit", marker = "extra == 'lint'", specifier = "~=1.4" },
-    { name = "beautifulsoup4", specifier = ">=4.0" },
-    { name = "brunns-builder", marker = "extra == 'test'", specifier = ">=1.1.1" },
-    { name = "brunns-matchers", extras = ["test", "lint", "docs"], marker = "extra == 'dev'" },
+    { name = "beautifulsoup4", marker = "extra == 'html'", specifier = ">=4.0" },
     { name = "brunns-row", specifier = ">=2.0" },
-    { name = "contexttimer", marker = "extra == 'test'", specifier = ">=0.3" },
     { name = "deprecated", specifier = ">=1.2" },
-    { name = "feedparser", specifier = ">=6.0" },
-    { name = "furl", specifier = ">=2.0" },
-    { name = "furo", marker = "extra == 'docs'" },
-    { name = "httpx", specifier = ">=0.28" },
-    { name = "mbtest", marker = "extra == 'test'", specifier = ">=2.14,<2.16" },
-    { name = "mockito", marker = "extra == 'test'", specifier = ">=1.5.5" },
-    { name = "mypy", marker = "extra == 'lint'", specifier = ">=1.2" },
+    { name = "feedparser", marker = "extra == 'rss'", specifier = ">=6.0" },
+    { name = "furl", marker = "extra == 'url'", specifier = ">=2.0" },
     { name = "pyhamcrest", specifier = ">=2.0" },
-    { name = "pytest", marker = "extra == 'test'", specifier = ">=9.0" },
-    { name = "pytest-cov", marker = "extra == 'test'" },
-    { name = "pytest-docker", marker = "extra == 'test'", specifier = "~=3.1" },
-    { name = "pytest-mockito", marker = "extra == 'test'", specifier = ">=0.0.5" },
-    { name = "requests", specifier = ">=2.0" },
-    { name = "ruff", marker = "extra == 'lint'" },
-    { name = "scripttest", specifier = ">=1.3" },
-    { name = "sphinx", marker = "extra == 'docs'", specifier = ">=3.0" },
-    { name = "sphinx-autodoc-typehints", marker = "extra == 'docs'", specifier = ">=2.3" },
-    { name = "types-requests", marker = "extra == 'lint'" },
-    { name = "werkzeug", specifier = ">=2.0" },
-    { name = "yarl", specifier = ">=1.9" },
+    { name = "scripttest", marker = "extra == 'cli'", specifier = ">=1.3" },
 ]
-provides-extras = ["test", "lint", "docs", "dev"]
+provides-extras = ["html", "rss", "cli", "url"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "bandit", specifier = "~=1.4" },
+    { name = "brunns-builder", specifier = ">=1.1.1" },
+    { name = "brunns-matchers", extras = ["html", "rss", "cli", "url"] },
+    { name = "contexttimer", specifier = ">=0.3" },
+    { name = "furo" },
+    { name = "mbtest", specifier = ">=2.14,<2.16" },
+    { name = "mockito", specifier = ">=1.5.5" },
+    { name = "mypy", specifier = ">=1.2" },
+    { name = "pytest", specifier = ">=9.0" },
+    { name = "pytest-cov" },
+    { name = "pytest-docker", specifier = "~=3.1" },
+    { name = "pytest-mockito", specifier = ">=0.0.5" },
+    { name = "ruff" },
+    { name = "sphinx", specifier = ">=3.0" },
+    { name = "sphinx-autodoc-typehints", specifier = ">=2.3" },
+    { name = "types-requests" },
+]
 
 [[package]]
 name = "brunns-row"
@@ -1735,18 +1717,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/c7/24/5f1b3bdffd70275f6661c76461e25f024d5a38a46f04aaca912426a2b1d3/urllib3-2.6.3.tar.gz", hash = "sha256:1b62b6884944a57dbe321509ab94fd4d3b307075e0c2eae991ac71ee15ad38ed", size = 435556, upload-time = "2026-01-07T16:24:43.925Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/39/08/aaaad47bc4e9dc8c725e68f9d04865dbcb2052843ff09c97b08904852d84/urllib3-2.6.3-py3-none-any.whl", hash = "sha256:bf272323e553dfb2e87d9bfd225ca7b0f467b919d7bbd355436d3fd37cb0acd4", size = 131584, upload-time = "2026-01-07T16:24:42.685Z" },
-]
-
-[[package]]
-name = "werkzeug"
-version = "3.1.7"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "markupsafe" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b5/43/76ded108b296a49f52de6bac5192ca1c4be84e886f9b5c9ba8427d9694fd/werkzeug-3.1.7.tar.gz", hash = "sha256:fb8c01fe6ab13b9b7cdb46892b99b1d66754e1d7ab8e542e865ec13f526b5351", size = 875700, upload-time = "2026-03-24T01:08:07.687Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/7f/b2/0bba9bbb4596d2d2f285a16c2ab04118f6b957d8441566e1abb892e6a6b2/werkzeug-3.1.7-py3-none-any.whl", hash = "sha256:4b314d81163a3e1a169b6a0be2a000a0e204e8873c5de6586f453c55688d422f", size = 226295, upload-time = "2026-03-24T01:08:06.133Z" },
 ]
 
 [[package]]

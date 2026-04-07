@@ -30,15 +30,22 @@ dependencies = [
     "pyhamcrest>=2.0",
     "Deprecated>=1.2",
     "brunns-row>=2.0",
+]
+
+[project.optional-dependencies]
+html = [
     "beautifulsoup4>=4.0",
-    "requests>=2.0",
-    "httpx>=0.28",
-    "yarl>=1.9",
-    "furl>=2.0",
-    "Werkzeug>=2.0",
+]
+rss = [
     "feedparser>=6.0",
+]
+cli = [
     "scripttest>=1.3",
 ]
+url = [
+    "furl>=2.0",
+]
+
 
 [project.urls]
 Homepage = "https://github.com/brunns/brunns-matchers/"
@@ -46,31 +53,26 @@ Documentation = "https://brunns-matchers.readthedocs.io/"
 Repository = "https://github.com/brunns/brunns-matchers/"
 Issues = "https://github.com/brunns/brunns-matchers/issues"
 
-[project.optional-dependencies]
-test = [
-    "mockito>=1.5.5",
-    "pytest>=9.0",
-    "pytest-cov",
-    "contexttimer>=0.3",
+[dependency-groups]
+dev = [
+    "bandit~=1.4",
     "brunns-builder>=1.1.1",
+    "brunns-matchers[html,rss,cli,url]",
+    "contexttimer>=0.3",
+    "furo",
+    "mbtest>=2.14,<2.16",
+    "mockito>=1.5.5",
+    "mypy>=1.2",
+    "pytest-cov",
     "pytest-docker~=3.1",
     "pytest-mockito>=0.0.5",
-    "mbtest>=2.14,<2.16",
-]
-lint = [
+    "pytest>=9.0",
     "ruff",
-    "bandit~=1.4",
-    "mypy>=1.2",
+    "sphinx-autodoc-typehints>=2.3",
+    "sphinx>=3.0",
     "types-requests",
 ]
-docs = [
-    "sphinx>=3.0",
-    "sphinx-autodoc-typehints>=2.3",
-    "furo",
-]
-dev = [
-    "brunns-matchers[test,lint,docs]",
-]
+
 
 [tool.setuptools]
 package-dir = {"" = "src"}

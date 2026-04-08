@@ -43,7 +43,7 @@ cli = [
     "scripttest>=1.3",
 ]
 url = [
-    "furl>=2.0",
+    "yarl>=1.0",
 ]
 request = [
     "Werkzeug>=2.0",
@@ -60,7 +60,6 @@ Issues = "https://github.com/brunns/brunns-matchers/issues"
 dev = [
     "bandit~=1.4",
     "brunns-builder>=1.1.1",
-    "brunns-matchers[html,rss,cli,url,request]",
     "contexttimer>=0.3",
     "furo",
     "mbtest>=2.14,<2.16",

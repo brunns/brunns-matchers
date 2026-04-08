@@ -125,14 +125,13 @@ rss = [
     { name = "feedparser" },
 ]
 url = [
-    { name = "furl" },
+    { name = "yarl" },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "bandit" },
     { name = "brunns-builder" },
-    { name = "brunns-matchers", extra = ["cli", "html", "request", "rss", "url"] },
     { name = "contexttimer" },
     { name = "furo" },
     { name = "mbtest" },
@@ -157,10 +156,10 @@ requires-dist = [
     { name = "brunns-row", specifier = ">=2.0" },
     { name = "deprecated", specifier = ">=1.2" },
     { name = "feedparser", marker = "extra == 'rss'", specifier = ">=6.0" },
-    { name = "furl", marker = "extra == 'url'", specifier = ">=2.0" },
     { name = "pyhamcrest", specifier = ">=2.0" },
     { name = "scripttest", marker = "extra == 'cli'", specifier = ">=1.3" },
     { name = "werkzeug", marker = "extra == 'request'", specifier = ">=2.0" },
+    { name = "yarl", marker = "extra == 'url'", specifier = ">=1.0" },
 ]
 provides-extras = ["html", "rss", "cli", "url", "request"]
 
@@ -168,7 +167,6 @@ provides-extras = ["html", "rss", "cli", "url", "request"]
 dev = [
     { name = "bandit", specifier = "~=1.4" },
     { name = "brunns-builder", specifier = ">=1.1.1" },
-    { name = "brunns-matchers", extras = ["html", "rss", "cli", "url", "request"] },
     { name = "contexttimer", specifier = ">=0.3" },
     { name = "furo" },
     { name = "mbtest", specifier = ">=2.14,<2.16" },
@@ -501,19 +499,6 @@ wheels = [
 ]
 
 [[package]]
-name = "furl"
-version = "2.1.4"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "orderedmultidict" },
-    { name = "six" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/53/e4/203a76fa2ef46cdb0a618295cc115220cbb874229d4d8721068335eb87f0/furl-2.1.4.tar.gz", hash = "sha256:877657501266c929269739fb5f5980534a41abd6bbabcb367c136d1d3b2a6015", size = 57526, upload-time = "2025-03-09T05:36:21.175Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/61/8c/dce3b1b7593858eba995b2dfdb833f872c7f863e3da92aab7128a6b11af4/furl-2.1.4-py2.py3-none-any.whl", hash = "sha256:da34d0b34e53ffe2d2e6851a7085a05d96922b5b578620a37377ff1dbeeb11c8", size = 27550, upload-time = "2025-03-09T05:36:19.928Z" },
-]
-
-[[package]]
 name = "furo"
 version = "2025.12.19"
 source = { registry = "https://pypi.org/simple" }
@@ -791,7 +776,7 @@ wheels = [
 
 [[package]]
 name = "mbtest"
-version = "2.15.0"
+version = "2.15.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "brunns-matchers" },
@@ -800,9 +785,9 @@ dependencies = [
     { name = "pyhamcrest" },
     { name = "yarl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/32/9e/8919873686c9b9bac472f633ec31dba8d4c758c0beb87d6f661cee7257c3/mbtest-2.15.0.tar.gz", hash = "sha256:889d6a97991085ba3ab65acb235c473193772e3ac8d0c318d55d128536cc9205", size = 22829, upload-time = "2026-02-26T14:17:47.239Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/86/61/c186c3fc42a7d62daf823bcd4a17e995da7e763e586ae6acc25c2b14dc9a/mbtest-2.15.1.tar.gz", hash = "sha256:bcd928552716029a5bdd578c92299b46186320c270fc9eab2a862f70a624f6c2", size = 22866, upload-time = "2026-04-07T08:30:27.739Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2d/e4/a3ce3ec43d80927749604f691925fa43321de96964c2274f23674c5450c3/mbtest-2.15.0-py3-none-any.whl", hash = "sha256:d215a97521e0e09a4c15110ed68a5b51315b4a38281c2f278a142996873da4f2", size = 25032, upload-time = "2026-02-26T14:17:44.584Z" },
+    { url = "https://files.pythonhosted.org/packages/2a/f6/f2c810d1aa39395acc8c96ee41f6a44bb7c0c1856916faa4cc49101794ac/mbtest-2.15.1-py3-none-any.whl", hash = "sha256:ab59ba3ed3771adb4b78c7d65538d854fbb16f75a622c59b10ad4574ca0529af", size = 25054, upload-time = "2026-04-07T08:30:26.442Z" },
 ]
 
 [[package]]
@@ -1035,18 +1020,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a2/6e/371856a3fb9d31ca8dac321cda606860fa4548858c0cc45d9d1d4ca2628b/mypy_extensions-1.1.0.tar.gz", hash = "sha256:52e68efc3284861e772bbcd66823fde5ae21fd2fdb51c62a211403730b916558", size = 6343, upload-time = "2025-04-22T14:54:24.164Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/79/7b/2c79738432f5c924bef5071f933bcc9efd0473bac3b4aa584a6f7c1c8df8/mypy_extensions-1.1.0-py3-none-any.whl", hash = "sha256:1be4cccdb0f2482337c4743e60421de3a356cd97508abadd57d47403e94f5505", size = 4963, upload-time = "2025-04-22T14:54:22.983Z" },
-]
-
-[[package]]
-name = "orderedmultidict"
-version = "1.0.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "six" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5c/62/61ad51f6c19d495970230a7747147ce7ed3c3a63c2af4ebfdb1f6d738703/orderedmultidict-1.0.2.tar.gz", hash = "sha256:16a7ae8432e02cc987d2d6d5af2df5938258f87c870675c73ee77a0920e6f4a6", size = 13973, upload-time = "2025-11-18T08:00:42.649Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b2/6c/d8a02ffb24876b5f51fbd781f479fc6525a518553a4196bd0433dae9ff8e/orderedmultidict-1.0.2-py2.py3-none-any.whl", hash = "sha256:ab5044c1dca4226ae4c28524cfc5cc4c939f0b49e978efa46a6ad6468049f79b", size = 11897, upload-time = "2025-11-18T08:00:41.44Z" },
 ]
 
 [[package]]
@@ -1406,15 +1379,6 @@ name = "sgmllib3k"
 version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/9e/bd/3704a8c3e0942d711c1299ebf7b9091930adae6675d7c8f476a7ce48653c/sgmllib3k-1.0.0.tar.gz", hash = "sha256:7868fb1c8bfa764c1ac563d3cf369c381d1325d36124933a726f29fcdaa812e9", size = 5750, upload-time = "2010-08-24T14:33:52.445Z" }
-
-[[package]]
-name = "six"
-version = "1.17.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload-time = "2024-12-04T17:35:28.174Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload-time = "2024-12-04T17:35:26.475Z" },
-]
 
 [[package]]
 name = "snowballstemmer"

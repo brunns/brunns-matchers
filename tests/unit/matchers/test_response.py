@@ -235,7 +235,7 @@ def test_response_matcher_history_and_url():
         mismatches_with(
             response,
             contains_string(
-                "was response with history: item 1: was response with url: was URL with path: was </path2>",
+                "was response with history: item 1: was response with url: was URL with path: was '/path2'",
             ),
         ),
     )
@@ -256,11 +256,11 @@ def test_response_matcher_url():
     )
     assert_that(
         is_response().with_url(is_url().with_path("/nope")),
-        mismatches_with(response, contains_string("was response with url: was URL with path: was </path0>")),
+        mismatches_with(response, contains_string("was response with url: was URL with path: was '/path0'")),
     )
     assert_that(
         is_response().with_url(is_url().with_path("/path0")),
-        matches_with(response, contains_string("was response with url: was URL with path: was </path0>")),
+        matches_with(response, contains_string("was response with url: was URL with path: was '/path0'")),
     )
 
 

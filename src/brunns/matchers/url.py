@@ -4,10 +4,10 @@ import logging
 from typing import TYPE_CHECKING, Protocol, TypeVar, runtime_checkable
 
 from deprecated import deprecated
-from furl import furl
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
+from yarl import URL
 
 from brunns.matchers.utils import (
     append_matcher_description,
@@ -26,13 +26,18 @@ if TYPE_CHECKING:
 class UrlProtocol(Protocol):
     """Structural typing for URL objects."""
 
-    scheme: str
-    username: str
-    password: str
-    host: str
-    port: int
-    path: str
-    query: Mapping[str, str]
+    @property
+    def scheme(self) -> str: ...
+    @property
+    def password(self) -> str | None: ...
+    @property
+    def host(self) -> str | None: ...
+    @property
+    def port(self) -> int | None: ...
+    @property
+    def path(self) -> str: ...
+    @property
+    def query(self) -> Mapping[str, str]: ...
 
 
 U = TypeVar("U", bound=UrlProtocol)
@@ -67,33 +72,34 @@ class UrlWith(BaseMatcher[U]):
 
     def __init__(
         self,
-        host: str | Matcher[str] = ANYTHING,
+        host: str | None | Matcher[str | None] = ANYTHING,
         path: str | Matcher[str] = ANYTHING,
         query: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]] = ANYTHING,
         fragment: str | Matcher[str] = ANYTHING,
     ) -> None:
         super().__init__()
+
         self.scheme: Matcher[str] = ANYTHING
-        self.username: Matcher[str] = ANYTHING
-        self.password: Matcher[str] = ANYTHING
-        self.host = wrap_matcher(host)
-        self.port: Matcher[int] = ANYTHING
+        self.username: Matcher[str | None] = ANYTHING
+        self.password: Matcher[str | None] = ANYTHING
+        self.host: Matcher[str | None] = wrap_matcher(host)
+        self.port: Matcher[int | None] = ANYTHING
         self.path = wrap_matcher(path)
         self.path_segments: Matcher[Sequence[str]] = ANYTHING
         self.query = wrap_matcher(query)
         self.fragment = wrap_matcher(fragment)
 
     def _matches(self, url: U) -> bool:
-        parsed_url = furl(url)
+        parsed_url = URL(str(url))
         return (
             self.scheme.matches(parsed_url.scheme)
-            and self.username.matches(parsed_url.username)
+            and self.username.matches(parsed_url.user)
             and self.password.matches(parsed_url.password)
             and self.host.matches(parsed_url.host)
             and self.port.matches(parsed_url.port)
             and self.path.matches(parsed_url.path)
-            and self.path_segments.matches(parsed_url.path.segments)
-            and self.query.matches(parsed_url.query.params)
+            and self.path_segments.matches(parsed_url.parts[1:])
+            and self.query.matches(parsed_url.query)
             and self.fragment.matches(parsed_url.fragment)
         )
 
@@ -110,29 +116,29 @@ class UrlWith(BaseMatcher[U]):
         append_matcher_description(self.fragment, "fragment", description)
 
     def describe_mismatch(self, url: U, mismatch_description: Description) -> None:
-        parsed_url = furl(url)
+        parsed_url = URL(str(url))
         mismatch_description.append_text("was URL with")
         describe_field_mismatch(self.scheme, "scheme", parsed_url.scheme, mismatch_description)
-        describe_field_mismatch(self.username, "username", parsed_url.username, mismatch_description)
+        describe_field_mismatch(self.username, "username", parsed_url.user, mismatch_description)
         describe_field_mismatch(self.password, "password", parsed_url.password, mismatch_description)
         describe_field_mismatch(self.host, "host", parsed_url.host, mismatch_description)
         describe_field_mismatch(self.port, "port", parsed_url.port, mismatch_description)
         describe_field_mismatch(self.path, "path", parsed_url.path, mismatch_description)
-        describe_field_mismatch(self.path_segments, "path segments", parsed_url.path.segments, mismatch_description)
-        describe_field_mismatch(self.query, "query", parsed_url.query.params, mismatch_description)
+        describe_field_mismatch(self.path_segments, "path segments", parsed_url.parts[1:], mismatch_description)
+        describe_field_mismatch(self.query, "query", parsed_url.query, mismatch_description)
         describe_field_mismatch(self.fragment, "fragment", parsed_url.fragment, mismatch_description)
 
     def describe_match(self, url: U, match_description: Description) -> None:
-        parsed_url = furl(url)
+        parsed_url = URL(str(url))
         match_description.append_text("was URL with")
         describe_field_match(self.scheme, "scheme", parsed_url.scheme, match_description)
-        describe_field_match(self.username, "username", parsed_url.username, match_description)
+        describe_field_match(self.username, "username", parsed_url.user, match_description)
         describe_field_match(self.password, "password", parsed_url.password, match_description)
         describe_field_match(self.host, "host", parsed_url.host, match_description)
         describe_field_match(self.port, "port", parsed_url.port, match_description)
         describe_field_match(self.path, "path", parsed_url.path, match_description)
-        describe_field_match(self.path_segments, "path segments", parsed_url.path.segments, match_description)
-        describe_field_match(self.query, "query", parsed_url.query.params, match_description)
+        describe_field_match(self.path_segments, "path segments", parsed_url.parts[1:], match_description)
+        describe_field_match(self.query, "query", parsed_url.query, match_description)
         describe_field_match(self.fragment, "fragment", parsed_url.fragment, match_description)
 
     def with_scheme(self, scheme: str | Matcher[str]) -> UrlWith:
@@ -154,7 +160,7 @@ class UrlWith(BaseMatcher[U]):
         """
         return self.with_scheme(scheme)
 
-    def with_username(self, username: str | Matcher[str]) -> UrlWith:
+    def with_username(self, username: str | None | Matcher[str | None]) -> UrlWith:
         """Matches if the URL username matches the given value or matcher.
 
         :param username: The expected username or matcher.
@@ -163,7 +169,7 @@ class UrlWith(BaseMatcher[U]):
         self.username = wrap_matcher(username)
         return self
 
-    def and_username(self, username: str | Matcher[str]) -> UrlWith:
+    def and_username(self, username: str | None | Matcher[str | None]) -> UrlWith:
         """Matches if the URL username matches the given value or matcher.
 
         A synonym for :meth:`with_username`.
@@ -173,7 +179,7 @@ class UrlWith(BaseMatcher[U]):
         """
         return self.with_username(username)
 
-    def with_password(self, password: str | Matcher[str]) -> UrlWith:
+    def with_password(self, password: str | None | Matcher[str | None]) -> UrlWith:
         """Matches if the URL password matches the given value or matcher.
 
         :param password: The expected password or matcher.
@@ -182,7 +188,7 @@ class UrlWith(BaseMatcher[U]):
         self.password = wrap_matcher(password)
         return self
 
-    def and_password(self, password: str | Matcher[str]) -> UrlWith:
+    def and_password(self, password: str | None | Matcher[str | None]) -> UrlWith:
         """Matches if the URL password matches the given value or matcher.
 
         A synonym for :meth:`with_password`.
@@ -192,7 +198,7 @@ class UrlWith(BaseMatcher[U]):
         """
         return self.with_password(password)
 
-    def with_host(self, host: str | Matcher[str]) -> UrlWith:
+    def with_host(self, host: str | None | Matcher[str | None]) -> UrlWith:
         """Matches if the URL host matches the given value or matcher.
 
         :param host: The expected hostname or matcher.
@@ -201,7 +207,7 @@ class UrlWith(BaseMatcher[U]):
         self.host = wrap_matcher(host)
         return self
 
-    def and_host(self, host: str | Matcher[str]) -> UrlWith:
+    def and_host(self, host: str | None | Matcher[str | None]) -> UrlWith:
         """Matches if the URL host matches the given value or matcher.
 
         A synonym for :meth:`with_host`.
@@ -211,7 +217,7 @@ class UrlWith(BaseMatcher[U]):
         """
         return self.with_host(host)
 
-    def with_port(self, port: int | Matcher[int]) -> UrlWith:
+    def with_port(self, port: int | None | Matcher[int | None]) -> UrlWith:
         """Matches if the URL port matches the given value or matcher.
 
         :param port: The expected port integer or matcher.
@@ -220,7 +226,7 @@ class UrlWith(BaseMatcher[U]):
         self.port = wrap_matcher(port)
         return self
 
-    def and_port(self, port: int | Matcher[int]) -> UrlWith:
+    def and_port(self, port: int | None | Matcher[int | None]) -> UrlWith:
         """Matches if the URL port matches the given value or matcher.
 
         A synonym for :meth:`with_port`.

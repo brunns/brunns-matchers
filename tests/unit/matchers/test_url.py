@@ -78,8 +78,8 @@ def test_url_with_path():
     assert_that(URL, not_(should_not_match))
 
     assert_that(should_match, has_string("URL with path: '/path1/path2/path3'"))
-    assert_that(should_not_match, mismatches_with(URL, "was URL with path: was </path1/path2/path3>"))
-    assert_that(should_match, matches_with(URL, "was URL with path: was </path1/path2/path3>"))
+    assert_that(should_not_match, mismatches_with(URL, "was URL with path: was '/path1/path2/path3'"))
+    assert_that(should_match, matches_with(URL, "was URL with path: was '/path1/path2/path3'"))
 
 
 def test_url_with_path_segments():
@@ -95,11 +95,11 @@ def test_url_with_path_segments():
     )
     assert_that(
         should_not_match,
-        mismatches_with(URL, "was URL with path segments: was <['path1', 'path2', 'path3']>"),
+        mismatches_with(URL, "was URL with path segments: was <('path1', 'path2', 'path3')>"),
     )
     assert_that(
         should_match,
-        matches_with(URL, "was URL with path segments: was <['path1', 'path2', 'path3']>"),
+        matches_with(URL, "was URL with path segments: was <('path1', 'path2', 'path3')>"),
     )
 
 
@@ -117,7 +117,7 @@ def test_url_with_query():
     assert_that(should_not_match, mismatches_with(URL, "was URL with query: value for 'key2' was 'value2'"))
     assert_that(
         should_match,
-        matches_with(URL, "was URL with query: was <{'key1': 'value1', 'key2': 'value2'}>"),
+        matches_with(URL, "was URL with query: was <MultiDictProxy('key1': 'value1', 'key2': 'value2')>"),
     )
 
 
@@ -129,8 +129,8 @@ def test_url_with_fragment():
     assert_that(URL, not_(should_not_match))
 
     assert_that(should_match, has_string("URL with fragment: 'fragment'"))
-    assert_that(should_not_match, mismatches_with(URL, "was URL with fragment: was <fragment>"))
-    assert_that(should_match, matches_with(URL, "was URL with fragment: was <fragment>"))
+    assert_that(should_not_match, mismatches_with(URL, "was URL with fragment: was 'fragment'"))
+    assert_that(should_match, matches_with(URL, "was URL with fragment: was 'fragment'"))
 
 
 # TODO path.segments
@@ -172,7 +172,7 @@ def test_url_matcher_builder():
     )
     assert_that(
         should_not_match,
-        mismatches_with(URL, "was URL with host: was 'brunni.ng' path: was </path1/path2/path3>"),
+        mismatches_with(URL, "was URL with host: was 'brunni.ng' path: was '/path1/path2/path3'"),
     )
     assert_that(
         should_match,
@@ -183,9 +183,9 @@ def test_url_matcher_builder():
             "password: was 'password' "
             "host: was 'brunni.ng' "
             "port: was <1234> "
-            "path: was </path1/path2/path3> "
-            "path segments: was <['path1', 'path2', 'path3']> "
-            "query: was <{'key1': 'value1', 'key2': 'value2'}> "
-            "fragment: was <fragment>",
+            "path: was '/path1/path2/path3' "
+            "path segments: was <('path1', 'path2', 'path3')> "
+            "query: was <MultiDictProxy('key1': 'value1', 'key2': 'value2')> "
+            "fragment: was 'fragment'",
         ),
     )

@@ -3,29 +3,29 @@ from datetime import datetime
 
 import feedparser
 import httpx
-from furl import furl
 from hamcrest import anything
-from hamcrest.core.base_matcher import BaseMatcher, T
+from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 from yarl import URL
 
+from brunns.matchers.url import UrlProtocol
 from brunns.matchers.utils import append_matcher_description, describe_field_match, describe_field_mismatch
 
 logger = logging.getLogger(__name__)
 ANYTHING = anything()
 
 
-class RssFeedMatcher(BaseMatcher[str]):
+class RssFeedMatcher(BaseMatcher[UrlProtocol]):
     def __init__(self):
         self.title: Matcher[str] = ANYTHING
-        self.link: Matcher[URL] = ANYTHING
+        self.link: Matcher[UrlProtocol] = ANYTHING
         self.description: Matcher[str] = ANYTHING
         self.published: Matcher[datetime | None] = ANYTHING
         self.entries: Matcher[list[feedparser.FeedParserDict]] = ANYTHING
 
-    def _matches(self, item: str | URL | furl) -> bool:
+    def _matches(self, item: UrlProtocol) -> bool:
         try:
             actual = feedparser.parse(str(item))
         except (ValueError, httpx.HTTPError):
@@ -51,7 +51,7 @@ class RssFeedMatcher(BaseMatcher[str]):
         append_matcher_description(self.published, "published", description)
         append_matcher_description(self.entries, "entries", description)
 
-    def describe_mismatch(self, item: str, mismatch_description: Description) -> None:
+    def describe_mismatch(self, item: UrlProtocol, mismatch_description: Description) -> None:
         try:
             actual = feedparser.parse(str(item))
         except ValueError as e:
@@ -72,7 +72,7 @@ class RssFeedMatcher(BaseMatcher[str]):
             describe_field_mismatch(self.published, "published", published, mismatch_description)
             describe_field_mismatch(self.entries, "entries", actual.entries, mismatch_description)
 
-    def describe_match(self, item: T, match_description: Description) -> None:
+    def describe_match(self, item: UrlProtocol, match_description: Description) -> None:
         actual = feedparser.parse(str(item))
         match_description.append_text("was RSS feed with")
         describe_field_match(self.title, "title", actual.feed.get("title", ""), match_description)
@@ -92,11 +92,11 @@ class RssFeedMatcher(BaseMatcher[str]):
     def and_title(self, title: str | Matcher[str]):
         return self.with_title(title)
 
-    def with_link(self, link: URL | Matcher[URL]):
+    def with_link(self, link: UrlProtocol | Matcher[UrlProtocol]):
         self.link = wrap_matcher(link)
         return self
 
-    def and_link(self, link: URL | Matcher[URL]):
+    def and_link(self, link: UrlProtocol | Matcher[UrlProtocol]):
         return self.with_link(link)
 
     def with_description(self, description: str | Matcher[str]):

@@ -44,9 +44,6 @@ rss = [
 url = [
     "yarl>=1.0",
 ]
-request = [
-    "Werkzeug>=2.0",
-]
 
 
 [project.urls]

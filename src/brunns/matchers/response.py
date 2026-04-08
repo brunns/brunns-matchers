@@ -30,17 +30,26 @@ if TYPE_CHECKING:
 class ResponseProtocol(Protocol):
     """Structural typing for HTTP Response objects."""
 
-    status_code: int
-    text: str
-    content: bytes
-    headers: Mapping[str, str]
-    cookies: Mapping[str, str]
-    elapsed: timedelta
-    history: Sequence[Any]
-    url: Any
-    encoding: str | None
+    @property
+    def status_code(self) -> int: ...
+    @property
+    def text(self) -> str: ...
+    @property
+    def content(self) -> bytes: ...
+    @property
+    def headers(self) -> Mapping[str, str]: ...
+    @property
+    def cookies(self) -> Mapping[str, str]: ...
+    @property
+    def elapsed(self) -> timedelta: ...
+    @property
+    def history(self) -> Sequence[ResponseProtocol]: ...
+    @property
+    def url(self) -> Any: ...  ## Type differs between httpx and requests
+    @property
+    def encoding(self) -> str | None: ...
 
-    def json(self) -> Any: ...
+    def json(self) -> JsonStructure: ...
 
 
 R = TypeVar("R", bound=ResponseProtocol)
@@ -70,7 +79,8 @@ class ResponseMatcher(BaseMatcher[R]):
         headers: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]] = ANYTHING,
         cookies: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]] = ANYTHING,
         elapsed: timedelta | Matcher[timedelta] = ANYTHING,
-        history: Sequence[Any] | Matcher[Sequence[Any]] = ANYTHING,
+        history: Sequence[ResponseProtocol | Matcher[ResponseProtocol]]
+        | Matcher[Sequence[ResponseProtocol | Matcher[ResponseProtocol]]] = ANYTHING,
         url: UrlProtocol | Matcher[UrlProtocol] = ANYTHING,
         encoding: str | None | Matcher[str | None] = ANYTHING,
     ) -> None:
@@ -102,7 +112,7 @@ class ResponseMatcher(BaseMatcher[R]):
         )
 
     @staticmethod
-    def _get_response_json(response: R) -> Any:
+    def _get_response_json(response: R) -> JsonStructure:
         try:
             return response.json()
         except (ValueError, AttributeError, TypeError):
@@ -296,7 +306,8 @@ class ResponseMatcher(BaseMatcher[R]):
 
     def with_history(
         self,
-        history: Sequence[R | Matcher[R]] | Matcher[Sequence[R | Matcher[R]]],
+        history: Sequence[ResponseProtocol | Matcher[ResponseProtocol]]
+        | Matcher[Sequence[ResponseProtocol | Matcher[ResponseProtocol]]],
     ) -> ResponseMatcher:
         """Matches if the response history (redirects) matches the given sequence or matcher.
 
@@ -308,7 +319,8 @@ class ResponseMatcher(BaseMatcher[R]):
 
     def and_history(
         self,
-        history: Sequence[R | Matcher[R]] | Matcher[Sequence[R | Matcher[R]]],
+        history: Sequence[ResponseProtocol | Matcher[ResponseProtocol]]
+        | Matcher[Sequence[ResponseProtocol | Matcher[ResponseProtocol]]],
     ) -> ResponseMatcher:
         """Matches if the response history (redirects) matches the given sequence or matcher.
 

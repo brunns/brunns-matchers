@@ -50,11 +50,11 @@ Run `make precommit` to check if you're OK to commit. For more options, run:
 
 Releases are automated via GitHub Actions. To release version `n.n.n`:
 
-1. Update version in `pyproject.toml` and `docs/conf.py`.
+1. Update version in `pyproject.toml` (using `uv version --bump major|minor|patch`) and `docs/conf.py`.
 2. Run `make precommit` to ensure all checks pass
 3. Commit and tag:
    ```sh
-   version="n.n.n"
+   version=`uv version --short`
    git commit -am "Release v$version"
    git tag "v$version"
    git push origin master --tags

@@ -103,7 +103,7 @@ wheels = [
 
 [[package]]
 name = "brunns-matchers"
-version = "2.11.2"
+version = "3.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "brunns-row" },

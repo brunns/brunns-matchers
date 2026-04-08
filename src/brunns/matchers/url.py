@@ -54,6 +54,8 @@ def is_url() -> UrlWith:
     This function returns a :class:`UrlWith` matcher which can be refined using builder methods
     to match specific parts of the URL (e.g. ``.with_host(...)``, ``.with_query(...)``).
 
+    Requires brunns-matchers to have been installed with the `url` extra.
+
     :return: A matcher for URL components.
     """
     return UrlWith()

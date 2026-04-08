@@ -148,6 +148,8 @@ class TableHasRow(BaseMatcher[Tag]):
 def has_title(title: str | Matcher[str]) -> HtmlWithTag:
     """Matches HTML containing a <title> tag with the specified text content.
 
+    Requires brunns-matchers to have been installed with the ``html`` extra.
+
     :param title: The string content or a matcher for the content of the title tag.
     """
     return HtmlWithTag(TagWith(string=title), name="title")
@@ -155,6 +157,8 @@ def has_title(title: str | Matcher[str]) -> HtmlWithTag:
 
 def has_named_tag(name, matcher) -> HtmlWithTag:
     """Matches HTML containing a tag with a specific name that satisfies a matcher.
+
+    Requires brunns-matchers to have been installed with the ``html`` extra.
 
     :param name: The HTML tag name to find (e.g., 'div', 'span').
     :param matcher: A matcher to apply to the found tag(s).
@@ -165,6 +169,8 @@ def has_named_tag(name, matcher) -> HtmlWithTag:
 def has_id_tag(id_, matcher) -> HtmlWithTag:
     """Matches HTML containing a tag with a specific 'id' attribute that satisfies a matcher.
 
+    Requires brunns-matchers to have been installed with the ``html`` extra.
+
     :param id_: The HTML id attribute to find.
     :param matcher: A matcher to apply to the found tag(s).
     """
@@ -174,6 +180,8 @@ def has_id_tag(id_, matcher) -> HtmlWithTag:
 def tag_has_string(matcher: str | Matcher[str]) -> TagWith:
     """Matches a BeautifulSoup Tag if its text content matches the given criteria.
 
+    Requires brunns-matchers to have been installed with the ``html`` extra.
+
     :param matcher: A string or string matcher to validate against the tag's content.
     """
     return TagWith(string=matcher)
@@ -181,6 +189,8 @@ def tag_has_string(matcher: str | Matcher[str]) -> TagWith:
 
 def has_class(clazz: str | Matcher[str]) -> TagWith:
     """Matches a BeautifulSoup Tag if it possesses the specified CSS class.
+
+    Requires brunns-matchers to have been installed with the ``html`` extra.
 
     :param clazz: A string or string matcher to find within the tag's 'class' attribute list.
     """
@@ -190,6 +200,8 @@ def has_class(clazz: str | Matcher[str]) -> TagWith:
 def has_table(matcher, id_=ANYTHING) -> HtmlHasTable:
     """Matches HTML containing a <table> element satisfying the given table matcher.
 
+    Requires brunns-matchers to have been installed with the ``html`` extra.
+
     :param matcher: A matcher to apply to the table Tag.
     :param id_: Optional matcher or string for the table's 'id' attribute.
     """
@@ -198,6 +210,8 @@ def has_table(matcher, id_=ANYTHING) -> HtmlHasTable:
 
 def has_row(row_matches=ANYTHING, cells_match=ANYTHING, index_matches=ANYTHING, *, header_row=False) -> TableHasRow:
     """Matches a table Tag if it contains a row satisfying the specified criteria.
+
+    Requires brunns-matchers to have been installed with the ``html`` extra.
 
     :param row_matches: Matcher for the <tr> Tag itself.
     :param cells_match: Matcher for the sequence of cells (<td>) within the row.
@@ -217,6 +231,8 @@ def has_header_row(cells_matcher=ANYTHING, row_matcher=ANYTHING) -> TableHasRow:
 
     This is a convenience wrapper around ``has_row`` with ``header_row=True``.
 
+    Requires brunns-matchers to have been installed with the ``html`` extra.
+
     :param cells_matcher: Matcher for the sequence of header cells (<th>) within the row.
     :param row_matcher: Matcher for the <tr> Tag itself.
     """
@@ -225,6 +241,8 @@ def has_header_row(cells_matcher=ANYTHING, row_matcher=ANYTHING) -> TableHasRow:
 
 def has_id(id_: str | Matcher[str]) -> TagWith:
     """Matches a BeautifulSoup Tag if it has the specified element ID.
+
+    Requires brunns-matchers to have been installed with the ``html`` extra.
 
     :param id_: The string ID or a matcher for the ID.
     """
@@ -235,6 +253,8 @@ def has_attributes(
     matcher: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
 ) -> TagWith:
     """Matches a BeautifulSoup Tag if its attributes dictionary matches the provided matcher.
+
+    Requires brunns-matchers to have been installed with the ``html`` extra.
 
     :param matcher: A dictionary or matcher to validate the tag's attributes.
     """
@@ -247,6 +267,8 @@ def has_link(
     href: str | Matcher[str] = ANYTHING,
 ) -> HtmlWithTag:
     """Matches HTML containing an anchor (<a>) tag with specific attributes.
+
+    Requires brunns-matchers to have been installed with the ``html`` extra.
 
     :param id_: Matcher or string for the 'id' attribute.
     :param clazz: Matcher or string for the 'class' attribute.
@@ -263,6 +285,8 @@ def has_image(
     src: str | Matcher[str] = ANYTHING,
 ) -> HtmlWithTag:
     """Matches HTML containing an image (<img>) tag with specific attributes.
+
+    Requires brunns-matchers to have been installed with the ``html`` extra.
 
     :param id_: Matcher or string for the 'id' attribute.
     :param clazz: Matcher or string for the 'class' attribute.

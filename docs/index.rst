@@ -16,6 +16,8 @@ Installation
 
 Install from `Pypi <https://pypi.org/project/brunns-matchers/>`_ as usual, using pip , `tox`_, or ``setup.py``.
 
+Certain matchers require extra dependencies. See individual matchers' documentation for details.
+
 .. _tox: https://tox.readthedocs.io
 
 Provided matchers

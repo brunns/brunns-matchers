@@ -198,6 +198,8 @@ def is_rss_feed() -> RssFeedMatcher:
     The string is parsed as an RSS feed, and the resulting structure is checked.
     This matcher uses a builder pattern (e.g., ``.with_title(...)``) to refine the match.
 
+    Requires brunns-matchers to have been installed with the `rss` extra.
+
     :return: A matcher for RSS feed content.
     """
     return RssFeedMatcher()
@@ -208,6 +210,8 @@ def is_rss_entry() -> RssFeedEntryMatcher:
 
     This matcher operates on ``feedparser.FeedParserDict`` objects, typically found in
     the ``entries`` list of a parsed feed.
+
+    Requires brunns-matchers to have been installed with the `rss` extra.
 
     :return: A matcher for an RSS feed entry.
     """

@@ -38,6 +38,8 @@ html = [
 ]
 rss = [
     "feedparser>=6.0",
+    "httpx>=0.28",
+    "yarl>=1.0",
 ]
 cli = [
     "scripttest>=1.3",

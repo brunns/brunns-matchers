@@ -1,13 +1,12 @@
 """PyHamcrest matchers for scripttest ProcResult objects."""
 
-from collections.abc import Mapping, Sequence
-from typing import Any
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Protocol, TypeVar, runtime_checkable
 
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
-from hamcrest.core.matcher import Matcher
 
 from brunns.matchers.utils import (
     append_matcher_description,
@@ -15,10 +14,41 @@ from brunns.matchers.utils import (
     describe_field_mismatch,
 )
 
+if TYPE_CHECKING:
+    from collections.abc import Mapping, Sequence
+
+    from hamcrest.core.description import Description
+    from hamcrest.core.matcher import Matcher
+
+
+@runtime_checkable
+class ProcResultProtocol(Protocol):
+    """Structural typing for scripttest.ProcResult objects."""
+
+    @property
+    def returncode(self) -> int: ...
+    @property
+    def stdin(self) -> bytes: ...
+    @property
+    def stdout(self) -> str: ...
+    @property
+    def stderr(self) -> str: ...
+    @property
+    def args(self) -> Sequence[str]: ...
+    @property
+    def files_created(self) -> Mapping[str, Any]: ...
+    @property
+    def files_updated(self) -> Mapping[str, Any]: ...
+    @property
+    def files_deleted(self) -> Mapping[str, Any]: ...
+
+
+P = TypeVar("P", bound=ProcResultProtocol)
+
 ANYTHING = anything()
 
 
-def is_proc_result() -> "ProcResultMatcher":
+def is_proc_result() -> ProcResultMatcher:
     """Matches a ``scripttest.ProcResult`` object.
 
     This function returns a :class:`ProcResultMatcher` which can be refined using builder methods
@@ -29,7 +59,7 @@ def is_proc_result() -> "ProcResultMatcher":
     return ProcResultMatcher()
 
 
-class ProcResultMatcher(BaseMatcher[Any]):
+class ProcResultMatcher(BaseMatcher[P]):
     """Matches :class:`scripttest.ProcResult`.
 
     :param returncode: Expected return code (exit code).
@@ -63,7 +93,7 @@ class ProcResultMatcher(BaseMatcher[Any]):
         self.files_deleted: Matcher[Mapping[str, Any]] = wrap_matcher(files_deleted)
         self.files_updated: Matcher[Mapping[str, Any]] = wrap_matcher(files_updated)
 
-    def _matches(self, proc_result: Any) -> bool:
+    def _matches(self, proc_result: P) -> bool:
         return (
             self.returncode.matches(proc_result.returncode)
             and self.stdout.matches(proc_result.stdout)
@@ -86,7 +116,7 @@ class ProcResultMatcher(BaseMatcher[Any]):
         append_matcher_description(self.files_deleted, "files deleted", description)
         append_matcher_description(self.files_updated, "files updated", description)
 
-    def describe_mismatch(self, proc_result: Any, mismatch_description: Description) -> None:
+    def describe_mismatch(self, proc_result: P, mismatch_description: Description) -> None:
         mismatch_description.append_text("was proc result with")
         describe_field_mismatch(self.returncode, "return code", proc_result.returncode, mismatch_description)
         describe_field_mismatch(self.stdout, "stdout", proc_result.stdout, mismatch_description)
@@ -97,7 +127,7 @@ class ProcResultMatcher(BaseMatcher[Any]):
         describe_field_mismatch(self.files_deleted, "files deleted", proc_result.files_deleted, mismatch_description)
         describe_field_mismatch(self.files_updated, "files updated", proc_result.files_updated, mismatch_description)
 
-    def describe_match(self, proc_result: Any, match_description: Description) -> None:
+    def describe_match(self, proc_result: P, match_description: Description) -> None:
         match_description.append_text("was proc result with")
         describe_field_match(self.returncode, "return code", proc_result.returncode, match_description)
         describe_field_match(self.stdout, "stdout", proc_result.stdout, match_description)

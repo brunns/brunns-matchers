@@ -45,7 +45,6 @@ U = TypeVar("U", bound=UrlProtocol)
 ANYTHING = anything()
 
 logger = logging.getLogger(__name__)
-ANYTHING = anything()
 
 
 def is_url() -> UrlWith:

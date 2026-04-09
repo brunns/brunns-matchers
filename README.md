@@ -22,11 +22,13 @@ Various custom [PyHamcrest](https://pyhamcrest.readthedocs.io) matchers. See [th
 
 ## Setup
 
-Install with pip:
+Install with pip or uv:
 
     pip install brunns-matchers
 
 (As usual, use of a [venv](https://docs.python.org/3/library/venv.html) or [virtualenv](https://virtualenv.pypa.io) is recommended.)
+
+Certain matchers require extra dependencies. See individual matchers' documentation for details.
 
 ## Developing
 
@@ -55,6 +57,7 @@ Releases are automated via GitHub Actions. To release version `n.n.n`:
 3. Commit and tag:
    ```sh
    version=`uv version --short`
+   git pull -r
    git commit -am "Release v$version"
    git tag "v$version"
    git push origin master --tags

@@ -122,3 +122,6 @@ package-lock.json
 # mutation tests
 .mutmut-cache
 html/
+
+# Env
+.envrc

@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import logging
-from collections.abc import Iterable
 from typing import (
+    TYPE_CHECKING,
     Any,
     Protocol,  # type: ignore[attr-defined]
     cast,
@@ -8,10 +10,14 @@ from typing import (
 
 from hamcrest import anything, described_as
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.description import Description
-from hamcrest.core.matcher import Matcher
 
 from brunns.row.rowwrapper import RowWrapper  # type: ignore[attr-defined]
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from hamcrest.core.description import Description
+    from hamcrest.core.matcher import Matcher
 
 logger = logging.getLogger(__name__)
 

@@ -1,14 +1,16 @@
+from __future__ import annotations
+
 import json
-from typing import Any
+from typing import TYPE_CHECKING, TypeAlias
 
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
-from hamcrest.core.matcher import Matcher
 
-# JsonStructure = Union[MutableMapping[str, "JsonStructure"],
-# Iterable["JsonStructure"], str, int, bool, None]
-JsonStructure = Any  # TODO Pending a better solution to https://github.com/python/typing/issues/182
+if TYPE_CHECKING:
+    from hamcrest.core.description import Description
+    from hamcrest.core.matcher import Matcher
+
+JsonStructure: TypeAlias = str | int | float | bool | None | list["JsonStructure"] | dict[str, "JsonStructure"]
 
 
 class JsonMatching(BaseMatcher[str]):
@@ -25,14 +27,14 @@ class JsonMatching(BaseMatcher[str]):
 
     def _matches(self, json_string: str) -> bool:
         try:
-            loads = json.loads(json_string)
+            loads: JsonStructure = json.loads(json_string)
         except ValueError:
             return False
         return self.matcher.matches(loads)
 
     def describe_mismatch(self, json_string: str, description: Description) -> None:
         try:
-            loads = json.loads(json_string)
+            loads: JsonStructure = json.loads(json_string)
         except ValueError:
             description.append_text("Got invalid JSON ").append_description_of(json_string)
         else:

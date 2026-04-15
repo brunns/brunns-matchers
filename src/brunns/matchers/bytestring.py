@@ -1,7 +1,12 @@
+from __future__ import annotations
+
 import logging
+from typing import TYPE_CHECKING
 
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.description import Description
+
+if TYPE_CHECKING:
+    from hamcrest.core.description import Description
 
 logger = logging.getLogger(__name__)
 

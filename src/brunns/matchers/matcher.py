@@ -1,13 +1,17 @@
+from __future__ import annotations
+
 import difflib
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.core.isequal import IsEqual
-from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
 from hamcrest.core.string_description import StringDescription
+
+if TYPE_CHECKING:
+    from hamcrest.core.description import Description
 
 
 class MismatchesWith(BaseMatcher[Matcher]):

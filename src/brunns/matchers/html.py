@@ -1,12 +1,16 @@
+from __future__ import annotations
+
 from collections.abc import Mapping, Sequence
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from bs4 import BeautifulSoup, Tag  # type: ignore[attr-defined]
 from hamcrest import all_of, anything, contains_exactly, has_entry, has_item
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from hamcrest.core.matcher import Matcher
+
+if TYPE_CHECKING:
+    from hamcrest.core.description import Description
 
 ANYTHING = anything()
 ATTR_MATCHER = Matcher[Mapping[str, str | Matcher[str]]] | Mapping[str, str | Matcher[str]]

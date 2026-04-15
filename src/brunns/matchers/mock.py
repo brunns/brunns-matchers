@@ -1,11 +1,15 @@
+from __future__ import annotations
+
 from itertools import chain, zip_longest
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 from unittest.mock import Mock, _Call
 
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
-from hamcrest.core.matcher import Matcher
+
+if TYPE_CHECKING:
+    from hamcrest.core.description import Description
+    from hamcrest.core.matcher import Matcher
 
 
 class CallHasPositionalArg(BaseMatcher[_Call]):

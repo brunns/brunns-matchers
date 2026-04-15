@@ -1,17 +1,22 @@
+from __future__ import annotations
+
 import logging
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 import feedparser
 import httpx
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
-from hamcrest.core.matcher import Matcher
 from yarl import URL
 
 from brunns.matchers.url import UrlProtocol
 from brunns.matchers.utils import append_matcher_description, describe_field_match, describe_field_mismatch
+
+if TYPE_CHECKING:
+    from hamcrest.core.description import Description
+    from hamcrest.core.matcher import Matcher
 
 logger = logging.getLogger(__name__)
 ANYTHING = anything()

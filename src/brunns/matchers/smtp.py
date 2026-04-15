@@ -1,21 +1,25 @@
+from __future__ import annotations
+
 import email
 import re
 from dataclasses import dataclass
 from re import Match
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from deprecated import deprecated
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
-from hamcrest.core.matcher import Matcher
 
 from brunns.matchers.utils import (
     append_matcher_description,
     describe_field_match,
     describe_field_mismatch,
 )
+
+if TYPE_CHECKING:
+    from hamcrest.core.description import Description
+    from hamcrest.core.matcher import Matcher
 
 ANYTHING = anything()
 
@@ -30,7 +34,7 @@ class Email:
     body_text: str
 
 
-def is_email() -> "EmailWith":
+def is_email() -> EmailWith:
     """Matches a string as an RFC 822 / MIME email message.
 
     This function returns an :class:`EmailWith` matcher which can be refined using builder methods

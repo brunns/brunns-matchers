@@ -1,8 +1,9 @@
+from __future__ import annotations
+
 import collections
 import inspect
-from collections.abc import Iterable, Mapping
 from itertools import zip_longest
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from hamcrest import (
     all_of,
@@ -13,9 +14,13 @@ from hamcrest import (
     not_,
 )
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
-from hamcrest.core.matcher import Matcher
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Mapping
+
+    from hamcrest.core.description import Description
+    from hamcrest.core.matcher import Matcher
 
 
 def has_repr(expected: Any) -> Matcher[Any]:

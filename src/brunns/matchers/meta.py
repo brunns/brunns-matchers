@@ -1,13 +1,17 @@
+from __future__ import annotations
+
 import builtins
 import types
-from typing import Generic, TypeVar, get_args, get_origin
+from typing import TYPE_CHECKING, Generic, TypeVar, get_args, get_origin
 
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from brunns.matchers.utils import append_matcher_description, describe_field_match, describe_field_mismatch
+
+if TYPE_CHECKING:
+    from hamcrest.core.description import Description
 
 BUILTINS = {name for name in dir(builtins) if isinstance(getattr(builtins, name), (types.BuiltinFunctionType, type))}
 T = TypeVar("T")

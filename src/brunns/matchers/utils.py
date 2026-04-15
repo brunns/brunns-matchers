@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 import logging
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from hamcrest.core.core.isanything import IsAnything
-from hamcrest.core.description import Description
-from hamcrest.core.matcher import Matcher
+
+if TYPE_CHECKING:
+    from hamcrest.core.description import Description
+    from hamcrest.core.matcher import Matcher
 
 logger = logging.getLogger(__name__)
 

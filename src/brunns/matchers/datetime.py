@@ -1,12 +1,17 @@
+from __future__ import annotations
+
 from datetime import date
+from typing import TYPE_CHECKING
 
 from hamcrest import described_as
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
-from hamcrest.core.matcher import Matcher
 
 from brunns.matchers.object import between
+
+if TYPE_CHECKING:
+    from hamcrest.core.description import Description
+    from hamcrest.core.matcher import Matcher
 
 
 def is_weekday() -> Matcher[date]:

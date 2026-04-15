@@ -55,7 +55,8 @@ Issues = "https://github.com/brunns/brunns-matchers/issues"
 [dependency-groups]
 dev = [
     "bandit~=1.4",
-    "brunns-builder>=1.1.1",
+    "Faker>=40.0",
+    "brunns-matchers[html,rss,url]",
     "contexttimer>=0.3",
     "furo",
     "mbtest>=2.14,<2.16",

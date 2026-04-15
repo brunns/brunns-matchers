@@ -1,13 +1,16 @@
 from datetime import timedelta
 
-from brunns.builder.internet import UrlBuilder as a_url  # type: ignore[attr-defined]
+from faker import Faker
 from hamcrest import assert_that, contains_exactly, contains_string, has_entries, has_string, not_
 from mockito import mock, when
+from yarl import URL
 
 from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.object import between
 from brunns.matchers.response import ResponseProtocol, is_response, redirects_to
 from brunns.matchers.url import is_url
+
+fake = Faker()
 
 MOCK_RESPONSE = mock(
     {
@@ -17,11 +20,8 @@ MOCK_RESPONSE = mock(
         "headers": {"key": "value"},
         "cookies": {"name": "value"},
         "elapsed": timedelta(seconds=1),
-        "history": [
-            mock({"url": a_url().with_path("/path1").build()}),
-            mock({"url": a_url().with_path("/path2").build()}),
-        ],
-        "url": a_url().with_path("/path0").build(),
+        "history": [mock({"url": str(URL(fake.url()) / "path1")}), mock({"url": str(URL(fake.url()) / "path2")})],
+        "url": str(URL(fake.url()) / "path0"),
         "encoding": "utf-8",
     },
     spec=ResponseProtocol,
@@ -311,7 +311,7 @@ def test_redirect_to():
     stub_response = mock(
         {
             "status_code": 301,
-            "headers": {"Location": a_url().with_path("/sausages").build()},
+            "headers": {"Location": str(URL(fake.url()) / "sausages")},
         },
     )
 

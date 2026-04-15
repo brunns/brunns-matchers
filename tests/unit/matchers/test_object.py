@@ -1,7 +1,7 @@
 import datetime
 from pathlib import Path
 
-from brunns.builder.internet import UrlBuilder
+from faker import Faker
 from hamcrest import assert_that, contains_string, has_string, not_
 
 from brunns.matchers.matcher import mismatches_with
@@ -14,6 +14,8 @@ from brunns.matchers.object import (
     true,
 )
 from tests.utils.bunch import ReprFromDict
+
+fake = Faker()
 
 
 def test_has_repr():
@@ -153,10 +155,9 @@ def test_equal_vars():
     path2 = Path("some/path")
     path3 = Path("some/other/path")
 
-    url_builder = UrlBuilder()
-    url1 = url_builder.build()
-    url2 = url_builder.build()
-    url3 = url_builder.with_host("example.com").build()
+    url1 = fake.url()
+    url2 = url1
+    url3 = fake.url()
 
     # Then
     assert equal_vars(a, b)

@@ -1,10 +1,13 @@
-from brunns.builder.internet import UrlBuilder as a_url  # type: ignore[attr-defined]
+from faker import Faker
 from hamcrest import assert_that, contains_string, has_entries, has_string, not_
 from mockito import mock
+from yarl import URL
 
 from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.url import is_url
 from brunns.matchers.werkzeug import is_werkzeug_response, redirects_to
+
+fake = Faker()
 
 MOCK_RESPONSE = mock(
     {
@@ -131,7 +134,7 @@ def test_redirect_to():
     stub_response = mock(
         {
             "status_code": 301,
-            "headers": {"Location": a_url().with_path("/sausages").build()},
+            "headers": {"Location": str(URL(fake.url()) / "sausages")},
         },
     )
 

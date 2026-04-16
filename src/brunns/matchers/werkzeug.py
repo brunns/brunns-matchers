@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from hamcrest.core.description import Description
     from hamcrest.core.matcher import Matcher
 
-    from brunns.matchers.data import JsonStructure
+    from brunns.matchers.data import JsonValue
 
 
 @runtime_checkable
@@ -34,7 +34,7 @@ class ResponseProtocol(Protocol):
     @property
     def mimetype(self) -> str: ...
     @property
-    def json(self) -> JsonStructure: ...
+    def json(self) -> JsonValue | None: ...
     @property
     def headers(self) -> Mapping[str, str]: ...
 
@@ -68,7 +68,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
         self.status_code: Matcher[int] = ANYTHING
         self.text: Matcher[str] = ANYTHING
         self.mimetype: Matcher[str] = ANYTHING
-        self.json: Matcher[JsonStructure] = ANYTHING
+        self.json: Matcher[JsonValue] = ANYTHING
         self.headers: Matcher[Mapping[str, str | Matcher[str]]] = ANYTHING
 
     def _matches(self, response: R) -> bool:
@@ -161,7 +161,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
         """
         return self.with_mimetype(mimetype)
 
-    def with_json(self, json: JsonStructure | Matcher[JsonStructure]) -> WerkzeugResponseMatcher:
+    def with_json(self, json: JsonValue | Matcher[JsonValue]) -> WerkzeugResponseMatcher:
         """Matches if the response JSON body matches the given value or matcher.
 
         The response body is parsed as JSON before matching.
@@ -172,7 +172,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
         self.json = wrap_matcher(json)
         return self
 
-    def and_json(self, json: JsonStructure | Matcher[JsonStructure]) -> WerkzeugResponseMatcher:
+    def and_json(self, json: JsonValue | Matcher[JsonValue]) -> WerkzeugResponseMatcher:
         """Matches if the response JSON body matches the given value or matcher.
 
         A synonym for :meth:`with_json`.

@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from hamcrest.core.description import Description
     from hamcrest.core.matcher import Matcher
 
-    from brunns.matchers.data import JsonStructure
+    from brunns.matchers.data import JsonValue
     from brunns.matchers.url import UrlProtocol
 
 
@@ -49,7 +49,7 @@ class ResponseProtocol(Protocol):
     @property
     def encoding(self) -> str | None: ...
 
-    def json(self) -> JsonStructure: ...
+    def json(self) -> JsonValue | None: ...
 
 
 R = TypeVar("R", bound=ResponseProtocol)
@@ -75,7 +75,7 @@ class ResponseMatcher(BaseMatcher[R]):
         status_code: int | Matcher[int] = ANYTHING,
         body: str | Matcher[str] = ANYTHING,
         content: bytes | Matcher[bytes] = ANYTHING,
-        json: JsonStructure | Matcher[JsonStructure] = ANYTHING,
+        json: JsonValue | Matcher[JsonValue] = ANYTHING,
         headers: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]] = ANYTHING,
         cookies: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]] = ANYTHING,
         elapsed: timedelta | Matcher[timedelta] = ANYTHING,
@@ -112,7 +112,7 @@ class ResponseMatcher(BaseMatcher[R]):
         )
 
     @staticmethod
-    def _get_response_json(response: R) -> JsonStructure:
+    def _get_response_json(response: R) -> JsonValue:
         try:
             return response.json()
         except (ValueError, AttributeError, TypeError):
@@ -214,7 +214,7 @@ class ResponseMatcher(BaseMatcher[R]):
         """
         return self.with_content(content)
 
-    def with_json(self, json: JsonStructure | Matcher[JsonStructure]) -> ResponseMatcher:
+    def with_json(self, json: JsonValue | Matcher[JsonValue]) -> ResponseMatcher:
         """Matches if the response JSON body matches the given value or matcher.
 
         The response body is parsed as JSON before matching.
@@ -225,7 +225,7 @@ class ResponseMatcher(BaseMatcher[R]):
         self.json = wrap_matcher(json)
         return self
 
-    def and_json(self, json: JsonStructure | Matcher[JsonStructure]) -> ResponseMatcher:
+    def and_json(self, json: JsonValue | Matcher[JsonValue]) -> ResponseMatcher:
         """Matches if the response JSON body matches the given value or matcher.
 
         A synonym for :meth:`with_json`.
@@ -394,7 +394,7 @@ def response_with(
     status_code: int | Matcher[int] = ANYTHING,
     body: str | Matcher[str] = ANYTHING,
     content: bytes | Matcher[bytes] = ANYTHING,
-    json: JsonStructure | Matcher[JsonStructure] = ANYTHING,
+    json: JsonValue | Matcher[JsonValue] = ANYTHING,
     headers: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]] = ANYTHING,
 ) -> ResponseMatcher:  # pragma: no cover
     """Matches a response with specific attributes.

@@ -4,7 +4,7 @@ services:
     ports:
       - "8000:80"
   mountebank:
-    image: "bbyars/mountebank"
+    image: "bbyars/mountebank:2.9.3"
     ports:
       - "2525:2525"
       - "4545:4545"

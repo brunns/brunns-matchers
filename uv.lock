@@ -800,11 +800,11 @@ wheels = [
 
 [[package]]
 name = "mockito"
-version = "2.0.3"
+version = "2.0.4"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/4c/4b/d342e6910379d04557fc1c32ea63d49d0c630d0dbeb81240482fbf13be87/mockito-2.0.3.tar.gz", hash = "sha256:8cb4981b56b0b96295c9581fff55e3d669ecdbcdc547762a4f10b46ae4032aea", size = 217711, upload-time = "2026-03-15T17:27:22.798Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c8/8e/eff6dfa2c597ddc09d2c83a922f5154f00fa8bda90f68eda984a6d7506bd/mockito-2.0.4.tar.gz", hash = "sha256:d341f228c5b5ccf3c473751f6c6f09d8d83c5da49846a6ee31eb60b65607e0ef", size = 218582, upload-time = "2026-04-15T09:23:47.927Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9a/bf/138a95593c5fbaca78090e5c10259a682ec0c544974188a9defb726dd8b1/mockito-2.0.3-py3-none-any.whl", hash = "sha256:c6b104bda0b4808d4f6063b877e2c59dbaada940aad8eebd16463b5f5d423da2", size = 51944, upload-time = "2026-03-15T17:27:21.534Z" },
+    { url = "https://files.pythonhosted.org/packages/01/70/625563b5925ee5393a971f4790aab4b0059deda3bf9196c57ba7172e9ab3/mockito-2.0.4-py3-none-any.whl", hash = "sha256:04d7e6e9b9b7288e76235b894f9b3cbfdc9cfc631e548ed607933146ae9db1f5", size = 51921, upload-time = "2026-04-15T09:23:46.68Z" },
 ]
 
 [[package]]

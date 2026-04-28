@@ -155,7 +155,7 @@ dev = [
     { name = "contexttimer", specifier = ">=0.3" },
     { name = "faker", specifier = ">=40.0" },
     { name = "furo" },
-    { name = "mbtest", specifier = ">=2.14,<2.16" },
+    { name = "mbtest", specifier = ">=2.14,<2.17" },
     { name = "mockito", specifier = ">=1.5.5" },
     { name = "mypy", specifier = ">=1.2" },
     { name = "pytest", specifier = ">=9.0" },
@@ -775,7 +775,7 @@ wheels = [
 
 [[package]]
 name = "mbtest"
-version = "2.15.1"
+version = "2.16.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "brunns-matchers" },
@@ -784,9 +784,9 @@ dependencies = [
     { name = "pyhamcrest" },
     { name = "yarl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/86/61/c186c3fc42a7d62daf823bcd4a17e995da7e763e586ae6acc25c2b14dc9a/mbtest-2.15.1.tar.gz", hash = "sha256:bcd928552716029a5bdd578c92299b46186320c270fc9eab2a862f70a624f6c2", size = 22866, upload-time = "2026-04-07T08:30:27.739Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5a/db/899334543a261a051b4a2bdb06ffcb2943aae13e4f40ae5d8a01b0595dd2/mbtest-2.16.0.tar.gz", hash = "sha256:15854363ddd3c50d330e41393a5cec03a091755533fac809b4e476a5c611355c", size = 23375, upload-time = "2026-04-16T14:58:48.017Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2a/f6/f2c810d1aa39395acc8c96ee41f6a44bb7c0c1856916faa4cc49101794ac/mbtest-2.15.1-py3-none-any.whl", hash = "sha256:ab59ba3ed3771adb4b78c7d65538d854fbb16f75a622c59b10ad4574ca0529af", size = 25054, upload-time = "2026-04-07T08:30:26.442Z" },
+    { url = "https://files.pythonhosted.org/packages/e3/67/58e5a2c9cad07412ab45ff8220bbf60f8572e1e9ab804379d42886e79827/mbtest-2.16.0-py3-none-any.whl", hash = "sha256:4fc63c6a2378d82f5ef729728eb4e2f60b3366a08eb2502a61d079bc7af20fe9", size = 25635, upload-time = "2026-04-16T14:58:46.556Z" },
 ]
 
 [[package]]

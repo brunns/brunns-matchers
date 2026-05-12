@@ -155,7 +155,7 @@ dev = [
     { name = "brunns-matchers", extras = ["html", "rss", "url"] },
     { name = "contexttimer", specifier = ">=0.3" },
     { name = "faker", specifier = ">=40.0" },
-    { name = "furo" },
+    { name = "furo", specifier = ">=2025.12.19" },
     { name = "mbtest", specifier = ">=2.14,<2.17" },
     { name = "mockito", specifier = ">=1.5.5" },
     { name = "mypy", specifier = ">=1.2" },

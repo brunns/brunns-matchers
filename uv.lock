@@ -165,8 +165,8 @@ dev = [
     { name = "pytest-mockito", specifier = ">=0.0.5" },
     { name = "ruff" },
     { name = "scripttest", specifier = ">=1.3" },
-    { name = "sphinx", specifier = ">=3.0" },
-    { name = "sphinx-autodoc-typehints", specifier = ">=2.3" },
+    { name = "sphinx", specifier = ">=8.0" },
+    { name = "sphinx-autodoc-typehints", specifier = ">=3.0" },
 ]
 
 [[package]]

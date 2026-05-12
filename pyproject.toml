@@ -67,8 +67,8 @@ dev = [
     "pytest-mockito>=0.0.5",
     "pytest>=9.0",
     "ruff",
-    "sphinx-autodoc-typehints>=2.3",
-    "sphinx>=3.0",
+    "sphinx>=8.0",
+    "sphinx-autodoc-typehints>=3.0",
     "scripttest>=1.3",
 ]
 

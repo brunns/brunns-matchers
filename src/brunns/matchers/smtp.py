@@ -62,8 +62,8 @@ class EmailWith(BaseMatcher[str]):
         self.subject: Matcher[str] = wrap_matcher(subject)
         self.body_text: Matcher[str] = wrap_matcher(body_text)
 
-    def _matches(self, actual_email: str) -> bool:
-        email = self._parse_email(actual_email)
+    def _matches(self, item: str) -> bool:
+        email = self._parse_email(item)
         return (
             self.to_name.matches(email.to_name)
             and self.to_address.matches(email.to_address)
@@ -100,8 +100,8 @@ class EmailWith(BaseMatcher[str]):
         append_matcher_description(self.subject, "subject", description)
         append_matcher_description(self.body_text, "body_text", description)
 
-    def describe_mismatch(self, actual_email: str, mismatch_description: Description) -> None:
-        email = self._parse_email(actual_email)
+    def describe_mismatch(self, item: str, mismatch_description: Description) -> None:
+        email = self._parse_email(item)
         mismatch_description.append_text("was email with")
         describe_field_mismatch(self.to_name, "to_name", email.to_name, mismatch_description)
         describe_field_mismatch(self.to_address, "to_address", email.to_address, mismatch_description)
@@ -110,8 +110,8 @@ class EmailWith(BaseMatcher[str]):
         describe_field_mismatch(self.subject, "subject", email.subject, mismatch_description)
         describe_field_mismatch(self.body_text, "body", email.body_text, mismatch_description)
 
-    def describe_match(self, actual_email: str, match_description: Description) -> None:
-        email = self._parse_email(actual_email)
+    def describe_match(self, item: str, match_description: Description) -> None:
+        email = self._parse_email(item)
         match_description.append_text("was email with")
         describe_field_match(self.to_name, "to_name", email.to_name, match_description)
         describe_field_match(self.to_address, "to_address", email.to_address, match_description)

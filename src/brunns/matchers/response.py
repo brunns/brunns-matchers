@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Protocol, TypeVar, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, TypeVar, cast, runtime_checkable
 
 from deprecated import deprecated
 from hamcrest import anything, described_as, has_entry
@@ -96,19 +96,19 @@ class ResponseMatcher(BaseMatcher[R]):
         self.url = wrap_matcher(url)
         self.encoding = wrap_matcher(encoding)
 
-    def _matches(self, response: R) -> bool:
-        response_json = self._get_response_json(response)
+    def _matches(self, item: R) -> bool:
+        response_json = self._get_response_json(item)
         return (
-            self.status_code.matches(response.status_code)
-            and self.body.matches(response.text)
-            and self.content.matches(response.content)
+            self.status_code.matches(item.status_code)
+            and self.body.matches(item.text)
+            and self.content.matches(item.content)
             and self.json.matches(response_json)
-            and self.headers.matches(response.headers)
-            and self.cookies.matches(response.cookies)
-            and self.elapsed.matches(response.elapsed)
-            and self.history.matches(response.history)
-            and self.url.matches(response.url)
-            and self.encoding.matches(response.encoding)
+            and self.headers.matches(item.headers)
+            and self.cookies.matches(item.cookies)
+            and self.elapsed.matches(item.elapsed)
+            and self.history.matches(item.history)
+            and self.url.matches(item.url)
+            and self.encoding.matches(item.encoding)
         )
 
     @staticmethod
@@ -131,31 +131,31 @@ class ResponseMatcher(BaseMatcher[R]):
         append_matcher_description(self.url, "url", description)
         append_matcher_description(self.encoding, "encoding", description)
 
-    def describe_mismatch(self, response: R, mismatch_description: Description) -> None:
+    def describe_mismatch(self, item: R, mismatch_description: Description) -> None:
         mismatch_description.append_text("was response with")
-        describe_field_mismatch(self.status_code, "status code", response.status_code, mismatch_description)
-        describe_field_mismatch(self.body, "body", response.text, mismatch_description)
-        describe_field_mismatch(self.content, "content", response.content, mismatch_description)
-        describe_field_mismatch(self.json, "json", self._get_response_json(response), mismatch_description)
-        describe_field_mismatch(self.headers, "headers", response.headers, mismatch_description)
-        describe_field_mismatch(self.cookies, "cookies", response.cookies, mismatch_description)
-        describe_field_mismatch(self.elapsed, "elapsed", response.elapsed, mismatch_description)
-        describe_field_mismatch(self.history, "history", response.history, mismatch_description)
-        describe_field_mismatch(self.url, "url", response.url, mismatch_description)
-        describe_field_mismatch(self.encoding, "encoding", response.encoding, mismatch_description)
+        describe_field_mismatch(self.status_code, "status code", item.status_code, mismatch_description)
+        describe_field_mismatch(self.body, "body", item.text, mismatch_description)
+        describe_field_mismatch(self.content, "content", item.content, mismatch_description)
+        describe_field_mismatch(self.json, "json", self._get_response_json(item), mismatch_description)
+        describe_field_mismatch(self.headers, "headers", item.headers, mismatch_description)
+        describe_field_mismatch(self.cookies, "cookies", item.cookies, mismatch_description)
+        describe_field_mismatch(self.elapsed, "elapsed", item.elapsed, mismatch_description)
+        describe_field_mismatch(self.history, "history", item.history, mismatch_description)
+        describe_field_mismatch(self.url, "url", item.url, mismatch_description)
+        describe_field_mismatch(self.encoding, "encoding", item.encoding, mismatch_description)
 
-    def describe_match(self, response: R, match_description: Description) -> None:
+    def describe_match(self, item: R, match_description: Description) -> None:
         match_description.append_text("was response with")
-        describe_field_match(self.status_code, "status code", response.status_code, match_description)
-        describe_field_match(self.body, "body", response.text, match_description)
-        describe_field_match(self.content, "content", response.content, match_description)
-        describe_field_match(self.json, "json", self._get_response_json(response), match_description)
-        describe_field_match(self.headers, "headers", response.headers, match_description)
-        describe_field_match(self.cookies, "cookies", response.cookies, match_description)
-        describe_field_match(self.elapsed, "elapsed", response.elapsed, match_description)
-        describe_field_match(self.history, "history", response.history, match_description)
-        describe_field_match(self.url, "url", response.url, match_description)
-        describe_field_match(self.encoding, "encoding", response.encoding, match_description)
+        describe_field_match(self.status_code, "status code", item.status_code, match_description)
+        describe_field_match(self.body, "body", item.text, match_description)
+        describe_field_match(self.content, "content", item.content, match_description)
+        describe_field_match(self.json, "json", self._get_response_json(item), match_description)
+        describe_field_match(self.headers, "headers", item.headers, match_description)
+        describe_field_match(self.cookies, "cookies", item.cookies, match_description)
+        describe_field_match(self.elapsed, "elapsed", item.elapsed, match_description)
+        describe_field_match(self.history, "history", item.history, match_description)
+        describe_field_match(self.url, "url", item.url, match_description)
+        describe_field_match(self.encoding, "encoding", item.encoding, match_description)
 
     def with_status_code(self, status_code: int | Matcher[int]) -> ResponseMatcher:
         """Matches if the response status code matches the given value or matcher.
@@ -370,7 +370,7 @@ class ResponseMatcher(BaseMatcher[R]):
         return self.with_encoding(encoding)
 
 
-def redirects_to(url_matcher: UrlProtocol | Matcher[UrlProtocol]) -> Matcher[R]:
+def redirects_to(url_matcher: UrlProtocol | Matcher[UrlProtocol]) -> Matcher[ResponseProtocol]:
     """Is a response a redirect to a URL matching the supplied matcher?
 
     Matches if the status code is between 300 and 399 and the ``Location`` header matches
@@ -381,11 +381,7 @@ def redirects_to(url_matcher: UrlProtocol | Matcher[UrlProtocol]) -> Matcher[R]:
     """
     return described_as(
         str(StringDescription().append_text("redirects to ").append_description_of(url_matcher)),
-        is_response()
-        .with_status_code(between(300, 399))
-        .and_headers(
-            has_entry("Location", url_matcher)  # type: ignore[arg-type]
-        ),
+        is_response().with_status_code(between(300, 399)).and_headers(has_entry("Location", cast("Any", url_matcher))),
     )
 
 

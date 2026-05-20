@@ -20,9 +20,9 @@ class MismatchesWith(BaseMatcher[Matcher]):
         self.value_not_to_match = value_not_to_match
         self.expected_message: Matcher[str] = wrap_matcher(expected_message)
 
-    def _matches(self, matcher_under_test: Matcher[Any]) -> bool:
+    def _matches(self, item: Matcher[Any]) -> bool:
         actual = StringDescription()
-        matched = matcher_under_test.matches(self.value_not_to_match, actual)
+        matched = item.matches(self.value_not_to_match, actual)
         return not matched and self.expected_message.matches(actual.out)
 
     def describe_to(self, description: Description) -> None:
@@ -30,13 +30,13 @@ class MismatchesWith(BaseMatcher[Matcher]):
             self.value_not_to_match,
         ).append_text("\ngiving message ").append_description_of(self.expected_message)
 
-    def describe_mismatch(self, matcher_under_test: Matcher[Any], description: Description) -> None:
+    def describe_mismatch(self, item: Matcher[Any], mismatch_description: Description) -> None:
         actual_message = StringDescription()
-        if matcher_under_test.matches(self.value_not_to_match, actual_message):
-            description.append_text("matched")
+        if item.matches(self.value_not_to_match, actual_message):
+            mismatch_description.append_text("matched")
             return
-        description.append_text("got message ").append_description_of(actual_message)
-        self.append_diff(actual_message, description)
+        mismatch_description.append_text("got message ").append_description_of(actual_message)
+        self.append_diff(actual_message, mismatch_description)
 
     def append_diff(self, actual_message, description):
         if isinstance(self.expected_message, IsEqual) and isinstance(self.expected_message.object, str):
@@ -72,11 +72,11 @@ class MatchesWith(BaseMatcher[Matcher]):
         self.value_to_match = value_to_match
         self.expected_message: Matcher[str] = wrap_matcher(expected_message)
 
-    def _matches(self, matcher_under_test: Matcher[Any]) -> bool:
+    def _matches(self, item: Matcher[Any]) -> bool:
         actual = StringDescription()
-        matched = matcher_under_test.matches(self.value_to_match)
+        matched = item.matches(self.value_to_match)
         if matched:
-            matcher_under_test.describe_match(self.value_to_match, actual)
+            item.describe_match(self.value_to_match, actual)
         return matched and self.expected_message.matches(actual.out)
 
     def describe_to(self, description: Description) -> None:
@@ -84,14 +84,14 @@ class MatchesWith(BaseMatcher[Matcher]):
             self.value_to_match,
         ).append_text("\ngiving message ").append_description_of(self.expected_message)
 
-    def describe_mismatch(self, matcher_under_test: Matcher[Any], description: Description) -> None:
+    def describe_mismatch(self, item: Matcher[Any], mismatch_description: Description) -> None:
         actual_message = StringDescription()
-        if not matcher_under_test.matches(self.value_to_match):
-            description.append_text("mismatched")
+        if not item.matches(self.value_to_match):
+            mismatch_description.append_text("mismatched")
             return
-        matcher_under_test.describe_match(self.value_to_match, actual_message)
-        description.append_text("got message ").append_description_of(actual_message)
-        self.append_diff(actual_message, description)
+        item.describe_match(self.value_to_match, actual_message)
+        mismatch_description.append_text("got message ").append_description_of(actual_message)
+        self.append_diff(actual_message, mismatch_description)
 
     def append_diff(self, actual_message, description):
         if isinstance(self.expected_message, IsEqual) and isinstance(self.expected_message.object, str):

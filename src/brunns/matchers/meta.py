@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import builtins
 import types
-from typing import TYPE_CHECKING, Generic, TypeVar, get_args, get_origin
+from typing import TYPE_CHECKING, Generic, TypeVar, cast, get_args, get_origin
 
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
@@ -82,8 +82,9 @@ class BaseAutoMatcher(BaseMatcher, Generic[T], metaclass=AutoMatcherMeta):
     __domain_class__ = None  # Will be inferred when subclassed generically
 
     def describe_to(self, description: Description) -> None:
-        description.append_text(f"{self.__domain_class__.__name__} with")  # type: ignore[attr-defined]
-        for field_name in self.__domain_class__.__annotations__:
+        dc = cast("type", self.__domain_class__)
+        description.append_text(f"{dc.__name__} with")
+        for field_name in dc.__annotations__:
             attr_name = f"{field_name}_" if field_name in BUILTINS else field_name
             append_matcher_description(getattr(self, attr_name), field_name, description)
 
@@ -94,15 +95,17 @@ class BaseAutoMatcher(BaseMatcher, Generic[T], metaclass=AutoMatcherMeta):
         )
 
     def describe_mismatch(self, item: T, mismatch_description: Description) -> None:
-        mismatch_description.append_text(f"was {self.__domain_class__.__name__} with")  # type: ignore[attr-defined]
-        for field_name in self.__domain_class__.__annotations__:
+        dc = cast("type", self.__domain_class__)
+        mismatch_description.append_text(f"was {dc.__name__} with")
+        for field_name in dc.__annotations__:
             matcher = getattr(self, f"{field_name}_" if field_name in BUILTINS else field_name)
             value = getattr(item, field_name)
             describe_field_mismatch(matcher, field_name, value, mismatch_description)
 
     def describe_match(self, item: T, match_description: Description) -> None:
-        match_description.append_text(f"was {self.__domain_class__.__name__} with")  # type: ignore[attr-defined]
-        for field_name in self.__domain_class__.__annotations__:
+        dc = cast("type", self.__domain_class__)
+        match_description.append_text(f"was {dc.__name__} with")
+        for field_name in dc.__annotations__:
             matcher = getattr(self, f"{field_name}_" if field_name in BUILTINS else field_name)
             value = getattr(item, field_name)
             describe_field_match(matcher, field_name, value, match_description)

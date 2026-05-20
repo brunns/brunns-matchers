@@ -71,13 +71,13 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
         self.json: Matcher[JsonValue] = ANYTHING
         self.headers: Matcher[Mapping[str, str | Matcher[str]]] = ANYTHING
 
-    def _matches(self, response: R) -> bool:
+    def _matches(self, item: R) -> bool:
         return (
-            self.status_code.matches(response.status_code)
-            and self.text.matches(response.text)
-            and self.mimetype.matches(response.mimetype or "")
-            and self.json.matches(response.json)
-            and self.headers.matches(cast("Mapping[str, Any]", response.headers))
+            self.status_code.matches(item.status_code)
+            and self.text.matches(item.text)
+            and self.mimetype.matches(item.mimetype or "")
+            and self.json.matches(item.json)
+            and self.headers.matches(cast("Mapping[str, Any]", item.headers))
         )
 
     def describe_to(self, description: Description) -> None:
@@ -88,21 +88,21 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
         append_matcher_description(self.json, "json", description)
         append_matcher_description(self.headers, "headers", description)
 
-    def describe_mismatch(self, response: R, mismatch_description: Description) -> None:
+    def describe_mismatch(self, item: R, mismatch_description: Description) -> None:
         mismatch_description.append_text("was response with")
-        describe_field_mismatch(self.status_code, "status code", response.status_code, mismatch_description)
-        describe_field_mismatch(self.text, "text", response.text, mismatch_description)
-        describe_field_mismatch(self.mimetype, "mimetype", response.mimetype, mismatch_description)
-        describe_field_mismatch(self.json, "json", response.json, mismatch_description)
-        describe_field_mismatch(self.headers, "headers", response.headers, mismatch_description)
+        describe_field_mismatch(self.status_code, "status code", item.status_code, mismatch_description)
+        describe_field_mismatch(self.text, "text", item.text, mismatch_description)
+        describe_field_mismatch(self.mimetype, "mimetype", item.mimetype, mismatch_description)
+        describe_field_mismatch(self.json, "json", item.json, mismatch_description)
+        describe_field_mismatch(self.headers, "headers", item.headers, mismatch_description)
 
-    def describe_match(self, response: R, match_description: Description) -> None:
+    def describe_match(self, item: R, match_description: Description) -> None:
         match_description.append_text("was response with")
-        describe_field_match(self.status_code, "status code", response.status_code, match_description)
-        describe_field_match(self.text, "text", response.text, match_description)
-        describe_field_match(self.mimetype, "mimetype", response.mimetype, match_description)
-        describe_field_match(self.json, "json", response.json, match_description)
-        describe_field_match(self.headers, "headers", response.headers, match_description)
+        describe_field_match(self.status_code, "status code", item.status_code, match_description)
+        describe_field_match(self.text, "text", item.text, match_description)
+        describe_field_match(self.mimetype, "mimetype", item.mimetype, match_description)
+        describe_field_match(self.json, "json", item.json, match_description)
+        describe_field_match(self.headers, "headers", item.headers, match_description)
 
     def with_status_code(self, status_code: int | Matcher[int]) -> WerkzeugResponseMatcher:
         """Matches if the response status code matches the given value or matcher.
@@ -208,7 +208,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
         return self.with_headers(headers)
 
 
-def redirects_to(url_matcher: str | Matcher) -> Matcher[R]:
+def redirects_to(url_matcher: str | Matcher) -> Matcher[ResponseProtocol]:
     """Matches if the Werkzeug response is a redirect to the specified URL.
 
     Checks if the status code is between 300 and 399 and the ``Location`` header matches.

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import collections
+import collections.abc
 import inspect
 from itertools import zip_longest
 from typing import TYPE_CHECKING, Any
@@ -36,8 +36,8 @@ class HasRepr(BaseMatcher[Any]):
     def __init__(self, expected: str | Matcher[str]) -> None:
         self.expected: Matcher[str] = wrap_matcher(expected)
 
-    def _matches(self, actual: Any) -> bool:
-        return self.expected.matches(repr(actual))
+    def _matches(self, item: Any) -> bool:
+        return self.expected.matches(repr(item))
 
     def describe_to(self, description: Description) -> None:
         description.append_text("an object with repr() matching ")
@@ -62,8 +62,8 @@ class HasIdenticalPropertiesTo(BaseMatcher[Any]):
         self.expected = expected
         self.ignoring = ignoring
 
-    def _matches(self, actual: Any) -> bool:
-        return equal_vars(actual, self.expected, ignoring=self.ignoring)
+    def _matches(self, item: Any) -> bool:
+        return equal_vars(item, self.expected, ignoring=self.ignoring)
 
     # TODO: Needs a describe_mismatch()
 

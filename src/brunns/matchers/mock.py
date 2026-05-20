@@ -18,8 +18,8 @@ class CallHasPositionalArg(BaseMatcher[_Call]):
         self.index = index
         self.expected = wrap_matcher(expected)
 
-    def _matches(self, actual_call: _Call) -> bool:
-        args = actual_call[1]
+    def _matches(self, item: _Call) -> bool:
+        args = item[1]
         return len(args) > self.index and self.expected.matches(args[self.index])
 
     def describe_to(self, description: Description) -> None:
@@ -28,8 +28,8 @@ class CallHasPositionalArg(BaseMatcher[_Call]):
         )
         self.expected.describe_to(description)
 
-    def describe_mismatch(self, actual_call: _Call, mismatch_description: Description) -> None:
-        args = actual_call[1]
+    def describe_mismatch(self, item: _Call, mismatch_description: Description) -> None:
+        args = item[1]
         if len(args) > self.index:
             mismatch_description.append_text("got mock.call with argument index ").append_description_of(
                 self.index,
@@ -46,8 +46,8 @@ class CallHasKeywordArg(BaseMatcher[_Call]):
         self.key = key
         self.expected = wrap_matcher(expected)
 
-    def _matches(self, actual_call: _Call) -> bool:
-        args = actual_call[2]
+    def _matches(self, item: _Call) -> bool:
+        args = item[2]
         return self.key in args and self.expected.matches(args[self.key])
 
     def describe_to(self, description: Description) -> None:
@@ -56,8 +56,8 @@ class CallHasKeywordArg(BaseMatcher[_Call]):
         )
         self.expected.describe_to(description)
 
-    def describe_mismatch(self, actual_call: _Call, mismatch_description: Description) -> None:
-        args = actual_call[2]
+    def describe_mismatch(self, item: _Call, mismatch_description: Description) -> None:
+        args = item[2]
         if self.key in args:
             mismatch_description.append_text("got mock.call with keyword argument ").append_description_of(
                 self.key,
@@ -73,15 +73,15 @@ class HasCall(BaseMatcher[Mock]):
         super().__init__()
         self.call_matcher = call_matcher
 
-    def _matches(self, mock: Mock) -> bool:
-        return any(self.call_matcher.matches(call) for call in mock.mock_calls)
+    def _matches(self, item: Mock) -> bool:
+        return any(self.call_matcher.matches(call) for call in item.mock_calls)
 
     def describe_to(self, description: Description) -> None:
         description.append_text("has call matching ")
         self.call_matcher.describe_to(description)
 
-    def describe_mismatch(self, mock: Mock, mismatch_description: Description) -> None:
-        mismatch_description.append_list("got calls [", ", ", "]", [str(c) for c in mock.mock_calls])
+    def describe_mismatch(self, item: Mock, mismatch_description: Description) -> None:
+        mismatch_description.append_list("got calls [", ", ", "]", [str(c) for c in item.mock_calls])
 
 
 class CallHasArgs(BaseMatcher[_Call]):
@@ -90,9 +90,9 @@ class CallHasArgs(BaseMatcher[_Call]):
         self.args = [wrap_matcher(arg) for arg in args]
         self.kwargs = {key: wrap_matcher(value) for key, value in kwargs.items()}
 
-    def _matches(self, actual_call: _Call) -> bool:
-        actual_positional = actual_call[1]
-        actual_keyword = actual_call[2]
+    def _matches(self, item: _Call) -> bool:
+        actual_positional = item[1]
+        actual_keyword = item[2]
         return all(m.matches(a) for m, a in zip_longest(self.args, actual_positional) if m is not None) and all(
             m.matches(actual_keyword.get(k, None)) for k, m in self.kwargs.items()
         )
@@ -102,9 +102,9 @@ class CallHasArgs(BaseMatcher[_Call]):
             ", ".join(chain((str(a) for a in self.args), (f"{k}={v}" for k, v in self.kwargs.items()))),
         ).append_text(")")
 
-    def describe_mismatch(self, call: _Call, mismatch_description: Description) -> None:
+    def describe_mismatch(self, item: _Call, mismatch_description: Description) -> None:
         mismatch_description.append_text("got arguments (").append_text(
-            ", ".join(chain((repr(a) for a in call[1]), (f"{k}={v!r}" for k, v in call[2].items()))),
+            ", ".join(chain((repr(a) for a in item[1]), (f"{k}={v!r}" for k, v in item[2].items()))),
         ).append_text(")")
 
 

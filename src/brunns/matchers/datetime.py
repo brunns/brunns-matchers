@@ -29,13 +29,13 @@ class HasWeekday(BaseMatcher[date]):
     def __init__(self, day: int | Matcher[int]) -> None:
         self.day = wrap_matcher(day)
 
-    def _matches(self, actual: date) -> bool:
-        return self.day.matches(actual.weekday())
+    def _matches(self, item: date) -> bool:
+        return self.day.matches(item.weekday())
 
     def describe_to(self, description: Description) -> None:
         description.append_text("Date with weekday matching ").append_description_of(self.day)
 
-    def describe_mismatch(self, actual: date, description: Description) -> None:
-        description.append_text("was ").append_description_of(actual).append_text(
+    def describe_mismatch(self, item: date, mismatch_description: Description) -> None:
+        mismatch_description.append_text("was ").append_description_of(item).append_text(
             " with weekday ",
-        ).append_description_of(actual.weekday()).append_text(", a ").append_text(actual.strftime("%A"))
+        ).append_description_of(item.weekday()).append_text(", a ").append_text(item.strftime("%A"))

@@ -27,20 +27,20 @@ class JsonMatching(BaseMatcher[str]):
     def describe_to(self, description: Description) -> None:
         description.append_text("JSON structure matching ").append_description_of(self.matcher)
 
-    def _matches(self, json_string: str) -> bool:
+    def _matches(self, item: str) -> bool:
         try:
-            loads: JsonValue = json.loads(json_string)
+            loads: JsonValue = json.loads(item)
         except ValueError:
             return False
         return self.matcher.matches(loads)
 
-    def describe_mismatch(self, json_string: str, description: Description) -> None:
+    def describe_mismatch(self, item: str, mismatch_description: Description) -> None:
         try:
-            loads: JsonValue = json.loads(json_string)
+            loads: JsonValue = json.loads(item)
         except ValueError:
-            description.append_text("Got invalid JSON ").append_description_of(json_string)
+            mismatch_description.append_text("Got invalid JSON ").append_description_of(item)
         else:
-            self.matcher.describe_mismatch(loads, description)
+            self.matcher.describe_mismatch(loads, mismatch_description)
 
 
 def json_matching(matcher: Matcher[JsonValue] | JsonValue) -> JsonMatching:

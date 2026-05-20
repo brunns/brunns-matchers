@@ -93,16 +93,16 @@ class ProcResultMatcher(BaseMatcher[P]):
         self.files_deleted: Matcher[Mapping[str, Any]] = wrap_matcher(files_deleted)
         self.files_updated: Matcher[Mapping[str, Any]] = wrap_matcher(files_updated)
 
-    def _matches(self, proc_result: P) -> bool:
+    def _matches(self, item: P) -> bool:
         return (
-            self.returncode.matches(proc_result.returncode)
-            and self.stdout.matches(proc_result.stdout)
-            and self.stderr.matches(proc_result.stderr)
-            and self.args.matches(proc_result.args)
-            and self.stdin.matches(proc_result.stdin)
-            and self.files_created.matches(proc_result.files_created)
-            and self.files_deleted.matches(proc_result.files_deleted)
-            and self.files_updated.matches(proc_result.files_updated)
+            self.returncode.matches(item.returncode)
+            and self.stdout.matches(item.stdout)
+            and self.stderr.matches(item.stderr)
+            and self.args.matches(item.args)
+            and self.stdin.matches(item.stdin)
+            and self.files_created.matches(item.files_created)
+            and self.files_deleted.matches(item.files_deleted)
+            and self.files_updated.matches(item.files_updated)
         )
 
     def describe_to(self, description: Description) -> None:
@@ -116,27 +116,27 @@ class ProcResultMatcher(BaseMatcher[P]):
         append_matcher_description(self.files_deleted, "files deleted", description)
         append_matcher_description(self.files_updated, "files updated", description)
 
-    def describe_mismatch(self, proc_result: P, mismatch_description: Description) -> None:
+    def describe_mismatch(self, item: P, mismatch_description: Description) -> None:
         mismatch_description.append_text("was proc result with")
-        describe_field_mismatch(self.returncode, "return code", proc_result.returncode, mismatch_description)
-        describe_field_mismatch(self.stdout, "stdout", proc_result.stdout, mismatch_description)
-        describe_field_mismatch(self.stderr, "stderr", proc_result.stderr, mismatch_description)
-        describe_field_mismatch(self.args, "args", proc_result.args, mismatch_description)
-        describe_field_mismatch(self.stdin, "stdin", proc_result.stdin, mismatch_description)
-        describe_field_mismatch(self.files_created, "files created", proc_result.files_created, mismatch_description)
-        describe_field_mismatch(self.files_deleted, "files deleted", proc_result.files_deleted, mismatch_description)
-        describe_field_mismatch(self.files_updated, "files updated", proc_result.files_updated, mismatch_description)
+        describe_field_mismatch(self.returncode, "return code", item.returncode, mismatch_description)
+        describe_field_mismatch(self.stdout, "stdout", item.stdout, mismatch_description)
+        describe_field_mismatch(self.stderr, "stderr", item.stderr, mismatch_description)
+        describe_field_mismatch(self.args, "args", item.args, mismatch_description)
+        describe_field_mismatch(self.stdin, "stdin", item.stdin, mismatch_description)
+        describe_field_mismatch(self.files_created, "files created", item.files_created, mismatch_description)
+        describe_field_mismatch(self.files_deleted, "files deleted", item.files_deleted, mismatch_description)
+        describe_field_mismatch(self.files_updated, "files updated", item.files_updated, mismatch_description)
 
-    def describe_match(self, proc_result: P, match_description: Description) -> None:
+    def describe_match(self, item: P, match_description: Description) -> None:
         match_description.append_text("was proc result with")
-        describe_field_match(self.returncode, "return code", proc_result.returncode, match_description)
-        describe_field_match(self.stdout, "stdout", proc_result.stdout, match_description)
-        describe_field_match(self.stderr, "stderr", proc_result.stderr, match_description)
-        describe_field_match(self.args, "args", proc_result.args, match_description)
-        describe_field_match(self.stdin, "stdin", proc_result.stdin, match_description)
-        describe_field_match(self.files_created, "files created", proc_result.files_created, match_description)
-        describe_field_match(self.files_deleted, "files deleted", proc_result.files_deleted, match_description)
-        describe_field_match(self.files_updated, "files updated", proc_result.files_updated, match_description)
+        describe_field_match(self.returncode, "return code", item.returncode, match_description)
+        describe_field_match(self.stdout, "stdout", item.stdout, match_description)
+        describe_field_match(self.stderr, "stderr", item.stderr, match_description)
+        describe_field_match(self.args, "args", item.args, match_description)
+        describe_field_match(self.stdin, "stdin", item.stdin, match_description)
+        describe_field_match(self.files_created, "files created", item.files_created, match_description)
+        describe_field_match(self.files_deleted, "files deleted", item.files_deleted, match_description)
+        describe_field_match(self.files_updated, "files updated", item.files_updated, match_description)
 
     def with_returncode(self, returncode: int | Matcher[int]):
         """Matches if the return code matches the given value or matcher.

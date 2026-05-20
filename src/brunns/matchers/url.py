@@ -90,8 +90,8 @@ class UrlWith(BaseMatcher[U]):
         self.query = wrap_matcher(query)
         self.fragment = wrap_matcher(fragment)
 
-    def _matches(self, url: U) -> bool:
-        parsed_url = URL(str(url))
+    def _matches(self, item: U) -> bool:
+        parsed_url = URL(str(item))
         return (
             self.scheme.matches(parsed_url.scheme)
             and self.username.matches(parsed_url.user)
@@ -116,8 +116,8 @@ class UrlWith(BaseMatcher[U]):
         append_matcher_description(self.query, "query", description)
         append_matcher_description(self.fragment, "fragment", description)
 
-    def describe_mismatch(self, url: U, mismatch_description: Description) -> None:
-        parsed_url = URL(str(url))
+    def describe_mismatch(self, item: U, mismatch_description: Description) -> None:
+        parsed_url = URL(str(item))
         mismatch_description.append_text("was URL with")
         describe_field_mismatch(self.scheme, "scheme", parsed_url.scheme, mismatch_description)
         describe_field_mismatch(self.username, "username", parsed_url.user, mismatch_description)
@@ -129,8 +129,8 @@ class UrlWith(BaseMatcher[U]):
         describe_field_mismatch(self.query, "query", parsed_url.query, mismatch_description)
         describe_field_mismatch(self.fragment, "fragment", parsed_url.fragment, mismatch_description)
 
-    def describe_match(self, url: U, match_description: Description) -> None:
-        parsed_url = URL(str(url))
+    def describe_match(self, item: U, match_description: Description) -> None:
+        parsed_url = URL(str(item))
         match_description.append_text("was URL with")
         describe_field_match(self.scheme, "scheme", parsed_url.scheme, match_description)
         describe_field_match(self.username, "username", parsed_url.user, match_description)

@@ -4,14 +4,14 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Protocol,  # type: ignore[attr-defined]
+    Protocol,
     cast,
 )
 
 from hamcrest import anything, described_as
 from hamcrest.core.base_matcher import BaseMatcher
 
-from brunns.row.rowwrapper import RowWrapper  # type: ignore[attr-defined]
+from brunns.row.rowwrapper import RowWrapper
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -44,9 +44,9 @@ class SelectReturnsRowsMatching(BaseMatcher[Connection]):
         self.select = select
         self.row_matcher = row_matcher
 
-    def _matches(self, conn: Connection) -> bool:
+    def _matches(self, item: Connection) -> bool:
         try:
-            rows = self._get_rows(conn, self.select)
+            rows = self._get_rows(item, self.select)
             return self.row_matcher.matches(rows)
         except Exception:
             return False
@@ -63,9 +63,9 @@ class SelectReturnsRowsMatching(BaseMatcher[Connection]):
             " returns rows matching ",
         ).append_description_of(self.row_matcher)
 
-    def describe_mismatch(self, conn: Connection, mismatch_description: Description) -> None:
+    def describe_mismatch(self, item: Connection, mismatch_description: Description) -> None:
         try:
-            rows = self._get_rows(conn, self.select)
+            rows = self._get_rows(item, self.select)
             self.row_matcher.describe_mismatch(rows, mismatch_description)
         except Exception as e:
             mismatch_description.append_text("SQL statement ").append_description_of(self.select).append_text(

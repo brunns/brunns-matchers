@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING, Any, cast
 
-from bs4 import BeautifulSoup, Tag  # type: ignore[attr-defined]
+from bs4 import BeautifulSoup, Tag
 from hamcrest import all_of, anything, contains_exactly, has_entry, has_item
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
@@ -29,8 +29,8 @@ class HtmlWithTag(BaseMatcher[str]):
             tag_matcher if isinstance(tag_matcher, Matcher) else tag_has_string(cast("str", tag_matcher))
         )
 
-    def _matches(self, actual: str) -> bool:
-        found_tags: Sequence[Tag] = self.findall(actual)
+    def _matches(self, item: str) -> bool:
+        found_tags: Sequence[Tag] = self.findall(item)
         return cast("Matcher[Sequence[Tag]]", has_item(self.tag_matcher)).matches(found_tags)
 
     def findall(self, actual: str) -> Sequence[Tag]:
@@ -45,13 +45,13 @@ class HtmlWithTag(BaseMatcher[str]):
             description.append_text(" id=").append_description_of(self.id_)
         description.append_text(" matching ").append_description_of(self.tag_matcher)
 
-    def describe_mismatch(self, actual, mismatch_description: Description) -> None:
+    def describe_mismatch(self, item: str, mismatch_description: Description) -> None:
         mismatch_description.append_text("got HTML with tag")
         if self.name:
             mismatch_description.append_text(" name=").append_description_of(self.name)
         if self.id_:
             mismatch_description.append_text(" id=").append_description_of(self.id_)
-        found = self.findall(actual)
+        found = self.findall(item)
         mismatch_description.append_list(" values [", ", ", "]", [repr(t) for t in found])
 
 
@@ -68,13 +68,12 @@ class TagWith(BaseMatcher[Tag]):
         self.clazz: Matcher[str] = wrap_matcher(clazz)
         self.attributes: Matcher[Mapping[str, str | Matcher[str]]] = wrap_matcher(attributes)
 
-    def _matches(self, tag: Tag) -> bool:
-        # TODO - remove type ignore when https://github.com/python/mypy/issues/3283 is resolved.
+    def _matches(self, item: Tag) -> bool:
         return (
-            self.name.matches(tag.name)
-            and self.string.matches(tag.string or "")
-            and (self.clazz == ANYTHING or has_item(self.clazz).matches(tag.get("class", [])))  # type: ignore[arg-type]
-            and self.attributes.matches(cast("Mapping[str, Any]", tag.attrs))
+            self.name.matches(item.name)
+            and self.string.matches(item.string or "")
+            and (self.clazz == ANYTHING or has_item(self.clazz).matches(cast("list[str]", item.get("class") or [])))
+            and self.attributes.matches(cast("Mapping[str, Any]", item.attrs))
         )
 
     def describe_to(self, description: Description) -> None:
@@ -94,10 +93,11 @@ class HtmlHasTable(BaseMatcher[str]):
         self.table_matcher = table_matcher
         self.id_: Matcher[str] = wrap_matcher(id_)
 
-    def _matches(self, html: str) -> bool:
-        # TODO - remove type ignore when https://github.com/python/mypy/issues/3283 is resolved.
-        tables = BeautifulSoup(html, "html.parser").find_all("table")
-        return contains_exactly(all_of(self.id_, self.table_matcher)).matches(tables)  # type: ignore[arg-type]
+    def _matches(self, item: str) -> bool:
+        tables = BeautifulSoup(item, "html.parser").find_all("table")
+        return contains_exactly(all_of(cast("Matcher[Tag]", self.id_), self.table_matcher)).matches(
+            cast("list[Tag]", tables)
+        )
 
     def describe_to(self, description: Description) -> None:
         description.append_text("row matching ")
@@ -118,16 +118,15 @@ class TableHasRow(BaseMatcher[Tag]):
         self.header_row = header_row
         self.index_matcher: Matcher[int] = wrap_matcher(index_matcher)
 
-    def _matches(self, table: Tag) -> bool:
-        # TODO - remove type ignore when https://github.com/python/mypy/issues/3283 is resolved.
-        rows: Sequence[Tag] = table.find_all("tr")
+    def _matches(self, item: Tag) -> bool:
+        rows: Sequence[Tag] = item.find_all("tr")
         rows_and_cells = [(row, self._row_cells(row)) for row in rows if self._row_cells(row)]
         indexed_rows_and_cells = [(index, row, cells) for index, (row, cells) in enumerate(rows_and_cells)]
         indexed_row_matcher = cast(
             "Matcher[tuple[int, Tag, Sequence[Tag]]]",
-            contains_exactly(self.index_matcher, self.row_matcher, self.cells_matcher),
+            contains_exactly(self.index_matcher, self.row_matcher, self.cells_matcher),  # pyright: ignore[reportArgumentType]
         )
-        return has_item(indexed_row_matcher).matches(indexed_rows_and_cells)  # type: ignore[arg-type]
+        return has_item(indexed_row_matcher).matches(indexed_rows_and_cells)
 
     def _row_cells(self, row: Tag) -> Sequence[Tag]:
         return row.find_all("th" if self.header_row else "td")
@@ -144,9 +143,9 @@ class TableHasRow(BaseMatcher[Tag]):
             description.append_text(" index matching ")
             self.index_matcher.describe_to(description)
 
-    def describe_mismatch(self, table: Tag, mismatch_description: Description) -> None:
-        super().describe_mismatch(table, mismatch_description)
-        mismatch_description.append_text("\n\nfound rows:\n").append_list("", "\n", "", table.find_all("tr"))
+    def describe_mismatch(self, item: Tag, mismatch_description: Description) -> None:
+        super().describe_mismatch(item, mismatch_description)
+        mismatch_description.append_text("\n\nfound rows:\n").append_list("", "\n", "", item.find_all("tr"))
 
 
 def has_title(title: str | Matcher[str]) -> HtmlWithTag:

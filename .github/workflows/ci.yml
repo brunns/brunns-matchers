@@ -122,13 +122,11 @@ jobs:
         uses: astral-sh/setup-uv@v8.1.0
       - name: Install dependencies
         run: uv sync --all-extras
-      - name: Check format
-        run: uv run ruff format . --check
-      - name: Check lint
-        run: uv run ruff check .
+      - name: Check formatting & linting
+        run: make lint
       - name: Check security
-        run: uv run bandit -r src/
+        run: make bandit
       - name: Check types
-        run: uv run mypy src/ --ignore-missing-imports
+        run: make typecheck
       - name: Build docs
-        run: uv run sphinx-build docs build_docs --color -W -bhtml
+        run: make docs

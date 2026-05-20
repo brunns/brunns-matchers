@@ -22,11 +22,11 @@ coverage: colima ## Test coverage report
 lint: check-format ## Lint code
 
 .PHONY: extra-lint
-extra-lint: mypy bandit  ## Extra, optional linting
+extra-lint: typecheck bandit  ## Extra, optional linting
 
-.PHONY: mypy
-mypy: ## Type check with mypy
-	uv run mypy src/ --ignore-missing-imports
+.PHONY: typecheck
+typecheck:
+	uv run pyright src/
 
 .PHONY: bandit
 bandit: ## Security check with bandit
@@ -65,7 +65,7 @@ publish: build ## Publish to PyPI (use release workflow instead)
 	fi
 
 .PHONY: precommit
-precommit: test lint coverage mypy docs ## Pre-commit targets
+precommit: test lint coverage typecheck docs ## Pre-commit targets
 	@ python -m this
 
 .PHONY: clean

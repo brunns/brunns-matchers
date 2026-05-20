@@ -61,7 +61,7 @@ dev = [
     "furo>=2025.12.19",
     "mbtest>=2.14,<2.17",
     "mockito>=1.5.5",
-    "mypy>=1.2",
+    "pyright>=1.1.409",
     "pytest-cov",
     "pytest-docker~=3.1",
     "pytest-mockito>=0.0.5",
@@ -93,21 +93,6 @@ omit = ["*/matcher.py", "src/brunns/matchers/__init__.py"]
 [tool.coverage.report]
 fail_under = 100
 show_missing = true
-
-[tool.mypy]
-check_untyped_defs = true
-
-[[tool.mypy.overrides]]
-module = "furl"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "werkzeug.test"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "deprecated"
-ignore_missing_imports = true
 
 [tool.mutmut]
 paths_to_mutate = "src/"

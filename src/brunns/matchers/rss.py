@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, cast
 
 import feedparser
-import httpx
+import httpx2 as httpx
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher

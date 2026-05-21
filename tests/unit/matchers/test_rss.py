@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 import feedparser
-import httpx
+import httpx2 as httpx
 from hamcrest import anything, assert_that, contains_string, equal_to, has_item, has_string, not_
 from mockito import mock, patch
 from yarl import URL

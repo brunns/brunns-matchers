@@ -38,13 +38,15 @@ html = [
 ]
 rss = [
     "feedparser>=6.0",
-    "httpx>=0.28",
+    "httpx2>=2.0",
     "yarl>=1.0",
 ]
 url = [
     "yarl>=1.0",
 ]
 
+[tool.uv]
+exclude-newer = "7 days"
 
 [project.urls]
 Homepage = "https://github.com/brunns/brunns-matchers/"

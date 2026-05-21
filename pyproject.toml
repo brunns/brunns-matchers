@@ -61,7 +61,7 @@ dev = [
     "brunns-matchers[html,rss,url]",
     "contexttimer>=0.3",
     "furo>=2025.12.19",
-    "mbtest>=2.14,<2.17",
+    "mbtest>=2.14",
     "mockito>=1.5.5",
     "pyright>=1.1.409",
     "pytest-cov",

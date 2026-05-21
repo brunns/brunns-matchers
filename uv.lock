@@ -160,7 +160,7 @@ dev = [
     { name = "contexttimer", specifier = ">=0.3" },
     { name = "faker", specifier = ">=40.0" },
     { name = "furo", specifier = ">=2025.12.19" },
-    { name = "mbtest", specifier = ">=2.14,<2.17" },
+    { name = "mbtest", specifier = ">=2.14" },
     { name = "mockito", specifier = ">=1.5.5" },
     { name = "pyright", specifier = ">=1.1.409" },
     { name = "pytest", specifier = ">=9.0" },

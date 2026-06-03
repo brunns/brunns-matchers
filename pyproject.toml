@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "brunns-matchers"
-version = "3.1.0"
+version = "3.2.0"
 description = "Custom PyHamcrest matchers"
 readme = "README.md"
 requires-python = ">=3.10"

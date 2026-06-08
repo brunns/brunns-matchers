@@ -52,8 +52,8 @@ extensions = [
 # Extension settings:
 autodoc_member_order = "bysource"
 intersphinx_mapping = {
-    "python": ("http://docs.python.org/3", None),
-    "requests": ("http://requests.readthedocs.org/en/latest", None),
+    "python": ("https://docs.python.org/3", None),
+    "requests": ("https://requests.readthedocs.org/en/latest", None),
     "pyhamcrest": ("https://pyhamcrest.readthedocs.io/en/latest/", None),
     "pytest": ("https://docs.pytest.org/en/latest/", None),
 }

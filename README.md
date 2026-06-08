@@ -58,7 +58,7 @@ Releases are automated via GitHub Actions. To release version `n.n.n`:
    ```sh
    version=`uv version --short`
    git pull -r
-   git commit -am "Release v$version"
+   make precommit && git commit -am "Release v$version"
    git tag "v$version"
    git push origin master --tags
    ```

@@ -75,6 +75,7 @@ class ProcResultMatcher(BaseMatcher[P]):
 
     def __init__(
         self,
+        *,
         returncode: int | Matcher[int] = ANYTHING,
         stdout: str | Matcher[str] = ANYTHING,
         stderr: str | Matcher[str] = ANYTHING,

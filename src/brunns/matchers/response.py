@@ -73,6 +73,7 @@ def is_response() -> ResponseMatcher:
 class ResponseMatcher(BaseMatcher[R]):
     def __init__(
         self,
+        *,
         status_code: int | Matcher[int] = ANYTHING,
         body: str | Matcher[str] = ANYTHING,
         content: bytes | Matcher[bytes] = ANYTHING,

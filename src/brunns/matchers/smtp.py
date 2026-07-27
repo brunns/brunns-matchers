@@ -49,6 +49,7 @@ def is_email() -> EmailWith:
 class EmailWith(BaseMatcher[str]):
     def __init__(
         self,
+        *,
         to_name: str | Matcher[str] = ANYTHING,
         to_address: str | Matcher[str] = ANYTHING,
         from_name: str | Matcher[str] = ANYTHING,
@@ -238,6 +239,7 @@ class EmailWith(BaseMatcher[str]):
 
 @deprecated(version="2.3.0", reason="Use builder style is_email()")
 def email_with(
+    *,
     to_name: str | Matcher[str] = ANYTHING,
     to_address: str | Matcher[str] = ANYTHING,
     from_name: str | Matcher[str] = ANYTHING,

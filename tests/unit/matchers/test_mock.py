@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 from unittest import mock
 
 from hamcrest import assert_that, contains_string, has_string, not_

@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 from __future__ import annotations
 
 import logging
@@ -120,11 +121,11 @@ class RssFeedMatcher(BaseMatcher[UrlProtocol]):
     def and_description(self, description: str | Matcher[str]):
         return self.with_description(description)
 
-    def with_published(self, published: datetime | None | Matcher[datetime | None]):
+    def with_published(self, published: datetime | Matcher[datetime | None] | None):
         self.published = wrap_matcher(published)
         return self
 
-    def and_published(self, published: datetime | None | Matcher[datetime | None]):
+    def and_published(self, published: datetime | Matcher[datetime | None] | None):
         return self.with_published(published)
 
     def with_entries(self, entries: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]):
@@ -206,11 +207,11 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict]):
     def and_description(self, description: str | Matcher[str]):
         return self.with_description(description)
 
-    def with_published(self, published: datetime | None | Matcher[datetime | None]):
+    def with_published(self, published: datetime | Matcher[datetime | None] | None):
         self.published = wrap_matcher(published)
         return self
 
-    def and_published(self, published: datetime | None | Matcher[datetime | None]):
+    def and_published(self, published: datetime | Matcher[datetime | None] | None):
         return self.with_published(published)
 
 

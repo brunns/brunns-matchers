@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 from bs4 import BeautifulSoup
 from hamcrest import (
     all_of,

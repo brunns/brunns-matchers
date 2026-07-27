@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 from dataclasses import dataclass
 
 import pytest

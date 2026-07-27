@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 import logging
 
 from hamcrest import assert_that, contains_exactly, empty, has_entries, has_string, not_

@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 """PyHamcrest matchers for scripttest ProcResult objects."""
 
 from __future__ import annotations

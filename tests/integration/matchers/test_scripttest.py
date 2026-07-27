@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 """Integration tests for scripttest matchers using real commands."""
 
 import platform

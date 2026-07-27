@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 from __future__ import annotations
 
 import json
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
     from hamcrest.core.matcher import Matcher
 
 JsonObject: TypeAlias = Mapping[str, "JsonValue"]
-JsonValue: TypeAlias = str | int | float | bool | None | Sequence["JsonValue"] | JsonObject
+JsonValue: TypeAlias = str | int | float | bool | Sequence["JsonValue"] | JsonObject | None
 
 
 class JsonMatching(BaseMatcher[str]):

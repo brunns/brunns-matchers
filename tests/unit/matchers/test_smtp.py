@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 import email.message
 from dataclasses import dataclass, field
 

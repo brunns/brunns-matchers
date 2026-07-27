@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 import logging
 
 from hamcrest import assert_that, has_string, not_

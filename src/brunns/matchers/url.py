@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 from __future__ import annotations
 
 import logging
@@ -73,7 +74,7 @@ class UrlWith(BaseMatcher[U]):
 
     def __init__(
         self,
-        host: str | None | Matcher[str | None] = ANYTHING,
+        host: str | Matcher[str | None] | None = ANYTHING,
         path: str | Matcher[str] = ANYTHING,
         query: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]] = ANYTHING,
         fragment: str | Matcher[str] = ANYTHING,
@@ -161,7 +162,7 @@ class UrlWith(BaseMatcher[U]):
         """
         return self.with_scheme(scheme)
 
-    def with_username(self, username: str | None | Matcher[str | None]) -> UrlWith:
+    def with_username(self, username: str | Matcher[str | None] | None) -> UrlWith:
         """Matches if the URL username matches the given value or matcher.
 
         :param username: The expected username or matcher.
@@ -170,7 +171,7 @@ class UrlWith(BaseMatcher[U]):
         self.username = wrap_matcher(username)
         return self
 
-    def and_username(self, username: str | None | Matcher[str | None]) -> UrlWith:
+    def and_username(self, username: str | Matcher[str | None] | None) -> UrlWith:
         """Matches if the URL username matches the given value or matcher.
 
         A synonym for :meth:`with_username`.
@@ -180,7 +181,7 @@ class UrlWith(BaseMatcher[U]):
         """
         return self.with_username(username)
 
-    def with_password(self, password: str | None | Matcher[str | None]) -> UrlWith:
+    def with_password(self, password: str | Matcher[str | None] | None) -> UrlWith:
         """Matches if the URL password matches the given value or matcher.
 
         :param password: The expected password or matcher.
@@ -189,7 +190,7 @@ class UrlWith(BaseMatcher[U]):
         self.password = wrap_matcher(password)
         return self
 
-    def and_password(self, password: str | None | Matcher[str | None]) -> UrlWith:
+    def and_password(self, password: str | Matcher[str | None] | None) -> UrlWith:
         """Matches if the URL password matches the given value or matcher.
 
         A synonym for :meth:`with_password`.
@@ -199,7 +200,7 @@ class UrlWith(BaseMatcher[U]):
         """
         return self.with_password(password)
 
-    def with_host(self, host: str | None | Matcher[str | None]) -> UrlWith:
+    def with_host(self, host: str | Matcher[str | None] | None) -> UrlWith:
         """Matches if the URL host matches the given value or matcher.
 
         :param host: The expected hostname or matcher.
@@ -208,7 +209,7 @@ class UrlWith(BaseMatcher[U]):
         self.host = wrap_matcher(host)
         return self
 
-    def and_host(self, host: str | None | Matcher[str | None]) -> UrlWith:
+    def and_host(self, host: str | Matcher[str | None] | None) -> UrlWith:
         """Matches if the URL host matches the given value or matcher.
 
         A synonym for :meth:`with_host`.
@@ -218,7 +219,7 @@ class UrlWith(BaseMatcher[U]):
         """
         return self.with_host(host)
 
-    def with_port(self, port: int | None | Matcher[int | None]) -> UrlWith:
+    def with_port(self, port: int | Matcher[int | None] | None) -> UrlWith:
         """Matches if the URL port matches the given value or matcher.
 
         :param port: The expected port integer or matcher.
@@ -227,7 +228,7 @@ class UrlWith(BaseMatcher[U]):
         self.port = wrap_matcher(port)
         return self
 
-    def and_port(self, port: int | None | Matcher[int | None]) -> UrlWith:
+    def and_port(self, port: int | Matcher[int | None] | None) -> UrlWith:
         """Matches if the URL port matches the given value or matcher.
 
         A synonym for :meth:`with_port`.

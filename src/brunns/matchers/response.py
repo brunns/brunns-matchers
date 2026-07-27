@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Protocol, TypeVar, cast, runtime_checkable
@@ -82,7 +83,7 @@ class ResponseMatcher(BaseMatcher[R]):
         history: Sequence[ResponseProtocol | Matcher[ResponseProtocol]]
         | Matcher[Sequence[ResponseProtocol | Matcher[ResponseProtocol]]] = ANYTHING,
         url: UrlProtocol | Matcher[UrlProtocol] = ANYTHING,
-        encoding: str | None | Matcher[str | None] = ANYTHING,
+        encoding: str | Matcher[str | None] | None = ANYTHING,
     ) -> None:
         super().__init__()
         self.status_code = wrap_matcher(status_code)
@@ -350,7 +351,7 @@ class ResponseMatcher(BaseMatcher[R]):
         """
         return self.with_url(url)
 
-    def with_encoding(self, encoding: str | None | Matcher[str | None]) -> ResponseMatcher:
+    def with_encoding(self, encoding: str | Matcher[str | None] | None) -> ResponseMatcher:
         """Matches if the response encoding matches the given value or matcher.
 
         :param encoding: The expected encoding string or matcher.
@@ -359,7 +360,7 @@ class ResponseMatcher(BaseMatcher[R]):
         self.encoding = wrap_matcher(encoding)
         return self
 
-    def and_encoding(self, encoding: str | None | Matcher[str | None]) -> ResponseMatcher:
+    def and_encoding(self, encoding: str | Matcher[str | None] | None) -> ResponseMatcher:
         """Matches if the response encoding matches the given value or matcher.
 
         A synonym for :meth:`with_encoding`.

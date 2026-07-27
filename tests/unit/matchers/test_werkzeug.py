@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 from faker import Faker
 from hamcrest import assert_that, contains_string, has_entries, has_string, not_
 from mockito import mock

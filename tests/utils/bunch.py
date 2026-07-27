@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 import logging
 
 logger = logging.getLogger(__name__)

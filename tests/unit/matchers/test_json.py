@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 import json
 
 from hamcrest import assert_that, contains_exactly, has_string, matches_regexp, not_

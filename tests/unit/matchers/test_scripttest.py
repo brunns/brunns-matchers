@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 """Unit tests for scripttest matchers."""
 
 from hamcrest import (

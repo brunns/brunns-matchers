@@ -1,3 +1,4 @@
+# Copyright 2018-2026 Simon Brunning
 from datetime import datetime, timezone
 
 import pytest

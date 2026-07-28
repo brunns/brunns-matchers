@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 import feedparser
 import httpx2 as httpx
-from hamcrest import anything, assert_that, contains_string, equal_to, has_item, has_string, not_
+from hamcrest import anything, assert_that, contains_inanyorder, contains_string, equal_to, has_item, has_string, not_
 from mockito import mock, patch
 from yarl import URL
 
@@ -11,7 +11,7 @@ from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.rss import is_rss_entry, is_rss_feed
 
 
-def test_is_rss_feed(rss_string: str):
+def test_is_rss_feed(rss_string: bytes):
     should_match = (
         is_rss_feed()
         .with_title("Test channel")
@@ -68,6 +68,10 @@ def test_is_rss_entry():
             "link": "https://example.com/article",
             "description": "An article description",
             "published": "Sun, 6 Sep 2009 16:20:00 +0000",
+            "authors": [
+                feedparser.FeedParserDict({"name": "Author 1"}),
+                feedparser.FeedParserDict({"name": "Author 2"}),
+            ],
         }
     )
 
@@ -77,6 +81,7 @@ def test_is_rss_entry():
         .and_link(URL("https://example.com/article"))
         .and_description("An article description")
         .and_published(datetime(2009, 9, 6, 16, 20, 0, tzinfo=timezone.utc))
+        .and_authors(contains_inanyorder("Author 1", "Author 2"))
     )
     should_not_match = (
         is_rss_entry()
@@ -84,6 +89,7 @@ def test_is_rss_entry():
         .and_link(URL("https://example.com/another_article"))
         .and_description("Another article description")
         .and_published(datetime(2009, 6, 6, 16, 20, 0, tzinfo=timezone.utc))
+        .and_authors(contains_inanyorder("Author 1", "Author 3"))
     )
 
     assert_that(entry, should_match)
@@ -95,7 +101,8 @@ def test_is_rss_entry():
             "RSS feed entry with title: 'An article' "
             "link: <https://example.com/article> "
             "description: 'An article description' "
-            "published: <2009-09-06 16:20:00+00:00>"
+            "published: <2009-09-06 16:20:00+00:00> "
+            "authors: a sequence over ['Author 1', 'Author 2'] in any order"
         ),
     )
     assert_that(
@@ -105,7 +112,8 @@ def test_is_rss_entry():
             "was RSS feed entry with title: was 'An article' "
             "link: was <https://example.com/article> "
             "description: was 'An article description' "
-            "published: was <2009-09-06 16:20:00+00:00>",
+            "published: was <2009-09-06 16:20:00+00:00> "
+            "authors: not matched: 'Author 2'",
         ),
     )
     assert_that(
@@ -115,12 +123,13 @@ def test_is_rss_entry():
             "was RSS feed entry with title: was 'An article' "
             "link: was <https://example.com/article> "
             "description: was 'An article description' "
-            "published: was <2009-09-06 16:20:00+00:00>",
+            "published: was <2009-09-06 16:20:00+00:00> "
+            "authors: was <['Author 1', 'Author 2']>",
         ),
     )
 
 
-def test_is_rss_entry_on_string(rss_item_string: str):
+def test_is_rss_entry_on_string(rss_item_string: bytes):
     should_match = (
         is_rss_entry()
         .with_title("An article")
@@ -188,7 +197,7 @@ def test_is_rss_entry_on_empty_string():
     assert_that(matcher, mismatches_with(empty_input, contains_string("RSS entry was empty/invalid for value ''")))
 
 
-def test_is_rss_entry_on_zero_items(empty_rss_string: str):
+def test_is_rss_entry_on_zero_items(empty_rss_string: bytes):
     matcher = is_rss_entry()
 
     assert_that(empty_rss_string, not_(matcher))
@@ -198,7 +207,7 @@ def test_is_rss_entry_on_zero_items(empty_rss_string: str):
     )
 
 
-def test_is_rss_entry_on_multiple_items(rss_string: str):
+def test_is_rss_entry_on_multiple_items(rss_string: bytes):
     matcher = is_rss_entry()
 
     assert_that(rss_string, not_(matcher))
@@ -239,7 +248,7 @@ def test_rss_feed_empty_xml():
         )
 
 
-def test_rss_feed_with_entries(rss_string):
+def test_rss_feed_with_entries(rss_string: bytes):
     matcher = is_rss_feed().with_entries(has_item(is_rss_entry().with_title("Test article 0")))
 
     assert_that(rss_string, matcher)

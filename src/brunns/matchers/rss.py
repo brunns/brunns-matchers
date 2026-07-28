@@ -16,6 +16,8 @@ from brunns.matchers.url import UrlProtocol
 from brunns.matchers.utils import append_matcher_description, describe_field_match, describe_field_mismatch
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from hamcrest.core.description import Description
     from hamcrest.core.matcher import Matcher
 
@@ -142,6 +144,7 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
         self.link: Matcher[URL] = ANYTHING
         self.description: Matcher[str] = ANYTHING
         self.published: Matcher[datetime | None] = ANYTHING
+        self.authors: Matcher[Sequence[str]] = ANYTHING
 
     def _matches(self, item: feedparser.FeedParserDict | str) -> bool:
         if isinstance(item, str):
@@ -160,6 +163,12 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
             and self.link.matches(URL(cast("str", item.get("link", ""))))
             and self.description.matches(cast("str", item.get("description", "")))
             and self.published.matches(published)
+            and self.authors.matches(
+                [
+                    cast("str", a.get("name", ""))
+                    for a in cast("Sequence[feedparser.FeedParserDict]", item.get("authors", []))
+                ]
+            )
         )
 
     def describe_to(self, description: Description) -> None:
@@ -168,6 +177,7 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
         append_matcher_description(self.link, "link", description)
         append_matcher_description(self.description, "description", description)
         append_matcher_description(self.published, "published", description)
+        append_matcher_description(self.authors, "authors", description)
 
     def describe_match(self, item: feedparser.FeedParserDict | str, match_description: Description) -> None:
         match_description.append_text("was RSS feed entry with")
@@ -182,6 +192,15 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
         )
         published = self._get_published_date(item)
         describe_field_match(self.published, "published", published, match_description)
+        describe_field_match(
+            self.authors,
+            "authors",
+            [
+                cast("str", a.get("name", ""))
+                for a in cast("Sequence[feedparser.FeedParserDict]", item.get("authors", []))
+            ],
+            match_description,
+        )
 
     def describe_mismatch(self, item: feedparser.FeedParserDict | str, mismatch_description: Description) -> None:
         if isinstance(item, str):
@@ -204,6 +223,15 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
         )
         published = self._get_published_date(item)
         describe_field_mismatch(self.published, "published", published, mismatch_description)
+        describe_field_mismatch(
+            self.authors,
+            "authors",
+            [
+                cast("str", a.get("name", ""))
+                for a in cast("Sequence[feedparser.FeedParserDict]", item.get("authors", []))
+            ],
+            mismatch_description,
+        )
 
     def _get_published_date(self, entry: feedparser.FeedParserDict) -> datetime | None:
         return (
@@ -239,6 +267,13 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
 
     def and_published(self, published: datetime | Matcher[datetime | None] | None):
         return self.with_published(published)
+
+    def with_authors(self, authors: Sequence[str] | Matcher[Sequence[str]]):
+        self.authors = wrap_matcher(authors)
+        return self
+
+    def and_authors(self, authors: Sequence[str] | Matcher[Sequence[str]]):
+        return self.with_authors(authors)
 
 
 def is_rss_feed() -> RssFeedMatcher:

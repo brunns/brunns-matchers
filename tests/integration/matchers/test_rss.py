@@ -13,7 +13,7 @@ from tests.integration.conftest import CONTAINERS_AVAILABLE
 
 
 @pytest.mark.skipif(not CONTAINERS_AVAILABLE, reason="Docker is not available or compatible on this runner")
-def test_rss_feed_from_url(mock_server: MountebankServer, rss_string: str):
+def test_rss_feed_from_url(mock_server: MountebankServer, rss_string: bytes):
     # Given
     imposter = Imposter(stubs=[Stub(Predicate(path="/rss"), Response(body=rss_string))], port=4545)
     should_match = (

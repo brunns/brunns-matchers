@@ -145,6 +145,7 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
         self.description: Matcher[str] = ANYTHING
         self.published: Matcher[datetime | None] = ANYTHING
         self.authors: Matcher[Sequence[str]] = ANYTHING
+        self.categories: Matcher[list[feedparser.FeedParserDict]] = ANYTHING
 
     def _matches(self, item: feedparser.FeedParserDict | str) -> bool:
         if isinstance(item, str):
@@ -169,6 +170,12 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
                     for a in cast("Sequence[feedparser.FeedParserDict]", item.get("authors", []))
                 ]
             )
+            and self.categories.matches(
+                [
+                    cast("feedparser.FeedParserDict", c)
+                    for c in cast("Sequence[feedparser.FeedParserDict]", item.get("tags", []))
+                ]
+            )
         )
 
     def describe_to(self, description: Description) -> None:
@@ -178,6 +185,7 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
         append_matcher_description(self.description, "description", description)
         append_matcher_description(self.published, "published", description)
         append_matcher_description(self.authors, "authors", description)
+        append_matcher_description(self.categories, "categories", description)
 
     def describe_match(self, item: feedparser.FeedParserDict | str, match_description: Description) -> None:
         match_description.append_text("was RSS feed entry with")
@@ -198,6 +206,15 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
             [
                 cast("str", a.get("name", ""))
                 for a in cast("Sequence[feedparser.FeedParserDict]", item.get("authors", []))
+            ],
+            match_description,
+        )
+        describe_field_match(
+            self.categories,
+            "categories",
+            [
+                cast("feedparser.FeedParserDict", c)
+                for c in cast("Sequence[feedparser.FeedParserDict]", item.get("tags", []))
             ],
             match_description,
         )
@@ -229,6 +246,15 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
             [
                 cast("str", a.get("name", ""))
                 for a in cast("Sequence[feedparser.FeedParserDict]", item.get("authors", []))
+            ],
+            mismatch_description,
+        )
+        describe_field_mismatch(
+            self.categories,
+            "categories",
+            [
+                cast("feedparser.FeedParserDict", c)
+                for c in cast("Sequence[feedparser.FeedParserDict]", item.get("tags", []))
             ],
             mismatch_description,
         )
@@ -275,6 +301,54 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
     def and_authors(self, authors: Sequence[str] | Matcher[Sequence[str]]):
         return self.with_authors(authors)
 
+    def with_categories(self, categories: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]):
+        self.categories = wrap_matcher(categories)
+        return self
+
+    def and_categories(self, categories: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]):
+        return self.with_categories(categories)
+
+
+class RssCategoryMatcher(BaseMatcher[feedparser.FeedParserDict]):
+    def __init__(self) -> None:
+        super().__init__()
+        self.text: Matcher[str] = ANYTHING
+        self.domain: Matcher[URL] = ANYTHING
+
+    def _matches(self, item: feedparser.FeedParserDict) -> bool:
+        return self.text.matches(cast("str", item.get("term", ""))) and self.domain.matches(
+            URL(cast("str", item.get("scheme", "")))
+        )
+
+    def describe_to(self, description: Description) -> None:
+        description.append_text("RSS category with")
+        append_matcher_description(self.text, "text", description)
+        append_matcher_description(self.domain, "domain", description)
+
+    def describe_mismatch(self, item: feedparser.FeedParserDict, mismatch_description: Description) -> None:
+        mismatch_description.append_text("was RSS category with")
+        describe_field_mismatch(self.text, "text", cast("str", item.get("term", "")), mismatch_description)
+        describe_field_mismatch(self.domain, "domain", URL(cast("str", item.get("scheme", ""))), mismatch_description)
+
+    def describe_match(self, item: feedparser.FeedParserDict, match_description: Description) -> None:
+        match_description.append_text("was RSS category with")
+        describe_field_match(self.text, "text", cast("str", item.get("term", "")), match_description)
+        describe_field_match(self.domain, "domain", URL(cast("str", item.get("scheme", ""))), match_description)
+
+    def with_text(self, text: str | Matcher[str]):
+        self.text = wrap_matcher(text)
+        return self
+
+    def and_text(self, text: str | Matcher[str]):
+        return self.with_text(text)
+
+    def with_domain(self, domain: URL | Matcher[URL]):
+        self.domain = wrap_matcher(domain)
+        return self
+
+    def and_domain(self, domain: URL | Matcher[URL]):
+        return self.with_domain(domain)
+
 
 def is_rss_feed() -> RssFeedMatcher:
     """Matches a string (or URL-like object) as an RSS feed using ``feedparser``.
@@ -300,3 +374,16 @@ def is_rss_entry() -> RssFeedEntryMatcher:
     :return: A matcher for an RSS feed entry.
     """
     return RssFeedEntryMatcher()
+
+
+def is_rss_category() -> RssCategoryMatcher:
+    """Matches a single RSS category.
+
+    This matcher operates on ``feedparser.FeedParserDict`` objects, typically found in
+    the ``categories`` list of a parsed feed item.
+
+    Requires brunns-matchers to have been installed with the `rss` extra.
+
+    :return: A matcher for an RSS category.
+    """
+    return RssCategoryMatcher()

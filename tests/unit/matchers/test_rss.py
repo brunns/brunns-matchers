@@ -8,7 +8,7 @@ from mockito import mock, patch
 from yarl import URL
 
 from brunns.matchers.matcher import matches_with, mismatches_with
-from brunns.matchers.rss import is_rss_entry, is_rss_feed
+from brunns.matchers.rss import is_rss_category, is_rss_entry, is_rss_feed
 
 
 def test_is_rss_feed(rss_string: bytes):
@@ -72,6 +72,10 @@ def test_is_rss_entry():
                 feedparser.FeedParserDict({"name": "Author 1"}),
                 feedparser.FeedParserDict({"name": "Author 2"}),
             ],
+            "tags": [
+                feedparser.FeedParserDict({"term": "Category 1", "scheme": "https://example.com/category1"}),
+                feedparser.FeedParserDict({"term": "Category 2", "scheme": "https://example.com/category2"}),
+            ],
         }
     )
 
@@ -82,6 +86,12 @@ def test_is_rss_entry():
         .and_description("An article description")
         .and_published(datetime(2009, 9, 6, 16, 20, 0, tzinfo=timezone.utc))
         .and_authors(contains_inanyorder("Author 1", "Author 2"))
+        .and_categories(
+            contains_inanyorder(
+                is_rss_category().with_text("Category 1").and_domain(URL("https://example.com/category1")),
+                is_rss_category().with_domain(URL("https://example.com/category2")).and_text("Category 2"),
+            ),
+        )
     )
     should_not_match = (
         is_rss_entry()
@@ -90,6 +100,12 @@ def test_is_rss_entry():
         .and_description("Another article description")
         .and_published(datetime(2009, 6, 6, 16, 20, 0, tzinfo=timezone.utc))
         .and_authors(contains_inanyorder("Author 1", "Author 3"))
+        .and_categories(
+            contains_inanyorder(
+                is_rss_category().with_text("Category 1").and_domain(URL("https://example.com/category1")),
+                is_rss_category().with_domain(URL("https://example.com/category3")).and_text("Category 3"),
+            ),
+        )
     )
 
     assert_that(entry, should_match)
@@ -102,7 +118,10 @@ def test_is_rss_entry():
             "link: <https://example.com/article> "
             "description: 'An article description' "
             "published: <2009-09-06 16:20:00+00:00> "
-            "authors: a sequence over ['Author 1', 'Author 2'] in any order"
+            "authors: a sequence over ['Author 1', 'Author 2'] in any order "
+            "categories: a sequence over "
+            "[RSS category with text: 'Category 1' domain: <https://example.com/category1>, "
+            "RSS category with text: 'Category 2' domain: <https://example.com/category2>] in any order"
         ),
     )
     assert_that(
@@ -113,7 +132,8 @@ def test_is_rss_entry():
             "link: was <https://example.com/article> "
             "description: was 'An article description' "
             "published: was <2009-09-06 16:20:00+00:00> "
-            "authors: not matched: 'Author 2'",
+            "authors: not matched: 'Author 2' "
+            "categories: not matched: <{'term': 'Category 2', 'scheme': 'https://example.com/category2'}>",
         ),
     )
     assert_that(
@@ -124,7 +144,9 @@ def test_is_rss_entry():
             "link: was <https://example.com/article> "
             "description: was 'An article description' "
             "published: was <2009-09-06 16:20:00+00:00> "
-            "authors: was <['Author 1', 'Author 2']>",
+            "authors: was <['Author 1', 'Author 2']> "
+            "categories: was <[{'term': 'Category 1', 'scheme': 'https://example.com/category1'}, "
+            "{'term': 'Category 2', 'scheme': 'https://example.com/category2'}]>",
         ),
     )
 
@@ -136,6 +158,14 @@ def test_is_rss_entry_on_string(rss_item_string: bytes):
         .and_link(URL("https://example.com/article"))
         .and_description("An article description")
         .and_published(datetime(2009, 9, 6, 16, 20, 0, tzinfo=timezone.utc))
+        .and_authors(contains_inanyorder("Author 0", "Author 1", "Author 2"))
+        .and_categories(
+            contains_inanyorder(
+                is_rss_category().with_text("Category 0").and_domain(URL("https://example.com/category0")),
+                is_rss_category().with_text("Category 1").and_domain(URL("https://example.com/category1")),
+                is_rss_category().with_domain(URL("https://example.com/category2")).and_text("Category 2"),
+            ),
+        )
     )
     should_not_match = (
         is_rss_entry()
@@ -143,6 +173,13 @@ def test_is_rss_entry_on_string(rss_item_string: bytes):
         .and_link(URL("https://example.com/another_article"))
         .and_description("Another article description")
         .and_published(datetime(2009, 6, 6, 16, 20, 0, tzinfo=timezone.utc))
+        .and_authors(contains_inanyorder("Author 0", "Author 2"))
+        .and_categories(
+            contains_inanyorder(
+                is_rss_category().with_text("Category 1").and_domain(URL("https://example.com/category1")),
+                is_rss_category().with_domain(URL("https://example.com/category3")).and_text("Category 3"),
+            ),
+        )
     )
 
     assert_that(rss_item_string, should_match)
@@ -154,7 +191,12 @@ def test_is_rss_entry_on_string(rss_item_string: bytes):
             "RSS feed entry with title: 'An article' "
             "link: <https://example.com/article> "
             "description: 'An article description' "
-            "published: <2009-09-06 16:20:00+00:00>"
+            "published: <2009-09-06 16:20:00+00:00> "
+            "authors: a sequence over ['Author 0', 'Author 1', 'Author 2'] in any order "
+            "categories: a sequence over ["
+            "RSS category with text: 'Category 0' domain: <https://example.com/category0>, "
+            "RSS category with text: 'Category 1' domain: <https://example.com/category1>, "
+            "RSS category with text: 'Category 2' domain: <https://example.com/category2>] in any order"
         ),
     )
     assert_that(
@@ -164,7 +206,10 @@ def test_is_rss_entry_on_string(rss_item_string: bytes):
             "was RSS feed entry with title: was 'An article' "
             "link: was <https://example.com/article> "
             "description: was 'An article description' "
-            "published: was <2009-09-06 16:20:00+00:00>",
+            "published: was <2009-09-06 16:20:00+00:00> "
+            "authors: not matched: 'Author 1' "
+            "categories: not matched: "
+            "<{'term': 'Category 0', 'scheme': 'https://example.com/category0', 'label': None}>",
         ),
     )
     assert_that(
@@ -174,7 +219,11 @@ def test_is_rss_entry_on_string(rss_item_string: bytes):
             "was RSS feed entry with title: was 'An article' "
             "link: was <https://example.com/article> "
             "description: was 'An article description' "
-            "published: was <2009-09-06 16:20:00+00:00>",
+            "published: was <2009-09-06 16:20:00+00:00> "
+            "authors: was <['Author 0', 'Author 1', 'Author 2']> "
+            "categories: was <[{'term': 'Category 0', 'scheme': 'https://example.com/category0', 'label': None}, "
+            "{'term': 'Category 1', 'scheme': 'https://example.com/category1', 'label': None}, "
+            "{'term': 'Category 2', 'scheme': 'https://example.com/category2', 'label': None}]>",
         ),
     )
 
@@ -280,3 +329,29 @@ def test_matcher_aliases():
     # Exercise .and_title() on EntryMatcher
     entry_matcher = is_rss_entry().and_title("title")
     assert_that(entry_matcher.title, anything())
+
+
+def test_is_rss_category():
+    category = feedparser.FeedParserDict({"term": "Category 1", "scheme": "https://example.com/category1"})
+
+    should_match = is_rss_category().with_text("Category 1").and_domain(URL("https://example.com/category1"))
+    should_not_match = is_rss_category().with_text("Category 2").and_domain(URL("https://example.com/category2"))
+
+    assert_that(category, should_match)
+    assert_that(category, not_(should_not_match))
+
+    assert_that(
+        should_match, has_string("RSS category with text: 'Category 1' domain: <https://example.com/category1>")
+    )
+    assert_that(
+        should_not_match,
+        mismatches_with(
+            category, "was RSS category with text: was 'Category 1' domain: was <https://example.com/category1>"
+        ),
+    )
+    assert_that(
+        should_match,
+        matches_with(
+            category, "was RSS category with text: was 'Category 1' domain: was <https://example.com/category1>"
+        ),
+    )

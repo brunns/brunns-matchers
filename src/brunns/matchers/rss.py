@@ -144,7 +144,16 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
         self.published: Matcher[datetime | None] = ANYTHING
 
     def _matches(self, item: feedparser.FeedParserDict | str) -> bool:
-        item = self._coerce_to_feed_parser_dict(item)
+        if isinstance(item, str):
+            parsed = feedparser.parse(item)
+            match len(parsed.entries):
+                case 0:
+                    return False
+                case 1:
+                    item = parsed.entries[0]
+                case _:
+                    return False
+        item = cast("feedparser.FeedParserDict", item)
         published = self._get_published_date(item)
         return (
             self.title.matches(cast("str", item.get("title", "")))
@@ -161,8 +170,11 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
         append_matcher_description(self.published, "published", description)
 
     def describe_match(self, item: feedparser.FeedParserDict | str, match_description: Description) -> None:
-        item = self._coerce_to_feed_parser_dict(item)
         match_description.append_text("was RSS feed entry with")
+        if isinstance(item, str):
+            parsed = feedparser.parse(item)
+            item = parsed.entries[0]
+        item = cast("feedparser.FeedParserDict", item)
         describe_field_match(self.title, "title", cast("str", item.get("title", "")), match_description)
         describe_field_match(self.link, "link", URL(cast("str", item.get("link", ""))), match_description)
         describe_field_match(
@@ -172,7 +184,18 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
         describe_field_match(self.published, "published", published, match_description)
 
     def describe_mismatch(self, item: feedparser.FeedParserDict | str, mismatch_description: Description) -> None:
-        item = self._coerce_to_feed_parser_dict(item)
+        if isinstance(item, str):
+            parsed = feedparser.parse(item)
+            match len(parsed.entries):
+                case 0:
+                    mismatch_description.append_text(f"RSS entry was empty/invalid for value {item!r}")
+                    return
+                case 1:
+                    item = parsed.entries[0]
+                case _:
+                    mismatch_description.append_text(f"Multiple RSS entries for value {item}")
+                    return
+        item = cast("feedparser.FeedParserDict", item)
         mismatch_description.append_text("was RSS feed entry with")
         describe_field_mismatch(self.title, "title", cast("str", item.get("title", "")), mismatch_description)
         describe_field_mismatch(self.link, "link", URL(cast("str", item.get("link", ""))), mismatch_description)
@@ -188,12 +211,6 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
             if "published" in entry
             else None
         )
-
-    @staticmethod
-    def _coerce_to_feed_parser_dict(item: feedparser.FeedParserDict | str) -> feedparser.FeedParserDict:
-        if isinstance(item, str):
-            item = feedparser.parse(item).entries[0]
-        return cast("feedparser.FeedParserDict", item)
 
     def with_title(self, title: str | Matcher[str]):
         self.title = wrap_matcher(title)

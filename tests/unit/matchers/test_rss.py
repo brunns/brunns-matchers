@@ -170,6 +170,41 @@ def test_is_rss_entry_on_string(rss_item_string: str):
     )
 
 
+def test_is_rss_entry_parsing_failure():
+    matcher = is_rss_entry()
+    invalid_input = "invalid"
+
+    assert_that(invalid_input, not_(matcher))
+    assert_that(
+        matcher, mismatches_with(invalid_input, contains_string("RSS entry was empty/invalid for value 'invalid'"))
+    )
+
+
+def test_is_rss_entry_on_empty_string():
+    matcher = is_rss_entry()
+    empty_input = ""
+
+    assert_that(empty_input, not_(matcher))
+    assert_that(matcher, mismatches_with(empty_input, contains_string("RSS entry was empty/invalid for value ''")))
+
+
+def test_is_rss_entry_on_zero_items(empty_rss_string: str):
+    matcher = is_rss_entry()
+
+    assert_that(empty_rss_string, not_(matcher))
+    assert_that(
+        matcher,
+        mismatches_with(empty_rss_string, contains_string("RSS entry was empty/invalid for value '<rss version=")),
+    )
+
+
+def test_is_rss_entry_on_multiple_items(rss_string: str):
+    matcher = is_rss_entry()
+
+    assert_that(rss_string, not_(matcher))
+    assert_that(matcher, mismatches_with(rss_string, contains_string("Multiple RSS entries for value")))
+
+
 def test_rss_http_error():
     with patch(feedparser.parse, lambda *_args, **_kwargs: (_ for _ in ()).throw(httpx.HTTPError("404!"))):
         matcher = is_rss_feed()

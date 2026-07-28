@@ -11,7 +11,7 @@ from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.rss import is_rss_entry, is_rss_feed
 
 
-def test_rss_feed(rss_string: str):
+def test_is_rss_feed(rss_string: str):
     should_match = (
         is_rss_feed()
         .with_title("Test channel")
@@ -61,7 +61,7 @@ def test_rss_feed(rss_string: str):
     )
 
 
-def test_entry_matcher():
+def test_is_rss_entry():
     entry = feedparser.FeedParserDict(
         {
             "title": "An article",
@@ -112,6 +112,56 @@ def test_entry_matcher():
         should_match,
         matches_with(
             entry,
+            "was RSS feed entry with title: was 'An article' "
+            "link: was <https://example.com/article> "
+            "description: was 'An article description' "
+            "published: was <2009-09-06 16:20:00+00:00>",
+        ),
+    )
+
+
+def test_is_rss_entry_on_string(rss_item_string: str):
+    should_match = (
+        is_rss_entry()
+        .with_title("An article")
+        .and_link(URL("https://example.com/article"))
+        .and_description("An article description")
+        .and_published(datetime(2009, 9, 6, 16, 20, 0, tzinfo=timezone.utc))
+    )
+    should_not_match = (
+        is_rss_entry()
+        .with_title("Another article")
+        .and_link(URL("https://example.com/another_article"))
+        .and_description("Another article description")
+        .and_published(datetime(2009, 6, 6, 16, 20, 0, tzinfo=timezone.utc))
+    )
+
+    assert_that(rss_item_string, should_match)
+    assert_that(rss_item_string, not_(should_not_match))
+
+    assert_that(
+        should_match,
+        has_string(
+            "RSS feed entry with title: 'An article' "
+            "link: <https://example.com/article> "
+            "description: 'An article description' "
+            "published: <2009-09-06 16:20:00+00:00>"
+        ),
+    )
+    assert_that(
+        should_not_match,
+        mismatches_with(
+            rss_item_string,
+            "was RSS feed entry with title: was 'An article' "
+            "link: was <https://example.com/article> "
+            "description: was 'An article description' "
+            "published: was <2009-09-06 16:20:00+00:00>",
+        ),
+    )
+    assert_that(
+        should_match,
+        matches_with(
+            rss_item_string,
             "was RSS feed entry with title: was 'An article' "
             "link: was <https://example.com/article> "
             "description: was 'An article description' "

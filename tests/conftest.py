@@ -46,3 +46,15 @@ def empty_rss_string() -> str:
     ET.SubElement(channel, "pubDate").text = "Sun, 6 Sep 2009 16:20:00 +0000"
 
     return ET.tostring(rss_root, encoding="unicode")
+
+
+@pytest.fixture(scope="session")
+def rss_item_string() -> str:
+    item = ET.Element("item")
+    ET.SubElement(item, "title").text = "An article"
+    ET.SubElement(item, "description").text = "An article description"
+    ET.SubElement(item, "link").text = "https://example.com/article"
+    ET.SubElement(item, "guid").text = "guid"
+    ET.SubElement(item, "pubDate").text = "Sun, 6 Sep 2009 16:20:00 +0000"
+
+    return ET.tostring(item, encoding="unicode")

@@ -72,7 +72,7 @@ class BaseAutoMatcher(BaseMatcher, Generic[T], metaclass=AutoMatcherMeta):
 
         def is_status() -> Matcher[Status]: return StatusMatcher()
 
-        actual = Status(status_code="ACTIVE", count=99)
+        actual = Status(code="ACTIVE", id=99)
         assert_that(actual, is_status().with_code(starts_with("ACT")).and_reason(None))
         assert_that(actual, is_status().with_id(42))  # Will fail
 

@@ -14,10 +14,12 @@ Various custom `PyHamcrest`_ matchers.
 Installation
 ------------
 
-Install from `Pypi <https://pypi.org/project/brunns-matchers/>`_ as usual, using pip , `tox`_, or ``setup.py``.
+Install from `Pypi <https://pypi.org/project/brunns-matchers/>`_ as usual, using `uv`_, `pip`_ , `tox`_, ``setup.py``, or whatever.
 
 Certain matchers require extra dependencies. See individual matchers' documentation for details.
 
+.. _uv: https://docs.astral.sh/uv
+.. _pip: https://pip.pypa.io
 .. _tox: https://tox.readthedocs.io
 
 Provided matchers

@@ -3,12 +3,10 @@ import logging
 import os
 import platform
 import sqlite3
-from urllib.error import HTTPError
 
+import httpx2
 import pytest
-import requests
 from mbtest.server import MountebankServer
-from requests.exceptions import ConnectionError as RequestsConnectionError
 from yarl import URL
 
 logger = logging.getLogger(__name__)
@@ -57,9 +55,9 @@ def mock_server(mountebank_instance: URL) -> MountebankServer:
 
 def is_responsive(url: URL) -> bool:
     try:
-        response = requests.get(url, timeout=5)
+        response = httpx2.get(str(url), timeout=5)
         response.raise_for_status()
-    except (RequestsConnectionError, HTTPError):
+    except httpx2.HTTPError:
         return False
     else:
         return True

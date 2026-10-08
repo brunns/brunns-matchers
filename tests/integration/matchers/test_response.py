@@ -4,8 +4,8 @@ import os
 import platform
 from datetime import timedelta
 
+import httpx2
 import pytest
-import requests
 from hamcrest import assert_that, contains_exactly, contains_string, has_entries, has_key, not_
 
 from brunns.matchers.bytestring import contains_bytestring
@@ -28,7 +28,7 @@ def test_response_status_code(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "status/345", timeout=5)
+    actual = httpx2.get(str(httpbin / "status/345"), timeout=5)
 
     # Then
     assert_that(actual, is_response().with_status_code(345))
@@ -44,7 +44,7 @@ def test_response_json(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "json", timeout=5)
+    actual = httpx2.get(str(httpbin / "json"), timeout=5)
 
     # Then
     assert_that(actual, is_response().with_json(has_key("slideshow")))
@@ -56,8 +56,8 @@ def test_response_content(httpbin):
     # Given
 
     # When
-    actual = requests.get(
-        httpbin / "anything" % {"foo": "bar"},
+    actual = httpx2.get(
+        str(httpbin / "anything" % {"foo": "bar"}),
         headers={"X-Clacks-Overhead": "Sir Terry Pratchett"},
         timeout=5,
     )
@@ -73,7 +73,7 @@ def test_response_cookies(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "cookies/set" % {"foo": "bar"}, allow_redirects=False, timeout=5)
+    actual = httpx2.get(str(httpbin / "cookies/set" % {"foo": "bar"}), follow_redirects=False, timeout=5)
 
     # Then
     assert_that(actual, is_response().with_status_code(302).and_cookies(has_entries(foo="bar")))
@@ -84,7 +84,7 @@ def test_response_elapsed(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "delay/0.5", timeout=5)
+    actual = httpx2.get(str(httpbin / "delay/0.5"), timeout=5)
 
     # Then
     assert_that(
@@ -98,7 +98,7 @@ def test_response_history(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "cookies/set" % {"foo": "bar"}, timeout=5)
+    actual = httpx2.get(str(httpbin / "cookies/set" % {"foo": "bar"}), follow_redirects=True, timeout=5)
 
     # Then
     assert_that(
@@ -115,7 +115,7 @@ def test_response_encoding(httpbin):
     # Given
 
     # When
-    actual = requests.get(httpbin / "encoding/utf8", timeout=5)
+    actual = httpx2.get(str(httpbin / "encoding/utf8"), timeout=5)
 
     # Then
     assert_that(actual, is_response().with_encoding("utf-8"))

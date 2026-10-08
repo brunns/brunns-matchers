@@ -65,6 +65,13 @@ The "brunns.matchers.object" module
     :members:
 
 
+The "brunns.matchers.path" module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: brunns.matchers.path
+    :members:
+
+
 The "brunns.matchers.response" module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

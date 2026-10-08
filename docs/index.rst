@@ -91,6 +91,11 @@ Object
 * :py:func:`~brunns.matchers.object.false` - matches if object is falsy.
 * :py:func:`~brunns.matchers.object.between` - matches if value is within a range.
 
+Path
+~~~~~~~~
+
+* :py:func:`~brunns.matchers.path.is_path` - matches a :class:`pathlib.Path` object.
+
 Response
 ~~~~~~~~
 

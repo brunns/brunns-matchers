@@ -63,54 +63,99 @@ class PathMatcher(BaseMatcher[Path]):
             append_matcher_description(matcher, name, description)
 
     def with_anchor(self, item: str | Matcher[str]) -> Self:
+        """Matches the path's anchor (drive and root combined).
+
+        :param item: Expected anchor string or a matcher for the anchor.
+        :return: This matcher instance for chaining.
+        """
         self.anchor = wrap_matcher(item)
         return self
 
     and_anchor = with_anchor
 
     def with_name(self, item: str | Matcher[str]) -> Self:
+        """Matches the path's name (final component).
+
+        :param item: Expected name string or a matcher for the name.
+        :return: This matcher instance for chaining.
+        """
         self.name = wrap_matcher(item)
         return self
 
     and_name = with_name
 
     def with_parent(self, item: Any | Matcher[Any]) -> Self:
+        """Matches the path's parent directory.
+
+        :param item: Expected parent path or a matcher for the parent.
+        :return: This matcher instance for chaining.
+        """
         self.parent = wrap_matcher(item)
         return self
 
     and_parent = with_parent
 
     def with_parents(self, item: Sequence[Any] | Matcher[Sequence[Any]]) -> Self:
+        """Matches the path's sequence of parent directories.
+
+        :param item: Expected sequence of parent paths or a matcher for ancestors.
+        :return: This matcher instance for chaining.
+        """
         self.parents = wrap_matcher(item)
         return self
 
     and_parents = with_parents
 
     def with_parts(self, item: Sequence[str] | Matcher[Sequence[str]]) -> Self:
+        """Matches the path's component sequence.
+
+        :param item: Expected sequence of path part strings or a matcher for them.
+        :return: This matcher instance for chaining.
+        """
         self.parts = wrap_matcher(item)
         return self
 
     and_parts = with_parts
 
     def with_root(self, item: str | Matcher[str]) -> Self:
+        """Matches the path's root string.
+
+        :param item: Expected root string or a matcher for the root.
+        :return: This matcher instance for chaining.
+        """
         self.root = wrap_matcher(item)
         return self
 
     and_root = with_root
 
     def with_stem(self, item: str | Matcher[str]) -> Self:
+        """Matches the path's stem (final component without its extension).
+
+        :param item: Expected stem string or a matcher for the stem.
+        :return: This matcher instance for chaining.
+        """
         self.stem = wrap_matcher(item)
         return self
 
     and_stem = with_stem
 
     def with_suffix(self, item: str | Matcher[str]) -> Self:
+        """Matches the path's file suffix (extension).
+
+        :param item: Expected suffix string or a matcher for the suffix.
+        :return: This matcher instance for chaining.
+        """
         self.suffix = wrap_matcher(item)
         return self
 
     and_suffix = with_suffix
 
     def with_suffixes(self, item: Sequence[str] | Matcher[Sequence[str]]) -> Self:
+        """Matches the path's list of file suffixes (extensions).
+
+        :param item: Expected sequence of suffix strings or a matcher for them.
+        :return: This matcher instance for chaining.
+        """
         self.suffixes = wrap_matcher(item)
         return self
 
@@ -120,7 +165,7 @@ class PathMatcher(BaseMatcher[Path]):
 def is_path() -> PathMatcher:
     """Matches a :class:`pathlib.Path`.
 
-    This function returns a :class:`PathWith` matcher which can be refined using builder methods
+    This function returns a :class:`PathMatcher` which can be refined using builder methods
     to match specific parts of the :class:`pathlib.Path` (e.g. ``.with_name(...)``, ``.with_suffix(...)``).
 
     :return: A matcher for :class:`pathlib.Path` objects.

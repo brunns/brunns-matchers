@@ -62,7 +62,6 @@ dev = [
     "Faker>=40.0",
     "brunns-matchers[html,rss,url]",
     "contexttimer>=0.3",
-    "furo>=2025.12.19",
     "mbtest>=2.14",
     "mockito>=1.5.5",
     "pyright>=1.1.409",
@@ -71,9 +70,12 @@ dev = [
     "pytest-mockito>=0.0.5",
     "pytest>=9.0",
     "ruff",
+    "scripttest>=1.3",
+]
+docs = [
     "sphinx>=8.0",
     "sphinx-autodoc-typehints>=3.0",
-    "scripttest>=1.3",
+    "furo>=2025.12.19",
 ]
 
 [tool.hatch.build.targets.wheel]

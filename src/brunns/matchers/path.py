@@ -1,7 +1,7 @@
 # Copyright 2026 Simon Brunning
 from __future__ import annotations
 
-from pathlib import PurePath
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from hamcrest import anything
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 ANYTHING = anything()
 
 
-class PathMatcher(BaseMatcher[PurePath]):
+class PathMatcher(BaseMatcher[Path]):
     def __init__(self) -> None:
         super().__init__()
         self.anchor: Matcher[str] = ANYTHING
@@ -36,7 +36,7 @@ class PathMatcher(BaseMatcher[PurePath]):
         self.suffix: Matcher[str] = ANYTHING
         self.suffixes: Matcher[Sequence[str]] = ANYTHING
 
-    def _fields(self, item: PurePath):
+    def _fields(self, item: Path):
         return [
             (self.anchor, "anchor", item.anchor),
             (self.name, "name", item.name),
@@ -49,22 +49,22 @@ class PathMatcher(BaseMatcher[PurePath]):
             (self.suffixes, "suffixes", item.suffixes),
         ]
 
-    def _matches(self, item: PurePath) -> bool:
+    def _matches(self, item: Path) -> bool:
         return all(matcher.matches(val) for matcher, _, val in self._fields(item))
 
-    def describe_mismatch(self, item: PurePath, mismatch_description: Description) -> None:
+    def describe_mismatch(self, item: Path, mismatch_description: Description) -> None:
         mismatch_description.append_text("was Path with")
         for matcher, name, val in self._fields(item):
             describe_field_mismatch(matcher, name, val, mismatch_description)
 
-    def describe_match(self, item: PurePath, match_description: Description) -> None:
+    def describe_match(self, item: Path, match_description: Description) -> None:
         match_description.append_text("was Path with")
         for matcher, name, val in self._fields(item):
             describe_field_match(matcher, name, val, match_description)
 
     def describe_to(self, description: Description) -> None:
         description.append_text("Path with")
-        for matcher, name, _ in self._fields(PurePath()):
+        for matcher, name, _ in self._fields(Path()):
             append_matcher_description(matcher, name, description)
 
     def with_anchor(self, item: str | Matcher[str]) -> PathMatcher:

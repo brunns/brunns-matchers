@@ -149,15 +149,7 @@ class ProcResultMatcher(BaseMatcher[P]):
         self.returncode = wrap_matcher(returncode)
         return self
 
-    def and_returncode(self, returncode: int | Matcher[int]):
-        """Matches if the return code matches the given value or matcher.
-
-        A synonym for :meth:`with_returncode`.
-
-        :param returncode: The expected return code.
-        :return: Self, for chaining.
-        """
-        return self.with_returncode(returncode)
+    and_returncode = with_returncode
 
     def with_stdout(self, stdout: str | Matcher[str]):
         """Matches if the stdout text matches the given value or matcher.
@@ -168,15 +160,7 @@ class ProcResultMatcher(BaseMatcher[P]):
         self.stdout = wrap_matcher(stdout)
         return self
 
-    def and_stdout(self, stdout: str | Matcher[str]):
-        """Matches if the stdout text matches the given value or matcher.
-
-        A synonym for :meth:`with_stdout`.
-
-        :param stdout: The expected stdout string or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_stdout(stdout)
+    and_stdout = with_stdout
 
     def with_stderr(self, stderr: str | Matcher[str]):
         """Matches if the stderr text matches the given value or matcher.
@@ -187,15 +171,7 @@ class ProcResultMatcher(BaseMatcher[P]):
         self.stderr = wrap_matcher(stderr)
         return self
 
-    def and_stderr(self, stderr: str | Matcher[str]):
-        """Matches if the stderr text matches the given value or matcher.
-
-        A synonym for :meth:`with_stderr`.
-
-        :param stderr: The expected stderr string or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_stderr(stderr)
+    and_stderr = with_stderr
 
     def with_args(self, args: Sequence[str] | Matcher[Sequence[str]]):
         """Matches if the command arguments match the given value or matcher.
@@ -206,15 +182,7 @@ class ProcResultMatcher(BaseMatcher[P]):
         self.args = wrap_matcher(args)
         return self
 
-    def and_args(self, args: Sequence[str] | Matcher[Sequence[str]]):
-        """Matches if the command arguments match the given value or matcher.
-
-        A synonym for :meth:`with_args`.
-
-        :param args: The expected args sequence or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_args(args)
+    and_args = with_args
 
     def with_stdin(self, stdin: bytes | Matcher[bytes]):
         """Matches if the stdin bytes match the given value or matcher.
@@ -225,15 +193,7 @@ class ProcResultMatcher(BaseMatcher[P]):
         self.stdin = wrap_matcher(stdin)
         return self
 
-    def and_stdin(self, stdin: bytes | Matcher[bytes]):
-        """Matches if the stdin bytes match the given value or matcher.
-
-        A synonym for :meth:`with_stdin`.
-
-        :param stdin: The expected stdin bytes or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_stdin(stdin)
+    and_stdin = with_stdin
 
     def with_files_created(self, files_created: Mapping[str, Any] | Matcher[Mapping[str, Any]]):
         """Matches if the files created dictionary matches the given value or matcher.
@@ -244,15 +204,7 @@ class ProcResultMatcher(BaseMatcher[P]):
         self.files_created = wrap_matcher(files_created)
         return self
 
-    def and_files_created(self, files_created: Mapping[str, Any] | Matcher[Mapping[str, Any]]):
-        """Matches if the files created dictionary matches the given value or matcher.
-
-        A synonym for :meth:`with_files_created`.
-
-        :param files_created: The expected files created dictionary or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_files_created(files_created)
+    and_files_created = with_files_created
 
     def with_files_deleted(self, files_deleted: Mapping[str, Any] | Matcher[Mapping[str, Any]]):
         """Matches if the files deleted dictionary matches the given value or matcher.
@@ -263,15 +215,7 @@ class ProcResultMatcher(BaseMatcher[P]):
         self.files_deleted = wrap_matcher(files_deleted)
         return self
 
-    def and_files_deleted(self, files_deleted: Mapping[str, Any] | Matcher[Mapping[str, Any]]):
-        """Matches if the files deleted dictionary matches the given value or matcher.
-
-        A synonym for :meth:`with_files_deleted`.
-
-        :param files_deleted: The expected files deleted dictionary or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_files_deleted(files_deleted)
+    and_files_deleted = with_files_deleted
 
     def with_files_updated(self, files_updated: Mapping[str, Any] | Matcher[Mapping[str, Any]]):
         """Matches if the files updated dictionary matches the given value or matcher.
@@ -282,12 +226,4 @@ class ProcResultMatcher(BaseMatcher[P]):
         self.files_updated = wrap_matcher(files_updated)
         return self
 
-    def and_files_updated(self, files_updated: Mapping[str, Any] | Matcher[Mapping[str, Any]]):
-        """Matches if the files updated dictionary matches the given value or matcher.
-
-        A synonym for :meth:`with_files_updated`.
-
-        :param files_updated: The expected files updated dictionary or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_files_updated(files_updated)
+    and_files_updated = with_files_updated

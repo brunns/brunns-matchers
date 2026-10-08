@@ -168,15 +168,7 @@ class ResponseMatcher(BaseMatcher[R]):
         self.status_code = wrap_matcher(status_code)
         return self
 
-    def and_status_code(self, status_code: int | Matcher[int]) -> ResponseMatcher:
-        """Matches if the response status code matches the given value or matcher.
-
-        A synonym for :meth:`with_status_code`.
-
-        :param status_code: The expected status code.
-        :return: ResponseMatcher, for chaining.
-        """
-        return self.with_status_code(status_code)
+    and_status_code = with_status_code
 
     def with_body(self, body: str | Matcher[str]) -> ResponseMatcher:
         """Matches if the response body text matches the given value or matcher.
@@ -187,15 +179,7 @@ class ResponseMatcher(BaseMatcher[R]):
         self.body = wrap_matcher(body)
         return self
 
-    def and_body(self, body: str | Matcher[str]) -> ResponseMatcher:
-        """Matches if the response body text matches the given value or matcher.
-
-        A synonym for :meth:`with_body`.
-
-        :param body: The expected body string or matcher.
-        :return: ResponseMatcher, for chaining.
-        """
-        return self.with_body(body)
+    and_body = with_body
 
     def with_content(self, content: bytes | Matcher[bytes]) -> ResponseMatcher:
         """Matches if the response binary content matches the given value or matcher.
@@ -206,15 +190,7 @@ class ResponseMatcher(BaseMatcher[R]):
         self.content = wrap_matcher(content)
         return self
 
-    def and_content(self, content: bytes | Matcher[bytes]) -> ResponseMatcher:
-        """Matches if the response binary content matches the given value or matcher.
-
-        A synonym for :meth:`with_content`.
-
-        :param content: The expected bytes or matcher.
-        :return: ResponseMatcher, for chaining.
-        """
-        return self.with_content(content)
+    and_content = with_content
 
     def with_json(self, json: JsonValue | Matcher[JsonValue]) -> ResponseMatcher:
         """Matches if the response JSON body matches the given value or matcher.
@@ -227,15 +203,7 @@ class ResponseMatcher(BaseMatcher[R]):
         self.json = wrap_matcher(json)
         return self
 
-    def and_json(self, json: JsonValue | Matcher[JsonValue]) -> ResponseMatcher:
-        """Matches if the response JSON body matches the given value or matcher.
-
-        A synonym for :meth:`with_json`.
-
-        :param json: The expected JSON structure or matcher.
-        :return: ResponseMatcher, for chaining.
-        """
-        return self.with_json(json)
+    and_json = with_json
 
     def with_headers(
         self,
@@ -249,18 +217,7 @@ class ResponseMatcher(BaseMatcher[R]):
         self.headers = wrap_matcher(headers)
         return self
 
-    def and_headers(
-        self,
-        headers: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
-    ) -> ResponseMatcher:
-        """Matches if the response headers match the given value or matcher.
-
-        A synonym for :meth:`with_headers`.
-
-        :param headers: The expected headers dictionary or matcher.
-        :return: ResponseMatcher, for chaining.
-        """
-        return self.with_headers(headers)
+    and_headers = with_headers
 
     def with_cookies(
         self,
@@ -274,18 +231,7 @@ class ResponseMatcher(BaseMatcher[R]):
         self.cookies = wrap_matcher(cookies)
         return self
 
-    def and_cookies(
-        self,
-        cookies: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
-    ) -> ResponseMatcher:
-        """Matches if the response cookies match the given value or matcher.
-
-        A synonym for :meth:`with_cookies`.
-
-        :param cookies: The expected cookies dictionary or matcher.
-        :return: ResponseMatcher, for chaining.
-        """
-        return self.with_cookies(cookies)
+    and_cookies = with_cookies
 
     def with_elapsed(self, elapsed: timedelta | Matcher[timedelta]) -> ResponseMatcher:
         """Matches if the response elapsed time matches the given value or matcher.
@@ -296,15 +242,7 @@ class ResponseMatcher(BaseMatcher[R]):
         self.elapsed = wrap_matcher(elapsed)
         return self
 
-    def and_elapsed(self, elapsed: timedelta | Matcher[timedelta]) -> ResponseMatcher:
-        """Matches if the response elapsed time matches the given value or matcher.
-
-        A synonym for :meth:`with_elapsed`.
-
-        :param elapsed: The expected timedelta or matcher.
-        :return: ResponseMatcher, for chaining.
-        """
-        return self.with_elapsed(elapsed)
+    and_elapsed = with_elapsed
 
     def with_history(
         self,
@@ -319,19 +257,7 @@ class ResponseMatcher(BaseMatcher[R]):
         self.history = wrap_matcher(history)
         return self
 
-    def and_history(
-        self,
-        history: Sequence[ResponseProtocol | Matcher[ResponseProtocol]]
-        | Matcher[Sequence[ResponseProtocol | Matcher[ResponseProtocol]]],
-    ) -> ResponseMatcher:
-        """Matches if the response history (redirects) matches the given sequence or matcher.
-
-        A synonym for :meth:`with_history`.
-
-        :param history: The expected sequence or matcher.
-        :return: ResponseMatcher, for chaining.
-        """
-        return self.with_history(history)
+    and_history = with_history
 
     def with_url(self, url: UrlProtocol | Matcher[UrlProtocol]) -> ResponseMatcher:
         """Matches if the response URL matches the given value or matcher.
@@ -342,15 +268,7 @@ class ResponseMatcher(BaseMatcher[R]):
         self.url = wrap_matcher(url)
         return self
 
-    def and_url(self, url: UrlProtocol | Matcher[UrlProtocol]) -> ResponseMatcher:
-        """Matches if the response URL matches the given value or matcher.
-
-        A synonym for :meth:`with_url`.
-
-        :param url: The expected URL string, object, or matcher.
-        :return: ResponseMatcher, for chaining.
-        """
-        return self.with_url(url)
+    and_url = with_url
 
     def with_encoding(self, encoding: str | Matcher[str | None] | None) -> ResponseMatcher:
         """Matches if the response encoding matches the given value or matcher.
@@ -361,15 +279,7 @@ class ResponseMatcher(BaseMatcher[R]):
         self.encoding = wrap_matcher(encoding)
         return self
 
-    def and_encoding(self, encoding: str | Matcher[str | None] | None) -> ResponseMatcher:
-        """Matches if the response encoding matches the given value or matcher.
-
-        A synonym for :meth:`with_encoding`.
-
-        :param encoding: The expected encoding string or matcher.
-        :return: ResponseMatcher, for chaining.
-        """
-        return self.with_encoding(encoding)
+    and_encoding = with_encoding
 
 
 def redirects_to(url_matcher: UrlProtocol | Matcher[UrlProtocol]) -> Matcher[ResponseProtocol]:

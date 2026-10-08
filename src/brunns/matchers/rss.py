@@ -106,36 +106,31 @@ class RssFeedMatcher(BaseMatcher[UrlProtocol]):
         self.title = wrap_matcher(title)
         return self
 
-    def and_title(self, title: str | Matcher[str]):
-        return self.with_title(title)
+    and_title = with_title
 
     def with_link(self, link: UrlProtocol | Matcher[UrlProtocol]):
         self.link = wrap_matcher(link)
         return self
 
-    def and_link(self, link: UrlProtocol | Matcher[UrlProtocol]):
-        return self.with_link(link)
+    and_link = with_link
 
     def with_description(self, description: str | Matcher[str]):
         self.description = wrap_matcher(description)
         return self
 
-    def and_description(self, description: str | Matcher[str]):
-        return self.with_description(description)
+    and_description = with_description
 
     def with_published(self, published: datetime | Matcher[datetime | None] | None):
         self.published = wrap_matcher(published)
         return self
 
-    def and_published(self, published: datetime | Matcher[datetime | None] | None):
-        return self.with_published(published)
+    and_published = with_published
 
     def with_entries(self, entries: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]):
         self.entries = wrap_matcher(entries)
         return self
 
-    def and_entries(self, entries: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]):
-        return self.with_entries(entries)
+    and_entries = with_entries
 
 
 class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
@@ -270,43 +265,37 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
         self.title = wrap_matcher(title)
         return self
 
-    def and_title(self, title: str | Matcher[str]):
-        return self.with_title(title)
+    and_title = with_title
 
     def with_link(self, link: URL | Matcher[URL]):
         self.link = wrap_matcher(link)
         return self
 
-    def and_link(self, link: URL | Matcher[URL]):
-        return self.with_link(link)
+    and_link = with_link
 
     def with_description(self, description: str | Matcher[str]):
         self.description = wrap_matcher(description)
         return self
 
-    def and_description(self, description: str | Matcher[str]):
-        return self.with_description(description)
+    and_description = with_description
 
     def with_published(self, published: datetime | Matcher[datetime | None] | None):
         self.published = wrap_matcher(published)
         return self
 
-    def and_published(self, published: datetime | Matcher[datetime | None] | None):
-        return self.with_published(published)
+    and_published = with_published
 
     def with_authors(self, authors: Sequence[str] | Matcher[Sequence[str]]):
         self.authors = wrap_matcher(authors)
         return self
 
-    def and_authors(self, authors: Sequence[str] | Matcher[Sequence[str]]):
-        return self.with_authors(authors)
+    and_authors = with_authors
 
     def with_categories(self, categories: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]):
         self.categories = wrap_matcher(categories)
         return self
 
-    def and_categories(self, categories: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]):
-        return self.with_categories(categories)
+    and_categories = with_categories
 
 
 class RssCategoryMatcher(BaseMatcher[feedparser.FeedParserDict]):
@@ -339,15 +328,13 @@ class RssCategoryMatcher(BaseMatcher[feedparser.FeedParserDict]):
         self.text = wrap_matcher(text)
         return self
 
-    def and_text(self, text: str | Matcher[str]):
-        return self.with_text(text)
+    and_text = with_text
 
     def with_domain(self, domain: URL | Matcher[URL]):
         self.domain = wrap_matcher(domain)
         return self
 
-    def and_domain(self, domain: URL | Matcher[URL]):
-        return self.with_domain(domain)
+    and_domain = with_domain
 
 
 def is_rss_feed() -> RssFeedMatcher:

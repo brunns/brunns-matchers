@@ -131,15 +131,7 @@ class EmailWith(BaseMatcher[str]):
         self.to_name = wrap_matcher(to_name)
         return self
 
-    def and_to_name(self, to_name: str | Matcher[str]):
-        """Matches if the email 'To' name matches the given value or matcher.
-
-        A synonym for :meth:`with_to_name`.
-
-        :param to_name: The expected recipient name or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_to_name(to_name)
+    and_to_name = with_to_name
 
     def with_to_address(self, to_address: str | Matcher[str]):
         """Matches if the email 'To' address matches the given value or matcher.
@@ -150,15 +142,7 @@ class EmailWith(BaseMatcher[str]):
         self.to_address = wrap_matcher(to_address)
         return self
 
-    def and_to_address(self, to_address: str | Matcher[str]):
-        """Matches if the email 'To' address matches the given value or matcher.
-
-        A synonym for :meth:`with_to_address`.
-
-        :param to_address: The expected recipient email address or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_to_address(to_address)
+    and_to_address = with_to_address
 
     def with_from_name(self, from_name: str | Matcher[str]):
         """Matches if the email 'From' name matches the given value or matcher.
@@ -169,15 +153,7 @@ class EmailWith(BaseMatcher[str]):
         self.from_name = wrap_matcher(from_name)
         return self
 
-    def and_from_name(self, from_name: str | Matcher[str]):
-        """Matches if the email 'From' name matches the given value or matcher.
-
-        A synonym for :meth:`with_from_name`.
-
-        :param from_name: The expected sender name or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_from_name(from_name)
+    and_from_name = with_from_name
 
     def with_from_address(self, from_address: str | Matcher[str]):
         """Matches if the email 'From' address matches the given value or matcher.
@@ -188,15 +164,7 @@ class EmailWith(BaseMatcher[str]):
         self.from_address = wrap_matcher(from_address)
         return self
 
-    def and_from_address(self, from_address: str | Matcher[str]):
-        """Matches if the email 'From' address matches the given value or matcher.
-
-        A synonym for :meth:`with_from_address`.
-
-        :param from_address: The expected sender email address or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_from_address(from_address)
+    and_from_address = with_from_address
 
     def with_subject(self, subject: str | Matcher[str]):
         """Matches if the email subject matches the given value or matcher.
@@ -207,15 +175,7 @@ class EmailWith(BaseMatcher[str]):
         self.subject = wrap_matcher(subject)
         return self
 
-    def and_subject(self, subject: str | Matcher[str]):
-        """Matches if the email subject matches the given value or matcher.
-
-        A synonym for :meth:`with_subject`.
-
-        :param subject: The expected subject string or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_subject(subject)
+    and_subject = with_subject
 
     def with_body_text(self, body_text: str | Matcher[str]):
         """Matches if the email body text matches the given value or matcher.
@@ -226,15 +186,7 @@ class EmailWith(BaseMatcher[str]):
         self.body_text = wrap_matcher(body_text)
         return self
 
-    def and_body_text(self, body_text: str | Matcher[str]):
-        """Matches if the email body text matches the given value or matcher.
-
-        A synonym for :meth:`with_body_text`.
-
-        :param body_text: The expected body string or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_body_text(body_text)
+    and_body_text = with_body_text
 
 
 @deprecated(version="2.3.0", reason="Use builder style is_email()")

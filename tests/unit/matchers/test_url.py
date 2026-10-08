@@ -134,9 +134,6 @@ def test_url_with_fragment():
     assert_that(should_match, matches_with(URL, "was URL with fragment: was 'fragment'"))
 
 
-# TODO path.segments
-
-
 def test_url_matcher_builder():
     # Given
     should_match = (

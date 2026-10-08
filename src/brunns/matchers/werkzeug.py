@@ -114,15 +114,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
         self.status_code = wrap_matcher(status_code)
         return self
 
-    def and_status_code(self, status_code: int | Matcher[int]) -> WerkzeugResponseMatcher:
-        """Matches if the response status code matches the given value or matcher.
-
-        A synonym for :meth:`with_status_code`.
-
-        :param status_code: The expected status code or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_status_code(status_code)
+    and_status_code = with_status_code
 
     def with_text(self, text: str | Matcher[str]) -> WerkzeugResponseMatcher:
         """Matches if the response body text matches the given value or matcher.
@@ -133,15 +125,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
         self.text = wrap_matcher(text)
         return self
 
-    def and_text(self, text: str | Matcher[str]) -> WerkzeugResponseMatcher:
-        """Matches if the response body text matches the given value or matcher.
-
-        A synonym for :meth:`with_text`.
-
-        :param text: The expected body text string or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_text(text)
+    and_text = with_text
 
     def with_mimetype(self, mimetype: str | Matcher[str]) -> WerkzeugResponseMatcher:
         """Matches if the response mimetype matches the given value or matcher.
@@ -152,15 +136,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
         self.mimetype = wrap_matcher(mimetype)
         return self
 
-    def and_mimetype(self, mimetype: str | Matcher[str]) -> WerkzeugResponseMatcher:
-        """Matches if the response mimetype matches the given value or matcher.
-
-        A synonym for :meth:`with_mimetype`.
-
-        :param mimetype: The expected mimetype string or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_mimetype(mimetype)
+    and_mimetype = with_mimetype
 
     def with_json(self, json: JsonValue | Matcher[JsonValue]) -> WerkzeugResponseMatcher:
         """Matches if the response JSON body matches the given value or matcher.
@@ -173,15 +149,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
         self.json = wrap_matcher(json)
         return self
 
-    def and_json(self, json: JsonValue | Matcher[JsonValue]) -> WerkzeugResponseMatcher:
-        """Matches if the response JSON body matches the given value or matcher.
-
-        A synonym for :meth:`with_json`.
-
-        :param json: The expected JSON structure or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_json(json)
+    and_json = with_json
 
     def with_headers(
         self,
@@ -195,18 +163,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
         self.headers = wrap_matcher(headers)
         return self
 
-    def and_headers(
-        self,
-        headers: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
-    ) -> WerkzeugResponseMatcher:
-        """Matches if the response headers match the given value or matcher.
-
-        A synonym for :meth:`with_headers`.
-
-        :param headers: The expected headers dictionary or matcher.
-        :return: Self, for chaining.
-        """
-        return self.with_headers(headers)
+    and_headers = with_headers
 
 
 def redirects_to(url_matcher: str | Matcher) -> Matcher[ResponseProtocol]:

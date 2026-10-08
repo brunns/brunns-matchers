@@ -152,15 +152,7 @@ class UrlWith(BaseMatcher[U]):
         self.scheme = wrap_matcher(scheme)
         return self
 
-    def and_scheme(self, scheme: str | Matcher[str]) -> UrlWith:
-        """Matches if the URL scheme matches the given value or matcher.
-
-        A synonym for :meth:`with_scheme`.
-
-        :param scheme: The expected scheme or matcher.
-        :return: UrlWith, for chaining.
-        """
-        return self.with_scheme(scheme)
+    and_scheme = with_scheme
 
     def with_username(self, username: str | Matcher[str | None] | None) -> UrlWith:
         """Matches if the URL username matches the given value or matcher.
@@ -171,15 +163,9 @@ class UrlWith(BaseMatcher[U]):
         self.username = wrap_matcher(username)
         return self
 
-    def and_username(self, username: str | Matcher[str | None] | None) -> UrlWith:
-        """Matches if the URL username matches the given value or matcher.
-
-        A synonym for :meth:`with_username`.
-
-        :param username: The expected username or matcher.
-        :return: UrlWith, for chaining.
-        """
-        return self.with_username(username)
+    and_username = with_username
+    with_user = with_username
+    and_user = with_username
 
     def with_password(self, password: str | Matcher[str | None] | None) -> UrlWith:
         """Matches if the URL password matches the given value or matcher.
@@ -190,15 +176,7 @@ class UrlWith(BaseMatcher[U]):
         self.password = wrap_matcher(password)
         return self
 
-    def and_password(self, password: str | Matcher[str | None] | None) -> UrlWith:
-        """Matches if the URL password matches the given value or matcher.
-
-        A synonym for :meth:`with_password`.
-
-        :param password: The expected password or matcher.
-        :return: UrlWith, for chaining.
-        """
-        return self.with_password(password)
+    and_password = with_password
 
     def with_host(self, host: str | Matcher[str | None] | None) -> UrlWith:
         """Matches if the URL host matches the given value or matcher.
@@ -209,15 +187,7 @@ class UrlWith(BaseMatcher[U]):
         self.host = wrap_matcher(host)
         return self
 
-    def and_host(self, host: str | Matcher[str | None] | None) -> UrlWith:
-        """Matches if the URL host matches the given value or matcher.
-
-        A synonym for :meth:`with_host`.
-
-        :param host: The expected hostname or matcher.
-        :return: UrlWith, for chaining.
-        """
-        return self.with_host(host)
+    and_host = with_host
 
     def with_port(self, port: int | Matcher[int | None] | None) -> UrlWith:
         """Matches if the URL port matches the given value or matcher.
@@ -228,15 +198,7 @@ class UrlWith(BaseMatcher[U]):
         self.port = wrap_matcher(port)
         return self
 
-    def and_port(self, port: int | Matcher[int | None] | None) -> UrlWith:
-        """Matches if the URL port matches the given value or matcher.
-
-        A synonym for :meth:`with_port`.
-
-        :param port: The expected port integer or matcher.
-        :return: UrlWith, for chaining.
-        """
-        return self.with_port(port)
+    and_port = with_port
 
     def with_path(self, path: str | Matcher[str]) -> UrlWith:
         """Matches if the URL path matches the given value or matcher.
@@ -247,15 +209,7 @@ class UrlWith(BaseMatcher[U]):
         self.path = wrap_matcher(path)
         return self
 
-    def and_path(self, path: str | Matcher[str]) -> UrlWith:
-        """Matches if the URL path matches the given value or matcher.
-
-        A synonym for :meth:`with_path`.
-
-        :param path: The expected path string or matcher.
-        :return: UrlWith, for chaining.
-        """
-        return self.with_path(path)
+    and_path = with_path
 
     def with_path_segments(self, path_segments: Sequence[str] | Matcher[Sequence[str]]) -> UrlWith:
         """Matches if the URL path segments match the given sequence or matcher.
@@ -266,15 +220,7 @@ class UrlWith(BaseMatcher[U]):
         self.path_segments = wrap_matcher(path_segments)
         return self
 
-    def and_path_segments(self, path_segments: Sequence[str] | Matcher[Sequence[str]]) -> UrlWith:
-        """Matches if the URL path segments match the given sequence or matcher.
-
-        A synonym for :meth:`with_path_segments`.
-
-        :param path_segments: The expected sequence of path segments or matcher.
-        :return: UrlWith, for chaining.
-        """
-        return self.with_path_segments(path_segments)
+    and_path_segments = with_path_segments
 
     def with_query(
         self,
@@ -288,18 +234,7 @@ class UrlWith(BaseMatcher[U]):
         self.query = wrap_matcher(query)
         return self
 
-    def and_query(
-        self,
-        query: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
-    ) -> UrlWith:
-        """Matches if the URL query parameters match the given dictionary or matcher.
-
-        A synonym for :meth:`with_query`.
-
-        :param query: The expected query parameters dictionary or matcher.
-        :return: UrlWith, for chaining.
-        """
-        return self.with_query(query)
+    and_query = with_query
 
     def with_fragment(self, fragment: str | Matcher[str]) -> UrlWith:
         """Matches if the URL fragment (hash) matches the given value or matcher.
@@ -310,15 +245,7 @@ class UrlWith(BaseMatcher[U]):
         self.fragment = wrap_matcher(fragment)
         return self
 
-    def and_fragment(self, fragment: str | Matcher[str]) -> UrlWith:
-        """Matches if the URL fragment (hash) matches the given value or matcher.
-
-        A synonym for :meth:`with_fragment`.
-
-        :param fragment: The expected fragment string or matcher.
-        :return: UrlWith, for chaining.
-        """
-        return self.with_fragment(fragment)
+    and_fragment = with_fragment
 
 
 @deprecated(version="2.3.0", reason="Use builder style is_url()")

@@ -1,19 +1,24 @@
 # Copyright 2026 Simon Brunning
-from collections.abc import Sequence
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Any, Self
+from typing import TYPE_CHECKING, Any
 
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.description import Description
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
-from hamcrest.core.matcher import Matcher
 
 from brunns.matchers.utils import (
     append_matcher_description,
     describe_field_match,
     describe_field_mismatch,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from hamcrest.core.description import Description
+    from hamcrest.core.matcher import Matcher
 
 ANYTHING = anything()
 
@@ -62,7 +67,7 @@ class PathMatcher(BaseMatcher[Path]):
         for matcher, name, _ in self._fields(Path()):
             append_matcher_description(matcher, name, description)
 
-    def with_anchor(self, item: str | Matcher[str]) -> Self:
+    def with_anchor(self, item: str | Matcher[str]) -> PathMatcher:
         """Matches the path's anchor (drive and root combined).
 
         :param item: Expected anchor string or a matcher for the anchor.
@@ -73,7 +78,7 @@ class PathMatcher(BaseMatcher[Path]):
 
     and_anchor = with_anchor
 
-    def with_name(self, item: str | Matcher[str]) -> Self:
+    def with_name(self, item: str | Matcher[str]) -> PathMatcher:
         """Matches the path's name (final component).
 
         :param item: Expected name string or a matcher for the name.
@@ -84,7 +89,7 @@ class PathMatcher(BaseMatcher[Path]):
 
     and_name = with_name
 
-    def with_parent(self, item: Any | Matcher[Any]) -> Self:
+    def with_parent(self, item: Any | Matcher[Any]) -> PathMatcher:
         """Matches the path's parent directory.
 
         :param item: Expected parent path or a matcher for the parent.
@@ -95,7 +100,7 @@ class PathMatcher(BaseMatcher[Path]):
 
     and_parent = with_parent
 
-    def with_parents(self, item: Sequence[Any] | Matcher[Sequence[Any]]) -> Self:
+    def with_parents(self, item: Sequence[Any] | Matcher[Sequence[Any]]) -> PathMatcher:
         """Matches the path's sequence of parent directories.
 
         :param item: Expected sequence of parent paths or a matcher for ancestors.
@@ -106,7 +111,7 @@ class PathMatcher(BaseMatcher[Path]):
 
     and_parents = with_parents
 
-    def with_parts(self, item: Sequence[str] | Matcher[Sequence[str]]) -> Self:
+    def with_parts(self, item: Sequence[str] | Matcher[Sequence[str]]) -> PathMatcher:
         """Matches the path's component sequence.
 
         :param item: Expected sequence of path part strings or a matcher for them.
@@ -117,7 +122,7 @@ class PathMatcher(BaseMatcher[Path]):
 
     and_parts = with_parts
 
-    def with_root(self, item: str | Matcher[str]) -> Self:
+    def with_root(self, item: str | Matcher[str]) -> PathMatcher:
         """Matches the path's root string.
 
         :param item: Expected root string or a matcher for the root.
@@ -128,7 +133,7 @@ class PathMatcher(BaseMatcher[Path]):
 
     and_root = with_root
 
-    def with_stem(self, item: str | Matcher[str]) -> Self:
+    def with_stem(self, item: str | Matcher[str]) -> PathMatcher:
         """Matches the path's stem (final component without its extension).
 
         :param item: Expected stem string or a matcher for the stem.
@@ -139,7 +144,7 @@ class PathMatcher(BaseMatcher[Path]):
 
     and_stem = with_stem
 
-    def with_suffix(self, item: str | Matcher[str]) -> Self:
+    def with_suffix(self, item: str | Matcher[str]) -> PathMatcher:
         """Matches the path's file suffix (extension).
 
         :param item: Expected suffix string or a matcher for the suffix.
@@ -150,7 +155,7 @@ class PathMatcher(BaseMatcher[Path]):
 
     and_suffix = with_suffix
 
-    def with_suffixes(self, item: Sequence[str] | Matcher[Sequence[str]]) -> Self:
+    def with_suffixes(self, item: Sequence[str] | Matcher[Sequence[str]]) -> PathMatcher:
         """Matches the path's list of file suffixes (extensions).
 
         :param item: Expected sequence of suffix strings or a matcher for them.

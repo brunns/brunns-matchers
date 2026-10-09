@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from hamcrest import anything
+from hamcrest import anything, is_
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
@@ -37,6 +37,9 @@ class PathMatcher(BaseMatcher[Path | str]):
         self.stem: Matcher[str] = ANYTHING
         self.suffix: Matcher[str] = ANYTHING
         self.suffixes: Matcher[Sequence[str]] = ANYTHING
+        self.exists: Matcher[bool] = ANYTHING
+        self.is_file: Matcher[bool] = ANYTHING
+        self.is_directory: Matcher[bool] = ANYTHING
 
     def _fields(self, item: Path):
         return [
@@ -61,7 +64,12 @@ class PathMatcher(BaseMatcher[Path | str]):
         path = self._to_path(item)
         if path is None:
             return False
-        return all(matcher.matches(val) for matcher, _, val in self._fields(path))
+        return (
+            all(matcher.matches(val) for matcher, _, val in self._fields(path))
+            and self.exists.matches(path.exists())
+            and self.is_file.matches(path.is_file())
+            and self.is_directory.matches(path.is_dir())
+        )
 
     def describe_mismatch(self, item: Path | str, mismatch_description: Description) -> None:
         path = self._to_path(item)
@@ -71,6 +79,9 @@ class PathMatcher(BaseMatcher[Path | str]):
         mismatch_description.append_text("was Path with")
         for matcher, name, val in self._fields(path):
             describe_field_mismatch(matcher, name, val, mismatch_description)
+        describe_field_mismatch(self.exists, "exists", path.exists(), mismatch_description)
+        describe_field_mismatch(self.is_file, "is_file", path.is_file(), mismatch_description)
+        describe_field_mismatch(self.is_directory, "is_directory", path.is_dir(), mismatch_description)
 
     def describe_match(self, item: Path | str, match_description: Description) -> None:
         path = self._to_path(item)
@@ -81,11 +92,17 @@ class PathMatcher(BaseMatcher[Path | str]):
         match_description.append_text("was Path with")
         for matcher, name, val in self._fields(path):
             describe_field_match(matcher, name, val, match_description)
+        describe_field_match(self.exists, "exists", path.exists(), match_description)
+        describe_field_match(self.is_file, "is_file", path.is_file(), match_description)
+        describe_field_match(self.is_directory, "is_directory", path.is_dir(), match_description)
 
     def describe_to(self, description: Description) -> None:
         description.append_text("Path with")
         for matcher, name, _ in self._fields(Path()):
             append_matcher_description(matcher, name, description)
+        append_matcher_description(self.exists, "exists", description)
+        append_matcher_description(self.is_file, "is_file", description)
+        append_matcher_description(self.is_directory, "is_directory", description)
 
     def with_anchor(self, item: str | Matcher[str]) -> PathMatcher:
         """Matches the path's anchor (drive and root combined).
@@ -185,6 +202,66 @@ class PathMatcher(BaseMatcher[Path | str]):
         return self
 
     and_suffixes = with_suffixes
+
+    def which_exists(self) -> PathMatcher:
+        """Matches that the path exists on the filesystem.
+
+        :return: This matcher instance for chaining.
+        """
+        self.exists = is_(True)
+        return self
+
+    and_which_exists = which_exists
+
+    def which_does_not_exist(self) -> PathMatcher:
+        """Matches that the path does not exist on the filesystem.
+
+        :return: This matcher instance for chaining.
+        """
+        self.exists = is_(False)
+        return self
+
+    and_which_does_not_exist = which_does_not_exist
+
+    def which_is_a_file(self) -> PathMatcher:
+        """Matches that the path is a regular file.
+
+        :return: This matcher instance for chaining.
+        """
+        self.is_file = is_(True)
+        return self
+
+    and_is_a_file = which_is_a_file
+
+    def which_is_not_a_file(self) -> PathMatcher:
+        """Matches that the path is not a regular file.
+
+        :return: This matcher instance for chaining.
+        """
+        self.is_file = is_(False)
+        return self
+
+    and_is_not_a_file = which_is_not_a_file
+
+    def which_is_a_directory(self) -> PathMatcher:
+        """Matches that the path is a directory.
+
+        :return: This matcher instance for chaining.
+        """
+        self.is_directory = is_(True)
+        return self
+
+    and_is_a_directory = which_is_a_directory
+
+    def which_is_not_a_directory(self) -> PathMatcher:
+        """Matches that the path is not a directory.
+
+        :return: This matcher instance for chaining.
+        """
+        self.is_directory = is_(False)
+        return self
+
+    and_is_not_a_directory = which_is_not_a_directory
 
 
 def is_path() -> PathMatcher:

@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 from hamcrest import assert_that, contains_exactly, equal_to, has_string, not_
+from pyfakefs.fake_filesystem import FakeFilesystem
 
 from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.path import is_path
@@ -160,4 +161,194 @@ def test_is_path_non_path_type():
     assert_that(
         matcher,
         mismatches_with(123, "was invalid path <123>"),
+    )
+
+
+def test_exists_matching(fs: FakeFilesystem):
+    fs.create_file("/var/log/app.log")
+
+    existing_file = Path("/var/log/app.log")
+    nonexistant_file = Path("/var/log/app.json")
+
+    file_matcher = is_path().which_exists()
+
+    assert_that(existing_file, file_matcher)
+    assert_that(nonexistant_file, not_(file_matcher))
+
+    assert_that(
+        file_matcher,
+        has_string("Path with exists: <True>"),
+    )
+    assert_that(
+        file_matcher,
+        matches_with(
+            existing_file,
+            "was Path with exists: was <True>",
+        ),
+    )
+    assert_that(
+        file_matcher,
+        mismatches_with(
+            nonexistant_file,
+            "was Path with exists: was <False>",
+        ),
+    )
+
+
+def test_does_not_exist_matching(fs: FakeFilesystem):
+    fs.create_file("/var/log/app.log")
+
+    existing_file = Path("/var/log/app.log")
+    nonexistant_file = Path("/var/log/app.json")
+
+    file_matcher = is_path().which_does_not_exist()
+
+    assert_that(nonexistant_file, file_matcher)
+    assert_that(existing_file, not_(file_matcher))
+
+    assert_that(
+        file_matcher,
+        has_string("Path with exists: <False>"),
+    )
+    assert_that(
+        file_matcher,
+        matches_with(
+            nonexistant_file,
+            "was Path with exists: was <False>",
+        ),
+    )
+    assert_that(
+        file_matcher,
+        mismatches_with(
+            existing_file,
+            "was Path with exists: was <True>",
+        ),
+    )
+
+
+def test_is_file_matching(fs: FakeFilesystem):
+    fs.create_file("/var/log/app.log")
+    fs.create_dir("/var/log/subdir")
+
+    is_a_file = Path("/var/log/app.log")
+    is_a_directory = Path("/var/log/subdir")
+
+    file_matcher = is_path().which_is_a_file()
+
+    assert_that(is_a_file, file_matcher)
+    assert_that(is_a_directory, not_(file_matcher))
+
+    assert_that(
+        file_matcher,
+        has_string("Path with is_file: <True>"),
+    )
+    assert_that(
+        file_matcher,
+        matches_with(
+            is_a_file,
+            "was Path with is_file: was <True>",
+        ),
+    )
+    assert_that(
+        file_matcher,
+        mismatches_with(
+            is_a_directory,
+            "was Path with is_file: was <False>",
+        ),
+    )
+
+
+def test_is_not_a_file_matching(fs: FakeFilesystem):
+    fs.create_file("/var/log/app.log")
+    fs.create_dir("/var/log/subdir")
+
+    is_a_file = Path("/var/log/app.log")
+    is_a_directory = Path("/var/log/subdir")
+
+    file_matcher = is_path().which_is_not_a_file()
+
+    assert_that(is_a_directory, file_matcher)
+    assert_that(is_a_file, not_(file_matcher))
+
+    assert_that(
+        file_matcher,
+        has_string("Path with is_file: <False>"),
+    )
+    assert_that(
+        file_matcher,
+        matches_with(
+            is_a_directory,
+            "was Path with is_file: was <False>",
+        ),
+    )
+    assert_that(
+        file_matcher,
+        mismatches_with(
+            is_a_file,
+            "was Path with is_file: was <True>",
+        ),
+    )
+
+
+def test_is_directory_matching(fs: FakeFilesystem):
+    fs.create_file("/var/log/app.log")
+    fs.create_dir("/var/log/subdir")
+
+    is_a_file = Path("/var/log/app.log")
+    is_a_directory = Path("/var/log/subdir")
+
+    directory_matcher = is_path().which_is_a_directory()
+
+    assert_that(is_a_directory, directory_matcher)
+    assert_that(is_a_file, not_(directory_matcher))
+
+    assert_that(
+        directory_matcher,
+        has_string("Path with is_directory: <True>"),
+    )
+    assert_that(
+        directory_matcher,
+        matches_with(
+            is_a_directory,
+            "was Path with is_directory: was <True>",
+        ),
+    )
+    assert_that(
+        directory_matcher,
+        mismatches_with(
+            is_a_file,
+            "was Path with is_directory: was <False>",
+        ),
+    )
+
+
+def test_is_not_a_directory_matching(fs: FakeFilesystem):
+    fs.create_file("/var/log/app.log")
+    fs.create_dir("/var/log/subdir")
+
+    is_a_file = Path("/var/log/app.log")
+    is_a_directory = Path("/var/log/subdir")
+
+    directory_matcher = is_path().which_is_not_a_directory()
+
+    assert_that(is_a_file, directory_matcher)
+    assert_that(is_a_directory, not_(directory_matcher))
+
+    assert_that(
+        directory_matcher,
+        has_string("Path with is_directory: <False>"),
+    )
+    assert_that(
+        directory_matcher,
+        matches_with(
+            is_a_file,
+            "was Path with is_directory: was <False>",
+        ),
+    )
+    assert_that(
+        directory_matcher,
+        mismatches_with(
+            is_a_directory,
+            "was Path with is_directory: was <True>",
+        ),
     )

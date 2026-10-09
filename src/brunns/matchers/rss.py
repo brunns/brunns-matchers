@@ -103,30 +103,55 @@ class RssFeedMatcher(BaseMatcher[UrlProtocol]):
         return datetime.strptime(feed.published, "%a, %d %b %Y %H:%M:%S %z") if "published" in feed else None
 
     def with_title(self, title: str | Matcher[str]):
+        """Matches the title of the RSS feed.
+
+        :param title: Expected title string or a matcher for the title.
+        :return: This matcher instance for chaining.
+        """
         self.title = wrap_matcher(title)
         return self
 
     and_title = with_title
 
     def with_link(self, link: UrlProtocol | Matcher[UrlProtocol]):
+        """Matches the link URL of the RSS feed.
+
+        :param link: Expected link URL or a matcher for the link.
+        :return: This matcher instance for chaining.
+        """
         self.link = wrap_matcher(link)
         return self
 
     and_link = with_link
 
     def with_description(self, description: str | Matcher[str]):
+        """Matches the description of the RSS feed.
+
+        :param description: Expected description string or a matcher for the description.
+        :return: This matcher instance for chaining.
+        """
         self.description = wrap_matcher(description)
         return self
 
     and_description = with_description
 
     def with_published(self, published: datetime | Matcher[datetime | None] | None):
+        """Matches the publication datetime of the RSS feed.
+
+        :param published: Expected publication datetime or a matcher for the published date.
+        :return: This matcher instance for chaining.
+        """
         self.published = wrap_matcher(published)
         return self
 
     and_published = with_published
 
     def with_entries(self, entries: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]):
+        """Matches the entries (items) within the RSS feed.
+
+        :param entries: Expected list of entries or a matcher for the entries.
+        :return: This matcher instance for chaining.
+        """
         self.entries = wrap_matcher(entries)
         return self
 
@@ -262,36 +287,66 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
         )
 
     def with_title(self, title: str | Matcher[str]):
+        """Matches the title of the RSS feed entry.
+
+        :param title: Expected title string or a matcher for the title.
+        :return: This matcher instance for chaining.
+        """
         self.title = wrap_matcher(title)
         return self
 
     and_title = with_title
 
     def with_link(self, link: URL | Matcher[URL]):
+        """Matches the link URL of the RSS feed entry.
+
+        :param link: Expected link URL or a matcher for the link.
+        :return: This matcher instance for chaining.
+        """
         self.link = wrap_matcher(link)
         return self
 
     and_link = with_link
 
     def with_description(self, description: str | Matcher[str]):
+        """Matches the description of the RSS feed entry.
+
+        :param description: Expected description string or a matcher for the description.
+        :return: This matcher instance for chaining.
+        """
         self.description = wrap_matcher(description)
         return self
 
     and_description = with_description
 
     def with_published(self, published: datetime | Matcher[datetime | None] | None):
+        """Matches the publication datetime of the RSS feed entry.
+
+        :param published: Expected publication datetime or a matcher for the published date.
+        :return: This matcher instance for chaining.
+        """
         self.published = wrap_matcher(published)
         return self
 
     and_published = with_published
 
     def with_authors(self, authors: Sequence[str] | Matcher[Sequence[str]]):
+        """Matches the list of author names for the RSS feed entry.
+
+        :param authors: Expected sequence of author names or a matcher for the authors.
+        :return: This matcher instance for chaining.
+        """
         self.authors = wrap_matcher(authors)
         return self
 
     and_authors = with_authors
 
     def with_categories(self, categories: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]):
+        """Matches the list of categories (tags) for the RSS feed entry.
+
+        :param categories: Expected list of categories or a matcher for the categories.
+        :return: This matcher instance for chaining.
+        """
         self.categories = wrap_matcher(categories)
         return self
 
@@ -325,12 +380,22 @@ class RssCategoryMatcher(BaseMatcher[feedparser.FeedParserDict]):
         describe_field_match(self.domain, "domain", URL(cast("str", item.get("scheme", ""))), match_description)
 
     def with_text(self, text: str | Matcher[str]):
+        """Matches the category text (term) of the RSS category.
+
+        :param text: Expected category text string or a matcher for the text.
+        :return: This matcher instance for chaining.
+        """
         self.text = wrap_matcher(text)
         return self
 
     and_text = with_text
 
     def with_domain(self, domain: URL | Matcher[URL]):
+        """Matches the domain (scheme URL) of the RSS category.
+
+        :param domain: Expected domain URL or a matcher for the domain.
+        :return: This matcher instance for chaining.
+        """
         self.domain = wrap_matcher(domain)
         return self
 

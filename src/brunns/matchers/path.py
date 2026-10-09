@@ -1,6 +1,7 @@
 # Copyright 2026 Simon Brunning
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -20,10 +21,11 @@ if TYPE_CHECKING:
     from hamcrest.core.description import Description
     from hamcrest.core.matcher import Matcher
 
+logger = logging.getLogger(__name__)
 ANYTHING = anything()
 
 
-class PathMatcher(BaseMatcher[Path]):
+class PathMatcher(BaseMatcher[Path | str]):
     def __init__(self) -> None:
         super().__init__()
         self.anchor: Matcher[str] = ANYTHING
@@ -49,17 +51,35 @@ class PathMatcher(BaseMatcher[Path]):
             (self.suffixes, "suffixes", item.suffixes),
         ]
 
-    def _matches(self, item: Path) -> bool:
-        return all(matcher.matches(val) for matcher, _, val in self._fields(item))
+    def _to_path(self, item: Any) -> Path | None:
+        try:
+            return Path(item)
+        except (TypeError, ValueError):
+            return None
 
-    def describe_mismatch(self, item: Path, mismatch_description: Description) -> None:
+    def _matches(self, item: Path | str) -> bool:
+        path = self._to_path(item)
+        if path is None:
+            return False
+        return all(matcher.matches(val) for matcher, _, val in self._fields(path))
+
+    def describe_mismatch(self, item: Path | str, mismatch_description: Description) -> None:
+        path = self._to_path(item)
+        if path is None:
+            mismatch_description.append_text("was invalid path ").append_description_of(item)
+            return
         mismatch_description.append_text("was Path with")
-        for matcher, name, val in self._fields(item):
+        for matcher, name, val in self._fields(path):
             describe_field_mismatch(matcher, name, val, mismatch_description)
 
-    def describe_match(self, item: Path, match_description: Description) -> None:
+    def describe_match(self, item: Path | str, match_description: Description) -> None:
+        path = self._to_path(item)
+        if path is None:  # pragma: no cover
+            logger.error("We should not have matched an invalid path.")
+            match_description.append_text("was invalid path ").append_description_of(item)
+            return
         match_description.append_text("was Path with")
-        for matcher, name, val in self._fields(item):
+        for matcher, name, val in self._fields(path):
             describe_field_match(matcher, name, val, match_description)
 
     def describe_to(self, description: Description) -> None:
@@ -168,11 +188,11 @@ class PathMatcher(BaseMatcher[Path]):
 
 
 def is_path() -> PathMatcher:
-    """Matches a :class:`pathlib.Path`.
+    """Matches a :class:`pathlib.Path` or string filepath.
 
     This function returns a :class:`PathMatcher` which can be refined using builder methods
     to match specific parts of the :class:`pathlib.Path` (e.g. ``.with_name(...)``, ``.with_suffix(...)``).
 
-    :return: A matcher for :class:`pathlib.Path` objects.
+    :return: A matcher for :class:`pathlib.Path` objects or string filepaths.
     """
     return PathMatcher()

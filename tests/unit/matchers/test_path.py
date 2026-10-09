@@ -1,12 +1,15 @@
 # Copyright 2026 Simon Brunning
+import sys
 from pathlib import Path
 
+import pytest
 from hamcrest import assert_that, contains_exactly, equal_to, has_string, not_
 
 from brunns.matchers.matcher import matches_with, mismatches_with
 from brunns.matchers.path import is_path
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="Paths are different on Windows")
 def test_is_path():
     path = Path("/usr/bin/python3.tar.gz")
 

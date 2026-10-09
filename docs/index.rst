@@ -10,6 +10,7 @@ Various custom `PyHamcrest`_ matchers.
    :caption: Contents:
 
       API <api.rst>
+      Examples of usage <examples.rst>
 
 Installation
 ------------

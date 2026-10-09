@@ -48,7 +48,7 @@ piprot: ## Check for outdated dependencies
 
 .PHONY: docs
 docs: ## Generate documentation
-	uv run sphinx-build docs build_docs --color -W -bhtml
+	uv run --group docs sphinx-build docs build_docs --color -W -bhtml
 
 .PHONY: build
 build: ## Build distribution packages

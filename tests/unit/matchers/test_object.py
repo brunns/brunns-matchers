@@ -150,7 +150,7 @@ def test_equal_vars():
 
     date1 = datetime.date(1968, 7, 21)
     date2 = datetime.date(1968, 7, 21)
-    date3 = datetime.datetime.now(tz=datetime.timezone.utc).date()
+    date3 = datetime.datetime.now(tz=datetime.UTC).date()
 
     path1 = Path("some/path")
     path2 = Path("some/path")

@@ -1,5 +1,5 @@
 # Copyright 2018-2026 Simon Brunning
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 from hamcrest import assert_that, not_
@@ -21,14 +21,14 @@ def test_rss_feed_from_url(mock_server: MountebankServer, rss_string: bytes):
         .with_title("Test channel")
         .and_link(URL("https://example.com"))
         .and_description("Test channel")
-        .and_published(datetime(2009, 9, 6, 16, 20, 0, tzinfo=timezone.utc))
+        .and_published(datetime(2009, 9, 6, 16, 20, 0, tzinfo=UTC))
     )
     should_not_match = (
         is_rss_feed()
         .with_title("Another channel")
         .and_link(URL("https://example.com/another"))
         .and_description("Another channel")
-        .and_published(datetime(2009, 6, 6, 16, 20, 0, tzinfo=timezone.utc))
+        .and_published(datetime(2009, 6, 6, 16, 20, 0, tzinfo=UTC))
     )
 
     with mock_server(imposter):

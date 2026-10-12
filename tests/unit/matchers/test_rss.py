@@ -1,5 +1,5 @@
 # Copyright 2018-2026 Simon Brunning
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import feedparser
 import httpx2 as httpx
@@ -17,14 +17,14 @@ def test_is_rss_feed(rss_string: bytes):
         .with_title("Test channel")
         .and_link(URL("https://example.com"))
         .and_description("Test channel")
-        .and_published(datetime(2009, 9, 6, 16, 20, 0, tzinfo=timezone.utc))
+        .and_published(datetime(2009, 9, 6, 16, 20, 0, tzinfo=UTC))
     )
     should_not_match = (
         is_rss_feed()
         .with_title("Another channel")
         .and_link(URL("https://example.com/another"))
         .and_description("Another channel")
-        .and_published(datetime(2009, 6, 6, 16, 20, 0, tzinfo=timezone.utc))
+        .and_published(datetime(2009, 6, 6, 16, 20, 0, tzinfo=UTC))
     )
 
     assert_that(rss_string, should_match)
@@ -84,7 +84,7 @@ def test_is_rss_entry():
         .with_title("An article")
         .and_link(URL("https://example.com/article"))
         .and_description("An article description")
-        .and_published(datetime(2009, 9, 6, 16, 20, 0, tzinfo=timezone.utc))
+        .and_published(datetime(2009, 9, 6, 16, 20, 0, tzinfo=UTC))
         .and_authors(contains_inanyorder("Author 1", "Author 2"))
         .and_categories(
             contains_inanyorder(
@@ -98,7 +98,7 @@ def test_is_rss_entry():
         .with_title("Another article")
         .and_link(URL("https://example.com/another_article"))
         .and_description("Another article description")
-        .and_published(datetime(2009, 6, 6, 16, 20, 0, tzinfo=timezone.utc))
+        .and_published(datetime(2009, 6, 6, 16, 20, 0, tzinfo=UTC))
         .and_authors(contains_inanyorder("Author 1", "Author 3"))
         .and_categories(
             contains_inanyorder(
@@ -157,7 +157,7 @@ def test_is_rss_entry_on_string(rss_item_string: bytes):
         .with_title("An article")
         .and_link(URL("https://example.com/article"))
         .and_description("An article description")
-        .and_published(datetime(2009, 9, 6, 16, 20, 0, tzinfo=timezone.utc))
+        .and_published(datetime(2009, 9, 6, 16, 20, 0, tzinfo=UTC))
         .and_authors(contains_inanyorder("Author 0", "Author 1", "Author 2"))
         .and_categories(
             contains_inanyorder(
@@ -172,7 +172,7 @@ def test_is_rss_entry_on_string(rss_item_string: bytes):
         .with_title("Another article")
         .and_link(URL("https://example.com/another_article"))
         .and_description("Another article description")
-        .and_published(datetime(2009, 6, 6, 16, 20, 0, tzinfo=timezone.utc))
+        .and_published(datetime(2009, 6, 6, 16, 20, 0, tzinfo=UTC))
         .and_authors(contains_inanyorder("Author 0", "Author 2"))
         .and_categories(
             contains_inanyorder(

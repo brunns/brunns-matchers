@@ -352,3 +352,61 @@ def test_is_not_a_directory_matching(fs: FakeFilesystem):
             "was Path with is_directory: was <True>",
         ),
     )
+
+
+def test_is_absolute():
+    absolute_path = Path("/var/log/app.log")
+    relative_path = Path("app.log")
+
+    file_matcher = is_path().which_is_absolute()
+
+    assert_that(absolute_path, file_matcher)
+    assert_that(relative_path, not_(file_matcher))
+
+    assert_that(
+        file_matcher,
+        has_string("Path with is_absolute: <True>"),
+    )
+    assert_that(
+        file_matcher,
+        matches_with(
+            absolute_path,
+            "was Path with is_absolute: was <True>",
+        ),
+    )
+    assert_that(
+        file_matcher,
+        mismatches_with(
+            relative_path,
+            "was Path with is_absolute: was <False>",
+        ),
+    )
+
+
+def test_is_not_absolute():
+    absolute_path = Path("/var/log/app.log")
+    relative_path = Path("app.log")
+
+    file_matcher = is_path().which_is_not_absolute()
+
+    assert_that(relative_path, file_matcher)
+    assert_that(absolute_path, not_(file_matcher))
+
+    assert_that(
+        file_matcher,
+        has_string("Path with is_absolute: <False>"),
+    )
+    assert_that(
+        file_matcher,
+        matches_with(
+            relative_path,
+            "was Path with is_absolute: was <False>",
+        ),
+    )
+    assert_that(
+        file_matcher,
+        mismatches_with(
+            absolute_path,
+            "was Path with is_absolute: was <True>",
+        ),
+    )

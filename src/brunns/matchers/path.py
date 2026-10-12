@@ -40,6 +40,7 @@ class PathMatcher(BaseMatcher[Path | str]):
         self.exists: Matcher[bool] = ANYTHING
         self.is_file: Matcher[bool] = ANYTHING
         self.is_directory: Matcher[bool] = ANYTHING
+        self.is_absolute: Matcher[bool] = ANYTHING
 
     def _fields(self, item: Path):
         return [
@@ -69,6 +70,7 @@ class PathMatcher(BaseMatcher[Path | str]):
             and self.exists.matches(path.exists())
             and self.is_file.matches(path.is_file())
             and self.is_directory.matches(path.is_dir())
+            and self.is_absolute.matches(path.is_absolute())
         )
 
     def describe_mismatch(self, item: Path | str, mismatch_description: Description) -> None:
@@ -82,6 +84,7 @@ class PathMatcher(BaseMatcher[Path | str]):
         describe_field_mismatch(self.exists, "exists", path.exists(), mismatch_description)
         describe_field_mismatch(self.is_file, "is_file", path.is_file(), mismatch_description)
         describe_field_mismatch(self.is_directory, "is_directory", path.is_dir(), mismatch_description)
+        describe_field_mismatch(self.is_absolute, "is_absolute", path.is_absolute(), mismatch_description)
 
     def describe_match(self, item: Path | str, match_description: Description) -> None:
         path = self._to_path(item)
@@ -95,6 +98,7 @@ class PathMatcher(BaseMatcher[Path | str]):
         describe_field_match(self.exists, "exists", path.exists(), match_description)
         describe_field_match(self.is_file, "is_file", path.is_file(), match_description)
         describe_field_match(self.is_directory, "is_directory", path.is_dir(), match_description)
+        describe_field_match(self.is_absolute, "is_absolute", path.is_absolute(), match_description)
 
     def describe_to(self, description: Description) -> None:
         description.append_text("Path with")
@@ -103,6 +107,7 @@ class PathMatcher(BaseMatcher[Path | str]):
         append_matcher_description(self.exists, "exists", description)
         append_matcher_description(self.is_file, "is_file", description)
         append_matcher_description(self.is_directory, "is_directory", description)
+        append_matcher_description(self.is_absolute, "is_absolute", description)
 
     def with_anchor(self, item: str | Matcher[str]) -> PathMatcher:
         """Matches the path's anchor (drive and root combined).
@@ -262,6 +267,26 @@ class PathMatcher(BaseMatcher[Path | str]):
         return self
 
     and_is_not_a_directory = which_is_not_a_directory
+
+    def which_is_absolute(self) -> PathMatcher:
+        """Matches that the path is absolute.
+
+        :return: This matcher instance for chaining.
+        """
+        self.is_absolute = is_(True)
+        return self
+
+    and_is_absolute = which_is_absolute
+
+    def which_is_not_absolute(self) -> PathMatcher:
+        """Matches that the path is not absolute.
+
+        :return: This matcher instance for chaining.
+        """
+        self.is_absolute = is_(False)
+        return self
+
+    and_is_not_absolute = which_is_not_absolute
 
 
 def is_path() -> PathMatcher:

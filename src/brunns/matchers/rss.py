@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Self, cast
 
 import feedparser
 import httpx2 as httpx
@@ -102,7 +102,7 @@ class RssFeedMatcher(BaseMatcher[UrlProtocol]):
     def _get_published_date(self, feed) -> datetime | None:
         return datetime.strptime(feed.published, "%a, %d %b %Y %H:%M:%S %z") if "published" in feed else None
 
-    def with_title(self, title: str | Matcher[str]):
+    def with_title(self, title: str | Matcher[str]) -> Self:
         """Matches the title of the RSS feed.
 
         :param title: Expected title string or a matcher for the title.
@@ -113,7 +113,7 @@ class RssFeedMatcher(BaseMatcher[UrlProtocol]):
 
     and_title = with_title
 
-    def with_link(self, link: UrlProtocol | Matcher[UrlProtocol]):
+    def with_link(self, link: UrlProtocol | Matcher[UrlProtocol]) -> Self:
         """Matches the link URL of the RSS feed.
 
         :param link: Expected link URL or a matcher for the link.
@@ -124,7 +124,7 @@ class RssFeedMatcher(BaseMatcher[UrlProtocol]):
 
     and_link = with_link
 
-    def with_description(self, description: str | Matcher[str]):
+    def with_description(self, description: str | Matcher[str]) -> Self:
         """Matches the description of the RSS feed.
 
         :param description: Expected description string or a matcher for the description.
@@ -135,7 +135,7 @@ class RssFeedMatcher(BaseMatcher[UrlProtocol]):
 
     and_description = with_description
 
-    def with_published(self, published: datetime | Matcher[datetime | None] | None):
+    def with_published(self, published: datetime | Matcher[datetime | None] | None) -> Self:
         """Matches the publication datetime of the RSS feed.
 
         :param published: Expected publication datetime or a matcher for the published date.
@@ -146,7 +146,7 @@ class RssFeedMatcher(BaseMatcher[UrlProtocol]):
 
     and_published = with_published
 
-    def with_entries(self, entries: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]):
+    def with_entries(self, entries: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]) -> Self:
         """Matches the entries (items) within the RSS feed.
 
         :param entries: Expected list of entries or a matcher for the entries.
@@ -286,7 +286,7 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
             else None
         )
 
-    def with_title(self, title: str | Matcher[str]):
+    def with_title(self, title: str | Matcher[str]) -> Self:
         """Matches the title of the RSS feed entry.
 
         :param title: Expected title string or a matcher for the title.
@@ -297,7 +297,7 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
 
     and_title = with_title
 
-    def with_link(self, link: URL | Matcher[URL]):
+    def with_link(self, link: URL | Matcher[URL]) -> Self:
         """Matches the link URL of the RSS feed entry.
 
         :param link: Expected link URL or a matcher for the link.
@@ -308,7 +308,7 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
 
     and_link = with_link
 
-    def with_description(self, description: str | Matcher[str]):
+    def with_description(self, description: str | Matcher[str]) -> Self:
         """Matches the description of the RSS feed entry.
 
         :param description: Expected description string or a matcher for the description.
@@ -319,7 +319,7 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
 
     and_description = with_description
 
-    def with_published(self, published: datetime | Matcher[datetime | None] | None):
+    def with_published(self, published: datetime | Matcher[datetime | None] | None) -> Self:
         """Matches the publication datetime of the RSS feed entry.
 
         :param published: Expected publication datetime or a matcher for the published date.
@@ -330,7 +330,7 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
 
     and_published = with_published
 
-    def with_authors(self, authors: Sequence[str] | Matcher[Sequence[str]]):
+    def with_authors(self, authors: Sequence[str] | Matcher[Sequence[str]]) -> Self:
         """Matches the list of author names for the RSS feed entry.
 
         :param authors: Expected sequence of author names or a matcher for the authors.
@@ -341,7 +341,9 @@ class RssFeedEntryMatcher(BaseMatcher[feedparser.FeedParserDict | str]):
 
     and_authors = with_authors
 
-    def with_categories(self, categories: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]):
+    def with_categories(
+        self, categories: list[feedparser.FeedParserDict] | Matcher[list[feedparser.FeedParserDict]]
+    ) -> Self:
         """Matches the list of categories (tags) for the RSS feed entry.
 
         :param categories: Expected list of categories or a matcher for the categories.
@@ -379,7 +381,7 @@ class RssCategoryMatcher(BaseMatcher[feedparser.FeedParserDict]):
         describe_field_match(self.text, "text", cast("str", item.get("term", "")), match_description)
         describe_field_match(self.domain, "domain", URL(cast("str", item.get("scheme", ""))), match_description)
 
-    def with_text(self, text: str | Matcher[str]):
+    def with_text(self, text: str | Matcher[str]) -> Self:
         """Matches the category text (term) of the RSS category.
 
         :param text: Expected category text string or a matcher for the text.
@@ -390,7 +392,7 @@ class RssCategoryMatcher(BaseMatcher[feedparser.FeedParserDict]):
 
     and_text = with_text
 
-    def with_domain(self, domain: URL | Matcher[URL]):
+    def with_domain(self, domain: URL | Matcher[URL]) -> Self:
         """Matches the domain (scheme URL) of the RSS category.
 
         :param domain: Expected domain URL or a matcher for the domain.

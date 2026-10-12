@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Self
 
 from hamcrest import anything, is_
 from hamcrest.core.base_matcher import BaseMatcher
@@ -117,7 +117,7 @@ class PathMatcher(BaseMatcher[Path | str]):
         if self.relative_to:
             description.append_text(f" is relative to {self.relative_to}")
 
-    def with_anchor(self, item: str | Matcher[str]) -> PathMatcher:
+    def with_anchor(self, item: str | Matcher[str]) -> Self:
         """Matches the path's anchor (drive and root combined).
 
         :param item: Expected anchor string or a matcher for the anchor.
@@ -128,7 +128,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_anchor = with_anchor
 
-    def with_name(self, item: str | Matcher[str]) -> PathMatcher:
+    def with_name(self, item: str | Matcher[str]) -> Self:
         """Matches the path's name (final component).
 
         :param item: Expected name string or a matcher for the name.
@@ -139,7 +139,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_name = with_name
 
-    def with_parent(self, item: Any | Matcher[Any]) -> PathMatcher:
+    def with_parent(self, item: Any | Matcher[Any]) -> Self:
         """Matches the path's parent directory.
 
         :param item: Expected parent path or a matcher for the parent.
@@ -150,7 +150,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_parent = with_parent
 
-    def with_parents(self, item: Sequence[Any] | Matcher[Sequence[Any]]) -> PathMatcher:
+    def with_parents(self, item: Sequence[Any] | Matcher[Sequence[Any]]) -> Self:
         """Matches the path's sequence of parent directories.
 
         :param item: Expected sequence of parent paths or a matcher for ancestors.
@@ -161,7 +161,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_parents = with_parents
 
-    def with_parts(self, item: Sequence[str] | Matcher[Sequence[str]]) -> PathMatcher:
+    def with_parts(self, item: Sequence[str] | Matcher[Sequence[str]]) -> Self:
         """Matches the path's component sequence.
 
         :param item: Expected sequence of path part strings or a matcher for them.
@@ -172,7 +172,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_parts = with_parts
 
-    def with_root(self, item: str | Matcher[str]) -> PathMatcher:
+    def with_root(self, item: str | Matcher[str]) -> Self:
         """Matches the path's root string.
 
         :param item: Expected root string or a matcher for the root.
@@ -183,7 +183,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_root = with_root
 
-    def with_stem(self, item: str | Matcher[str]) -> PathMatcher:
+    def with_stem(self, item: str | Matcher[str]) -> Self:
         """Matches the path's stem (final component without its extension).
 
         :param item: Expected stem string or a matcher for the stem.
@@ -194,7 +194,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_stem = with_stem
 
-    def with_suffix(self, item: str | Matcher[str]) -> PathMatcher:
+    def with_suffix(self, item: str | Matcher[str]) -> Self:
         """Matches the path's file suffix (extension).
 
         :param item: Expected suffix string or a matcher for the suffix.
@@ -205,7 +205,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_suffix = with_suffix
 
-    def with_suffixes(self, item: Sequence[str] | Matcher[Sequence[str]]) -> PathMatcher:
+    def with_suffixes(self, item: Sequence[str] | Matcher[Sequence[str]]) -> Self:
         """Matches the path's list of file suffixes (extensions).
 
         :param item: Expected sequence of suffix strings or a matcher for them.
@@ -216,7 +216,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_suffixes = with_suffixes
 
-    def which_exists(self) -> PathMatcher:
+    def which_exists(self) -> Self:
         """Matches that the path exists on the filesystem.
 
         :return: This matcher instance for chaining.
@@ -226,7 +226,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_which_exists = which_exists
 
-    def which_does_not_exist(self) -> PathMatcher:
+    def which_does_not_exist(self) -> Self:
         """Matches that the path does not exist on the filesystem.
 
         :return: This matcher instance for chaining.
@@ -236,7 +236,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_which_does_not_exist = which_does_not_exist
 
-    def which_is_a_file(self) -> PathMatcher:
+    def which_is_a_file(self) -> Self:
         """Matches that the path is a regular file.
 
         :return: This matcher instance for chaining.
@@ -246,7 +246,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_is_a_file = which_is_a_file
 
-    def which_is_a_directory(self) -> PathMatcher:
+    def which_is_a_directory(self) -> Self:
         """Matches that the path is a directory.
 
         :return: This matcher instance for chaining.
@@ -256,7 +256,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_is_a_directory = which_is_a_directory
 
-    def which_is_absolute(self) -> PathMatcher:
+    def which_is_absolute(self) -> Self:
         """Matches that the path is absolute.
 
         :return: This matcher instance for chaining.
@@ -266,7 +266,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_is_absolute = which_is_absolute
 
-    def which_is_relative(self) -> PathMatcher:
+    def which_is_relative(self) -> Self:
         """Matches that the path is not absolute.
 
         :return: This matcher instance for chaining.
@@ -276,7 +276,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_is_relative = which_is_relative
 
-    def which_is_relative_to(self, relative_path: Path | str) -> PathMatcher:
+    def which_is_relative_to(self, relative_path: Path | str) -> Self:
         """Matches that the path is relative to another Path.
 
         :return: This matcher instance for chaining.

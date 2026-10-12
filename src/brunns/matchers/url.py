@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Protocol, TypeVar, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, Self, TypeVar, runtime_checkable
 
 from deprecated import deprecated
 from hamcrest import anything
@@ -143,7 +143,7 @@ class UrlWith(BaseMatcher[U]):
         describe_field_match(self.query, "query", parsed_url.query, match_description)
         describe_field_match(self.fragment, "fragment", parsed_url.fragment, match_description)
 
-    def with_scheme(self, scheme: str | Matcher[str]) -> UrlWith:
+    def with_scheme(self, scheme: str | Matcher[str]) -> Self:
         """Matches if the URL scheme matches the given value or matcher.
 
         :param scheme: The expected scheme (e.g. "https") or matcher.
@@ -154,7 +154,7 @@ class UrlWith(BaseMatcher[U]):
 
     and_scheme = with_scheme
 
-    def with_username(self, username: str | Matcher[str | None] | None) -> UrlWith:
+    def with_username(self, username: str | Matcher[str | None] | None) -> Self:
         """Matches if the URL username matches the given value or matcher.
 
         :param username: The expected username or matcher.
@@ -167,7 +167,7 @@ class UrlWith(BaseMatcher[U]):
     with_user = with_username
     and_user = with_username
 
-    def with_password(self, password: str | Matcher[str | None] | None) -> UrlWith:
+    def with_password(self, password: str | Matcher[str | None] | None) -> Self:
         """Matches if the URL password matches the given value or matcher.
 
         :param password: The expected password or matcher.
@@ -178,7 +178,7 @@ class UrlWith(BaseMatcher[U]):
 
     and_password = with_password
 
-    def with_host(self, host: str | Matcher[str | None] | None) -> UrlWith:
+    def with_host(self, host: str | Matcher[str | None] | None) -> Self:
         """Matches if the URL host matches the given value or matcher.
 
         :param host: The expected hostname or matcher.
@@ -189,7 +189,7 @@ class UrlWith(BaseMatcher[U]):
 
     and_host = with_host
 
-    def with_port(self, port: int | Matcher[int | None] | None) -> UrlWith:
+    def with_port(self, port: int | Matcher[int | None] | None) -> Self:
         """Matches if the URL port matches the given value or matcher.
 
         :param port: The expected port integer or matcher.
@@ -200,7 +200,7 @@ class UrlWith(BaseMatcher[U]):
 
     and_port = with_port
 
-    def with_path(self, path: str | Matcher[str]) -> UrlWith:
+    def with_path(self, path: str | Matcher[str]) -> Self:
         """Matches if the URL path matches the given value or matcher.
 
         :param path: The expected path string (e.g. "/foo/bar") or matcher.
@@ -211,7 +211,7 @@ class UrlWith(BaseMatcher[U]):
 
     and_path = with_path
 
-    def with_path_segments(self, path_segments: Sequence[str] | Matcher[Sequence[str]]) -> UrlWith:
+    def with_path_segments(self, path_segments: Sequence[str] | Matcher[Sequence[str]]) -> Self:
         """Matches if the URL path segments match the given sequence or matcher.
 
         :param path_segments: The expected sequence of path segments (e.g. ["foo", "bar"]) or matcher.
@@ -225,7 +225,7 @@ class UrlWith(BaseMatcher[U]):
     def with_query(
         self,
         query: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
-    ) -> UrlWith:
+    ) -> Self:
         """Matches if the URL query parameters match the given dictionary or matcher.
 
         :param query: The expected query parameters dictionary or matcher.
@@ -236,7 +236,7 @@ class UrlWith(BaseMatcher[U]):
 
     and_query = with_query
 
-    def with_fragment(self, fragment: str | Matcher[str]) -> UrlWith:
+    def with_fragment(self, fragment: str | Matcher[str]) -> Self:
         """Matches if the URL fragment (hash) matches the given value or matcher.
 
         :param fragment: The expected fragment string or matcher.

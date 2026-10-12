@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Protocol, TypeVar, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, Self, TypeVar, runtime_checkable
 
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
@@ -140,7 +140,7 @@ class ProcResultMatcher(BaseMatcher[P]):
         describe_field_match(self.files_deleted, "files deleted", item.files_deleted, match_description)
         describe_field_match(self.files_updated, "files updated", item.files_updated, match_description)
 
-    def with_returncode(self, returncode: int | Matcher[int]):
+    def with_returncode(self, returncode: int | Matcher[int]) -> Self:
         """Matches if the return code matches the given value or matcher.
 
         :param returncode: The expected return code (e.g. 0) or a matcher.
@@ -151,7 +151,7 @@ class ProcResultMatcher(BaseMatcher[P]):
 
     and_returncode = with_returncode
 
-    def with_stdout(self, stdout: str | Matcher[str]):
+    def with_stdout(self, stdout: str | Matcher[str]) -> Self:
         """Matches if the stdout text matches the given value or matcher.
 
         :param stdout: The expected stdout string or matcher.
@@ -162,7 +162,7 @@ class ProcResultMatcher(BaseMatcher[P]):
 
     and_stdout = with_stdout
 
-    def with_stderr(self, stderr: str | Matcher[str]):
+    def with_stderr(self, stderr: str | Matcher[str]) -> Self:
         """Matches if the stderr text matches the given value or matcher.
 
         :param stderr: The expected stderr string or matcher.
@@ -173,7 +173,7 @@ class ProcResultMatcher(BaseMatcher[P]):
 
     and_stderr = with_stderr
 
-    def with_args(self, args: Sequence[str] | Matcher[Sequence[str]]):
+    def with_args(self, args: Sequence[str] | Matcher[Sequence[str]]) -> Self:
         """Matches if the command arguments match the given value or matcher.
 
         :param args: The expected args sequence or matcher.
@@ -184,7 +184,7 @@ class ProcResultMatcher(BaseMatcher[P]):
 
     and_args = with_args
 
-    def with_stdin(self, stdin: bytes | Matcher[bytes]):
+    def with_stdin(self, stdin: bytes | Matcher[bytes]) -> Self:
         """Matches if the stdin bytes match the given value or matcher.
 
         :param stdin: The expected stdin bytes or matcher.
@@ -195,7 +195,7 @@ class ProcResultMatcher(BaseMatcher[P]):
 
     and_stdin = with_stdin
 
-    def with_files_created(self, files_created: Mapping[str, Any] | Matcher[Mapping[str, Any]]):
+    def with_files_created(self, files_created: Mapping[str, Any] | Matcher[Mapping[str, Any]]) -> Self:
         """Matches if the files created dictionary matches the given value or matcher.
 
         :param files_created: The expected files created dictionary or matcher.
@@ -206,7 +206,7 @@ class ProcResultMatcher(BaseMatcher[P]):
 
     and_files_created = with_files_created
 
-    def with_files_deleted(self, files_deleted: Mapping[str, Any] | Matcher[Mapping[str, Any]]):
+    def with_files_deleted(self, files_deleted: Mapping[str, Any] | Matcher[Mapping[str, Any]]) -> Self:
         """Matches if the files deleted dictionary matches the given value or matcher.
 
         :param files_deleted: The expected files deleted dictionary or matcher.
@@ -217,7 +217,7 @@ class ProcResultMatcher(BaseMatcher[P]):
 
     and_files_deleted = with_files_deleted
 
-    def with_files_updated(self, files_updated: Mapping[str, Any] | Matcher[Mapping[str, Any]]):
+    def with_files_updated(self, files_updated: Mapping[str, Any] | Matcher[Mapping[str, Any]]) -> Self:
         """Matches if the files updated dictionary matches the given value or matcher.
 
         :param files_updated: The expected files updated dictionary or matcher.

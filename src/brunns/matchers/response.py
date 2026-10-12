@@ -1,7 +1,7 @@
 # Copyright 2018-2026 Simon Brunning
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Protocol, TypeVar, cast, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, Self, TypeVar, cast, runtime_checkable
 
 from deprecated import deprecated
 from hamcrest import anything, described_as, has_entry
@@ -170,7 +170,7 @@ class ResponseMatcher(BaseMatcher[R]):
 
     and_status_code = with_status_code
 
-    def with_body(self, body: str | Matcher[str]) -> ResponseMatcher:
+    def with_body(self, body: str | Matcher[str]) -> Self:
         """Matches if the response body text matches the given value or matcher.
 
         :param body: The expected body string or matcher.
@@ -181,7 +181,7 @@ class ResponseMatcher(BaseMatcher[R]):
 
     and_body = with_body
 
-    def with_content(self, content: bytes | Matcher[bytes]) -> ResponseMatcher:
+    def with_content(self, content: bytes | Matcher[bytes]) -> Self:
         """Matches if the response binary content matches the given value or matcher.
 
         :param content: The expected bytes or matcher.
@@ -192,7 +192,7 @@ class ResponseMatcher(BaseMatcher[R]):
 
     and_content = with_content
 
-    def with_json(self, json: JsonValue | Matcher[JsonValue]) -> ResponseMatcher:
+    def with_json(self, json: JsonValue | Matcher[JsonValue]) -> Self:
         """Matches if the response JSON body matches the given value or matcher.
 
         The response body is parsed as JSON before matching.
@@ -208,7 +208,7 @@ class ResponseMatcher(BaseMatcher[R]):
     def with_headers(
         self,
         headers: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
-    ) -> ResponseMatcher:
+    ) -> Self:
         """Matches if the response headers match the given value or matcher.
 
         :param headers: The expected headers dictionary or matcher.
@@ -222,7 +222,7 @@ class ResponseMatcher(BaseMatcher[R]):
     def with_cookies(
         self,
         cookies: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
-    ) -> ResponseMatcher:
+    ) -> Self:
         """Matches if the response cookies match the given value or matcher.
 
         :param cookies: The expected cookies dictionary or matcher.
@@ -233,7 +233,7 @@ class ResponseMatcher(BaseMatcher[R]):
 
     and_cookies = with_cookies
 
-    def with_elapsed(self, elapsed: timedelta | Matcher[timedelta]) -> ResponseMatcher:
+    def with_elapsed(self, elapsed: timedelta | Matcher[timedelta]) -> Self:
         """Matches if the response elapsed time matches the given value or matcher.
 
         :param elapsed: The expected timedelta or matcher.
@@ -248,7 +248,7 @@ class ResponseMatcher(BaseMatcher[R]):
         self,
         history: Sequence[ResponseProtocol | Matcher[ResponseProtocol]]
         | Matcher[Sequence[ResponseProtocol | Matcher[ResponseProtocol]]],
-    ) -> ResponseMatcher:
+    ) -> Self:
         """Matches if the response history (redirects) matches the given sequence or matcher.
 
         :param history: The expected sequence of responses/matchers or a sequence matcher.
@@ -259,7 +259,7 @@ class ResponseMatcher(BaseMatcher[R]):
 
     and_history = with_history
 
-    def with_url(self, url: UrlProtocol | Matcher[UrlProtocol]) -> ResponseMatcher:
+    def with_url(self, url: UrlProtocol | Matcher[UrlProtocol]) -> Self:
         """Matches if the response URL matches the given value or matcher.
 
         :param url: The expected URL string, object, or matcher.
@@ -270,7 +270,7 @@ class ResponseMatcher(BaseMatcher[R]):
 
     and_url = with_url
 
-    def with_encoding(self, encoding: str | Matcher[str | None] | None) -> ResponseMatcher:
+    def with_encoding(self, encoding: str | Matcher[str | None] | None) -> Self:
         """Matches if the response encoding matches the given value or matcher.
 
         :param encoding: The expected encoding string or matcher.

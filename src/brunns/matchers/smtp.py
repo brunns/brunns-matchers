@@ -5,7 +5,7 @@ import email
 import re
 from dataclasses import dataclass
 from re import Match
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Self, cast
 
 from deprecated import deprecated
 from hamcrest import anything
@@ -122,7 +122,7 @@ class EmailWith(BaseMatcher[str]):
         describe_field_match(self.subject, "subject", email.subject, match_description)
         describe_field_match(self.body_text, "body", email.body_text, match_description)
 
-    def with_to_name(self, to_name: str | Matcher[str]):
+    def with_to_name(self, to_name: str | Matcher[str]) -> Self:
         """Matches if the email 'To' name matches the given value or matcher.
 
         :param to_name: The expected recipient name or matcher.
@@ -133,7 +133,7 @@ class EmailWith(BaseMatcher[str]):
 
     and_to_name = with_to_name
 
-    def with_to_address(self, to_address: str | Matcher[str]):
+    def with_to_address(self, to_address: str | Matcher[str]) -> Self:
         """Matches if the email 'To' address matches the given value or matcher.
 
         :param to_address: The expected recipient email address or matcher.
@@ -144,7 +144,7 @@ class EmailWith(BaseMatcher[str]):
 
     and_to_address = with_to_address
 
-    def with_from_name(self, from_name: str | Matcher[str]):
+    def with_from_name(self, from_name: str | Matcher[str]) -> Self:
         """Matches if the email 'From' name matches the given value or matcher.
 
         :param from_name: The expected sender name or matcher.
@@ -155,7 +155,7 @@ class EmailWith(BaseMatcher[str]):
 
     and_from_name = with_from_name
 
-    def with_from_address(self, from_address: str | Matcher[str]):
+    def with_from_address(self, from_address: str | Matcher[str]) -> Self:
         """Matches if the email 'From' address matches the given value or matcher.
 
         :param from_address: The expected sender email address or matcher.
@@ -166,7 +166,7 @@ class EmailWith(BaseMatcher[str]):
 
     and_from_address = with_from_address
 
-    def with_subject(self, subject: str | Matcher[str]):
+    def with_subject(self, subject: str | Matcher[str]) -> Self:
         """Matches if the email subject matches the given value or matcher.
 
         :param subject: The expected subject string or matcher.
@@ -177,7 +177,7 @@ class EmailWith(BaseMatcher[str]):
 
     and_subject = with_subject
 
-    def with_body_text(self, body_text: str | Matcher[str]):
+    def with_body_text(self, body_text: str | Matcher[str]) -> Self:
         """Matches if the email body text matches the given value or matcher.
 
         :param body_text: The expected body string or matcher.

@@ -1,7 +1,7 @@
 # Copyright 2018-2026 Simon Brunning
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Protocol, TypeVar, cast, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, Self, TypeVar, cast, runtime_checkable
 
 from hamcrest import anything, described_as, has_entry
 from hamcrest.core.base_matcher import BaseMatcher
@@ -105,7 +105,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
         describe_field_match(self.json, "json", item.json, match_description)
         describe_field_match(self.headers, "headers", item.headers, match_description)
 
-    def with_status_code(self, status_code: int | Matcher[int]) -> WerkzeugResponseMatcher:
+    def with_status_code(self, status_code: int | Matcher[int]) -> Self:
         """Matches if the response status code matches the given value or matcher.
 
         :param status_code: The expected status code (e.g. 200) or matcher.
@@ -116,7 +116,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
 
     and_status_code = with_status_code
 
-    def with_text(self, text: str | Matcher[str]) -> WerkzeugResponseMatcher:
+    def with_text(self, text: str | Matcher[str]) -> Self:
         """Matches if the response body text matches the given value or matcher.
 
         :param text: The expected body text string or matcher.
@@ -127,7 +127,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
 
     and_text = with_text
 
-    def with_mimetype(self, mimetype: str | Matcher[str]) -> WerkzeugResponseMatcher:
+    def with_mimetype(self, mimetype: str | Matcher[str]) -> Self:
         """Matches if the response mimetype matches the given value or matcher.
 
         :param mimetype: The expected mimetype string or matcher.
@@ -138,7 +138,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
 
     and_mimetype = with_mimetype
 
-    def with_json(self, json: JsonValue | Matcher[JsonValue]) -> WerkzeugResponseMatcher:
+    def with_json(self, json: JsonValue | Matcher[JsonValue]) -> Self:
         """Matches if the response JSON body matches the given value or matcher.
 
         The response body is parsed as JSON before matching.
@@ -154,7 +154,7 @@ class WerkzeugResponseMatcher(BaseMatcher[R]):
     def with_headers(
         self,
         headers: Mapping[str, str | Matcher[str]] | Matcher[Mapping[str, str | Matcher[str]]],
-    ) -> WerkzeugResponseMatcher:
+    ) -> Self:
         """Matches if the response headers match the given value or matcher.
 
         :param headers: The expected headers dictionary or matcher.

@@ -41,6 +41,7 @@ class PathMatcher(BaseMatcher[Path | str]):
         self.is_file: Matcher[bool] = ANYTHING
         self.is_directory: Matcher[bool] = ANYTHING
         self.is_absolute: Matcher[bool] = ANYTHING
+        self.relative_to: Path | None = None
 
     def _fields(self, item: Path):
         return [
@@ -71,6 +72,7 @@ class PathMatcher(BaseMatcher[Path | str]):
             and self.is_file.matches(path.is_file())
             and self.is_directory.matches(path.is_dir())
             and self.is_absolute.matches(path.is_absolute())
+            and (path.is_relative_to(self.relative_to) if self.relative_to else True)
         )
 
     def describe_mismatch(self, item: Path | str, mismatch_description: Description) -> None:
@@ -85,6 +87,8 @@ class PathMatcher(BaseMatcher[Path | str]):
         describe_field_mismatch(self.is_file, "is_file", path.is_file(), mismatch_description)
         describe_field_mismatch(self.is_directory, "is_directory", path.is_dir(), mismatch_description)
         describe_field_mismatch(self.is_absolute, "is_absolute", path.is_absolute(), mismatch_description)
+        if self.relative_to and not path.is_relative_to(self.relative_to):
+            mismatch_description.append_text(f" not relative to {self.relative_to}")
 
     def describe_match(self, item: Path | str, match_description: Description) -> None:
         path = self._to_path(item)
@@ -99,6 +103,8 @@ class PathMatcher(BaseMatcher[Path | str]):
         describe_field_match(self.is_file, "is_file", path.is_file(), match_description)
         describe_field_match(self.is_directory, "is_directory", path.is_dir(), match_description)
         describe_field_match(self.is_absolute, "is_absolute", path.is_absolute(), match_description)
+        if self.relative_to and path.is_relative_to(self.relative_to):
+            match_description.append_text(f" is relative to {self.relative_to}")
 
     def describe_to(self, description: Description) -> None:
         description.append_text("Path with")
@@ -108,6 +114,8 @@ class PathMatcher(BaseMatcher[Path | str]):
         append_matcher_description(self.is_file, "is_file", description)
         append_matcher_description(self.is_directory, "is_directory", description)
         append_matcher_description(self.is_absolute, "is_absolute", description)
+        if self.relative_to:
+            description.append_text(f" is relative to {self.relative_to}")
 
     def with_anchor(self, item: str | Matcher[str]) -> PathMatcher:
         """Matches the path's anchor (drive and root combined).
@@ -238,16 +246,6 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_is_a_file = which_is_a_file
 
-    def which_is_not_a_file(self) -> PathMatcher:
-        """Matches that the path is not a regular file.
-
-        :return: This matcher instance for chaining.
-        """
-        self.is_file = is_(False)
-        return self
-
-    and_is_not_a_file = which_is_not_a_file
-
     def which_is_a_directory(self) -> PathMatcher:
         """Matches that the path is a directory.
 
@@ -257,16 +255,6 @@ class PathMatcher(BaseMatcher[Path | str]):
         return self
 
     and_is_a_directory = which_is_a_directory
-
-    def which_is_not_a_directory(self) -> PathMatcher:
-        """Matches that the path is not a directory.
-
-        :return: This matcher instance for chaining.
-        """
-        self.is_directory = is_(False)
-        return self
-
-    and_is_not_a_directory = which_is_not_a_directory
 
     def which_is_absolute(self) -> PathMatcher:
         """Matches that the path is absolute.
@@ -278,7 +266,7 @@ class PathMatcher(BaseMatcher[Path | str]):
 
     and_is_absolute = which_is_absolute
 
-    def which_is_not_absolute(self) -> PathMatcher:
+    def which_is_relative(self) -> PathMatcher:
         """Matches that the path is not absolute.
 
         :return: This matcher instance for chaining.
@@ -286,7 +274,15 @@ class PathMatcher(BaseMatcher[Path | str]):
         self.is_absolute = is_(False)
         return self
 
-    and_is_not_absolute = which_is_not_absolute
+    and_is_relative = which_is_relative
+
+    def which_is_relative_to(self, relative_path: Path | str) -> PathMatcher:
+        """Matches that the path is relative to another Path.
+
+        :return: This matcher instance for chaining.
+        """
+        self.relative_to = Path(relative_path)
+        return self
 
 
 def is_path() -> PathMatcher:

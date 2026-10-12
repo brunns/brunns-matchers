@@ -258,38 +258,6 @@ def test_is_file_matching(fs: FakeFilesystem):
     )
 
 
-def test_is_not_a_file_matching(fs: FakeFilesystem):
-    fs.create_file("/var/log/app.log")
-    fs.create_dir("/var/log/subdir")
-
-    is_a_file = Path("/var/log/app.log")
-    is_a_directory = Path("/var/log/subdir")
-
-    file_matcher = is_path().which_is_not_a_file()
-
-    assert_that(is_a_directory, file_matcher)
-    assert_that(is_a_file, not_(file_matcher))
-
-    assert_that(
-        file_matcher,
-        has_string("Path with is_file: <False>"),
-    )
-    assert_that(
-        file_matcher,
-        matches_with(
-            is_a_directory,
-            "was Path with is_file: was <False>",
-        ),
-    )
-    assert_that(
-        file_matcher,
-        mismatches_with(
-            is_a_file,
-            "was Path with is_file: was <True>",
-        ),
-    )
-
-
 def test_is_directory_matching(fs: FakeFilesystem):
     fs.create_file("/var/log/app.log")
     fs.create_dir("/var/log/subdir")
@@ -318,38 +286,6 @@ def test_is_directory_matching(fs: FakeFilesystem):
         mismatches_with(
             is_a_file,
             "was Path with is_directory: was <False>",
-        ),
-    )
-
-
-def test_is_not_a_directory_matching(fs: FakeFilesystem):
-    fs.create_file("/var/log/app.log")
-    fs.create_dir("/var/log/subdir")
-
-    is_a_file = Path("/var/log/app.log")
-    is_a_directory = Path("/var/log/subdir")
-
-    directory_matcher = is_path().which_is_not_a_directory()
-
-    assert_that(is_a_file, directory_matcher)
-    assert_that(is_a_directory, not_(directory_matcher))
-
-    assert_that(
-        directory_matcher,
-        has_string("Path with is_directory: <False>"),
-    )
-    assert_that(
-        directory_matcher,
-        matches_with(
-            is_a_file,
-            "was Path with is_directory: was <False>",
-        ),
-    )
-    assert_that(
-        directory_matcher,
-        mismatches_with(
-            is_a_directory,
-            "was Path with is_directory: was <True>",
         ),
     )
 
@@ -387,7 +323,7 @@ def test_is_not_absolute():
     absolute_path = Path("/var/log/app.log")
     relative_path = Path("app.log")
 
-    file_matcher = is_path().which_is_not_absolute()
+    file_matcher = is_path().which_is_relative()
 
     assert_that(relative_path, file_matcher)
     assert_that(absolute_path, not_(file_matcher))
@@ -408,5 +344,36 @@ def test_is_not_absolute():
         mismatches_with(
             absolute_path,
             "was Path with is_absolute: was <True>",
+        ),
+    )
+
+
+def test_is_relative_to():
+    file_path = Path("/var/log/app.log")
+    relative_path = Path("/var/log")
+    other_path = Path("/var/sausages")
+
+    should_match = is_path().which_is_relative_to(relative_path)
+    should_not_match = is_path().which_is_relative_to(other_path)
+
+    assert_that(file_path, should_match)
+    assert_that(file_path, not_(should_not_match))
+
+    assert_that(
+        should_match,
+        has_string("Path with is relative to /var/log"),
+    )
+    assert_that(
+        should_match,
+        matches_with(
+            file_path,
+            "was Path with is relative to /var/log",
+        ),
+    )
+    assert_that(
+        should_not_match,
+        mismatches_with(
+            relative_path,
+            "was Path with not relative to /var/sausages",
         ),
     )

@@ -290,6 +290,7 @@ def test_is_directory_matching(fs: FakeFilesystem):
     )
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="Paths are different on Windows")
 def test_is_absolute():
     absolute_path = Path("/var/log/app.log")
     relative_path = Path("app.log")
@@ -319,6 +320,7 @@ def test_is_absolute():
     )
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="Paths are different on Windows")
 def test_is_not_absolute():
     absolute_path = Path("/var/log/app.log")
     relative_path = Path("app.log")
@@ -348,6 +350,7 @@ def test_is_not_absolute():
     )
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="Paths are different on Windows")
 def test_is_relative_to():
     file_path = Path("/var/log/app.log")
     relative_path = Path("/var/log")

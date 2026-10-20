@@ -1,5 +1,5 @@
 # Copyright 2018-2026 Simon Brunning
-import datetime
+import datetime as dt
 from pathlib import Path
 
 from faker import Faker
@@ -148,9 +148,9 @@ def test_equal_vars():
     c = SomeClass(1, SomeClass(2, 4, 5), 6)
     d = SomeClass(1, SomeClass(2, 4, 5), SomeClass(2, 4, 5))
 
-    date1 = datetime.date(1968, 7, 21)
-    date2 = datetime.date(1968, 7, 21)
-    date3 = datetime.datetime.now(tz=datetime.UTC).date()
+    date1 = dt.date(1968, 7, 21)
+    date2 = dt.date(1968, 7, 21)
+    date3 = dt.datetime.now(tz=dt.UTC).date()
 
     path1 = Path("some/path")
     path2 = Path("some/path")
@@ -254,18 +254,17 @@ def test_between_exclusive():
 
 def test_between_dates():
     # Given
-    date = datetime.date(1968, 7, 21)
+    date = dt.date(1968, 7, 21)
 
     # When
 
     # Then
-    assert_that(date, between(datetime.date(1968, 7, 20), datetime.date(1968, 7, 22)))
-    assert_that(date, not_(between(datetime.date(1968, 7, 22), datetime.date(1968, 7, 24))))
+    assert_that(date, between(dt.date(1968, 7, 20), dt.date(1968, 7, 22)))
+    assert_that(date, not_(between(dt.date(1968, 7, 22), dt.date(1968, 7, 24))))
     assert_that(
-        between(datetime.date(1968, 7, 20), datetime.date(1968, 7, 22)),
+        between(dt.date(1968, 7, 20), dt.date(1968, 7, 22)),
         has_string("(a value greater than or equal to <1968-07-20> and a value less than or equal to <1968-07-22>)"),
     )
     assert_that(
-        between(datetime.date(1968, 7, 22), datetime.date(1968, 7, 24)),
-        mismatches_with(date, contains_string("was <1968-07-21>")),
+        between(dt.date(1968, 7, 22), dt.date(1968, 7, 24)), mismatches_with(date, contains_string("was <1968-07-21>"))
     )

@@ -177,11 +177,11 @@ docs = [
 
 [[package]]
 name = "brunns-row"
-version = "2.2.0"
+version = "2.3.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/5a/ab/071c27271e59b80a93ab5ff6387051a8ecdc72f821d22369f31240e7c6a2/brunns_row-2.2.0.tar.gz", hash = "sha256:69379d1f0992c2611e90a713678cb252ebdcd3ba021c43aa479289586deeed2b", size = 70853, upload-time = "2026-05-01T09:01:40.767Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/69/4c/0d43ad7a88404dec39fd22051bd62015f6aae59aafe245e493683078cd1e/brunns_row-2.3.1.tar.gz", hash = "sha256:53f1999e3b4712fa6600d1c5078edb5422ea2f0c2840428529e335882c9e0cf7", size = 72464, upload-time = "2026-10-12T13:19:45.66Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/55/23/104814874067726d4b1c076dbcbcbd255ff45ffdf6ac5676663d647eb2dc/brunns_row-2.2.0-py3-none-any.whl", hash = "sha256:ed1a695578bfecc5385db291a618f0c26bcdf2c09533a9076f983466c65229cb", size = 5920, upload-time = "2026-05-01T09:01:39.646Z" },
+    { url = "https://files.pythonhosted.org/packages/e8/33/c20da1f4845aed8462c343ed808964a3cc5ab8be5e784128aa3d4376b596/brunns_row-2.3.1-py3-none-any.whl", hash = "sha256:d2ee3f4b0095aa31113003651a939342d1413c9f0899ea751747197f66a79fe8", size = 6218, upload-time = "2026-10-12T13:19:44.513Z" },
 ]
 
 [[package]]

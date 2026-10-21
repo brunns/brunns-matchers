@@ -49,6 +49,7 @@ url = [
 
 [tool.uv]
 exclude-newer = "7 days"
+exclude-newer-package = { certifi = false }
 
 [project.urls]
 Homepage = "https://github.com/brunns/brunns-matchers/"
